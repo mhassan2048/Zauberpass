@@ -77,9 +77,9 @@ def update(frame, ax, pitch, pass_events_sorted, comp_clr, regular_clr, failed_c
     return []
 
 def load_data():
-    # Load your CSV data here
-    #url = "https://drive.google.com/uc?export=download&id=FILE_ID"  # Replace with your direct download link
-    df = pd.read_csv("merged_2022_wc.csv")
+    # Update the URL to your Google Drive direct download link
+    url = "https://drive.google.com/uc?export=download&id=1iKLZKodLUMa9akCyCUhgS15bur4Hxu4t"
+    df = pd.read_csv(url)
     return df
 
 # Streamlit app
