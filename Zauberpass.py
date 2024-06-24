@@ -164,7 +164,7 @@ if st.button("Show Passmap"):
 
 
 
-    plt.figtext(.95, 0.175, "Direction of play from left to right. Coordinates from Whoscored.", fontdict=font_properties_small, color='grey', ha='right')
+    plt.figtext(.95, 0.175, "Direction of play from left to right. Coordinates from Whoscored.", fontdict=font_prop_small, color='grey', ha='right')
 
     anim = FuncAnimation(fig, update, frames=len(pass_events_sorted), fargs=(ax, pitch, pass_events_sorted, '#ff9d00', '#c791f2', 'darkgrey', '#00aaff', "Greys_r"), interval=500, repeat=False, blit=True)
 
