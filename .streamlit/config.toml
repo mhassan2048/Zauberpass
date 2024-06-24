@@ -1,0 +1,9 @@
+[theme]
+primaryColor="#f17f20"
+backgroundColor="#6f0049"
+secondaryBackgroundColor="#000000"
+textColor="#ffffff"
+font="monospace"
+
+[server]
+head="<!DOCTYPE html><html><head><link rel='icon' href='favicon.ico' type='image/x-icon'/></head><body>"
