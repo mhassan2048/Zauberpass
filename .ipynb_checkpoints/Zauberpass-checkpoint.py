@@ -9,6 +9,15 @@ import matplotlib.image as mpimg
 import io
 import base64
 import tempfile
+import matplotlib.font_manager as fm
+
+# Add custom font
+font_path = 'DIN-Condensed-Bold.ttf'
+font_prop = fm.FontProperties(fname=font_path)
+font_prop_large = fm.FontProperties(fname=font_path, size=48, weight='bold')
+font_prop_medium = fm.FontProperties(fname=font_path, size=24, weight='bold')
+font_prop_small = fm.FontProperties(fname=font_path, size=20, weight='bold')
+
 
 # Initialize global variables for text objects
 minute_text_obj = None
@@ -77,9 +86,9 @@ def update(frame, ax, pitch, pass_events_sorted, comp_clr, regular_clr, failed_c
     return []
 
 def load_data():
-    # Load your CSV data here
-    #url = "https://drive.google.com/uc?export=download&id=FILE_ID"  # Replace with your direct download link
-    df = pd.read_csv("merged_2022_wc.csv")
+    # Update the URL to your Google Drive direct download link
+    url = "https://drive.google.com/uc?export=download&id=1iKLZKodLUMa9akCyCUhgS15bur4Hxu4t"
+    df = pd.read_csv(url)
     return df
 
 # Streamlit app
@@ -136,7 +145,7 @@ if st.button("Show Passmap"):
     
     # Create the colorbar
     cbar = plt.colorbar(mappable, cax=cbar_ax, orientation='horizontal')
-    cbar.set_label('Pass Destination Volume', fontsize=14, family='DIN Condensed', ha='left')
+    cbar.set_label('Pass Destination Volume', fontsize=14, fontproperties=font_prop, ha='left')
     cbar.ax.xaxis.set_label_position('top')
     cbar.ax.xaxis.set_ticks([])  # Remove ticks
     cbar.outline.set_visible(False)  # Remove border
@@ -145,16 +154,15 @@ if st.button("Show Passmap"):
     # Set the color of the label
     cbar.ax.xaxis.label.set_color('white')
 
-    font_properties = {'family': 'DIN Condensed', 'weight': 'bold', 'size': 48}
-    font_properties2 = {'family': 'DIN Condensed', 'weight': 'bold', 'size': 24}
-    plt.figtext(0.05, 0.9, f"{selected_player} - Passes", fontdict=font_properties, color='w', ha='left')
-    plt.figtext(0.05, 0.85, first_game_info, fontdict=font_properties2, color='#2af5bf', ha='left')
+    plt.figtext(0.05, 0.9, f"{selected_player} - Passes", fontproperties=font_prop_large, color='w', ha='left')
+    plt.figtext(0.05, 0.85, first_game_info, fontproperties=font_prop_medium, color='#2af5bf', ha='left')
+    plt.figtext(0.04, 0.165, "Regular", fontproperties=font_prop_small, color='#c791f2', ha='left')
+    plt.figtext(0.04, 0.135, "Progressive", fontproperties=font_prop_small, color='#ff9d00', ha='left')
+    plt.figtext(0.04, 0.105, "KeyPass", fontproperties=font_prop_small, color='#00aaff', ha='left')
+    plt.figtext(0.04, 0.075, "Failed", fontproperties=font_prop_small, color='darkgrey', ha='left')
+    plt.figtext(.95, 0.175, "Direction of play from left to right. Coordinates from Whoscored.", fontproperties=font_prop_small, color='grey', ha='right')
 
-    font_properties_bottom = {'family': 'DIN Condensed', 'weight': 'bold', 'size': 20}
-    plt.figtext(0.04, 0.165, "Regular", fontdict=font_properties_bottom, color='#c791f2', ha='left')
-    plt.figtext(0.04, 0.135, "Progressive", fontdict=font_properties_bottom, color='#ff9d00', ha='left')
-    plt.figtext(0.04, 0.105, "KeyPass", fontdict=font_properties_bottom, color='#00aaff', ha='left')
-    plt.figtext(0.04, 0.075, "Failed", fontdict=font_properties_bottom, color='darkgrey', ha='left')
+
 
     plt.figtext(.95, 0.175, "Direction of play from left to right. Coordinates from Whoscored.", fontdict=font_properties_bottom, color='grey', ha='right')
 
