@@ -41,8 +41,8 @@ def draw_pass(ax, row, pitch, comp_clr, regular_clr, failed_clr, key_pass_clr):
 
 def load_data(tournament):
     data_sources = {
-        "Euro": "https://drive.google.com/uc?export=download&id=1iKLZKodLUMa9akCyCUhgS15bur4Hxu4t",
-        "Copa": "https://example.com/copa-data.csv"  # Placeholder URL for Copa data
+        "Euro 2024": "https://drive.google.com/uc?export=download&id=1iKLZKodLUMa9akCyCUhgS15bur4Hxu4t",
+        "Copa America 2024": "https://drive.google.com/uc?export=download&id=1i0FYnilHtu_n3lmTpRNfLxuR8gbYgoDW"  # Placeholder URL for Copa data
     }
     url = data_sources[tournament]
     df = pd.read_csv(url)
@@ -57,7 +57,7 @@ st.image(image, use_column_width=False)
 st.title("Zauberpass by The Real Deal")
 
 # Add Tournament Dropdown
-tournaments = ["Euro", "Copa"]
+tournaments = ["Euro 2024", "Copa America 2024"]
 selected_tournament = st.selectbox("Select Tournament", tournaments)
 
 # Load data based on selected tournament
@@ -103,7 +103,7 @@ if st.button("Show Passmap"):
     plt.gca().invert_yaxis()
     
     # Load your image
-    image_path = 'brand4.png'  # Replace with the path to your image
+    image_path = 'RDPbrand.png'  # Replace with the path to your image
     img = mpimg.imread(image_path)
     img_ax = fig.add_axes([0.8, 0.84, 0.15, 0.15])  # Example: [left, bottom, width, height]
     
