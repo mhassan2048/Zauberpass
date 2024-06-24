@@ -2,13 +2,8 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-import matplotlib.animation as animation
-from matplotlib.animation import FuncAnimation, PillowWriter
 from mplsoccer import Pitch
 import matplotlib.image as mpimg
-import io
-import base64
-import tempfile
 import matplotlib.font_manager as fm
 
 # Add custom font
@@ -17,11 +12,6 @@ font_prop = fm.FontProperties(fname=font_path)
 font_prop_large = fm.FontProperties(fname=font_path, size=48, weight='bold')
 font_prop_medium = fm.FontProperties(fname=font_path, size=24, weight='bold')
 font_prop_small = fm.FontProperties(fname=font_path, size=20, weight='bold')
-
-
-# Initialize global variables for text objects
-minute_text_obj = None
-receiver_text_obj = None
 
 # Custom functions from the original code
 def is_long_pass(x_start, x_end):
@@ -52,38 +42,6 @@ def draw_heatmap(ax, pass_events, pitch, clr_map):
     pass_end_locations = pass_events[['end_x', 'end_y']].to_numpy()
     bin_statistic = pitch.bin_statistic_positional(pass_end_locations[:, 0], pass_end_locations[:, 1], statistic='count', positional='full', normalize=True)
     pitch.heatmap_positional(bin_statistic, ax=ax, cmap=clr_map, edgecolors='lightgrey', linewidth=5, zorder=1, alpha=.03)
-
-def update(frame, ax, pitch, pass_events_sorted, comp_clr, regular_clr, failed_clr, key_pass_clr, clr_map):
-    global minute_text_obj, receiver_text_obj
-
-    if frame < len(pass_events_sorted):
-        row = pass_events_sorted.iloc[frame]
-        draw_pass(ax, row, pitch, comp_clr, regular_clr, failed_clr, key_pass_clr)
-
-        minute = row['minute']
-        receiver = 'N/A'
-        if row['outcome_type'] == 'Successful':
-            try:
-                next_row = df.iloc[df.index.get_loc(row.name) + 1]
-                if next_row['team'] == row['team']:
-                    receiver = next_row['player']
-                else:
-                    receiver = 'Opponent Action'
-            except (IndexError, ValueError):
-                receiver = 'N/A'
-
-        if minute_text_obj:
-            minute_text_obj.remove()
-        if receiver_text_obj:
-            receiver_text_obj.remove()
-
-        font_properties_bottom = fm.FontProperties(fname=font_path, size=20, weight='bold')
-        minute_text_obj = plt.figtext(0.95, 0.08, f"Minute: {minute}", fontproperties=font_properties_bottom, color='w', ha='right')
-        receiver_text_obj = plt.figtext(0.95, 0.06, f"Receiver: {receiver}", fontproperties=font_properties_bottom, color='#2af5bf', ha='right')
-
-        draw_heatmap(ax, pass_events_sorted.iloc[:frame + 1], pitch, clr_map)
-
-    return []
 
 def load_data():
     # Update the URL to your Google Drive direct download link
@@ -162,14 +120,27 @@ if st.button("Show Passmap"):
     plt.figtext(0.04, 0.075, "Failed", fontproperties=font_prop_small, color='darkgrey', ha='left')
     plt.figtext(.95, 0.175, "Direction of play from left to right. Coordinates from Whoscored.", fontproperties=font_prop_small, color='grey', ha='right')
 
-    anim = FuncAnimation(fig, update, frames=len(pass_events_sorted), fargs=(ax, pitch, pass_events_sorted, '#ff9d00', '#c791f2', 'darkgrey', '#00aaff', "Greys_r"), interval=500, repeat=False, blit=True)
+    comp_clr = '#ff9d00'
+    regular_clr = '#c791f2'
+    failed_clr = 'darkgrey'
+    key_pass_clr = '#00aaff'
+    clr_map = "Greys_r"
 
-    # Save animation to a temporary file
-    with tempfile.NamedTemporaryFile(suffix=".gif") as temp_file:
-        anim.save(temp_file.name, writer=PillowWriter(fps=2))
-        temp_file.seek(0)
-        gif = temp_file.read()
+    for _, row in pass_events_sorted.iterrows():
+        draw_pass(ax, row, pitch, comp_clr, regular_clr, failed_clr, key_pass_clr)
 
-    # Display the animation in Streamlit
-    gif_base64 = base64.b64encode(gif).decode('utf-8')
-    st.markdown(f"![Animation](data:image/gif;base64,{gif_base64})")
+    draw_heatmap(ax, pass_events_sorted, pitch, clr_map)
+
+    # Count the number of each type of pass
+    num_regular_passes = len(pass_events_sorted[pass_events_sorted['outcome_type'] == 'Successful'])
+    num_failed_passes = len(pass_events_sorted[pass_events_sorted['outcome_type'] != 'Successful'])
+    num_key_passes = len(pass_events_sorted[pass_events_sorted['qualifiers'].str.contains('KeyPass', na=False)])
+    num_progressive_passes = sum(pass_events_sorted.apply(lambda row: is_long_pass(row['x'], row['end_x']), axis=1))
+
+    # Display the counts below the pitch
+    plt.figtext(0.5, 0.02, f"Regular Passes: {num_regular_passes}", fontproperties=font_prop_small, color='#c791f2', ha='center')
+    plt.figtext(0.5, 0.04, f"Progressive Passes: {num_progressive_passes}", fontproperties=font_prop_small, color='#ff9d00', ha='center')
+    plt.figtext(0.5, 0.06, f"Key Passes: {num_key_passes}", fontproperties=font_prop_small, color='#00aaff', ha='center')
+    plt.figtext(0.5, 0.08, f"Failed Passes: {num_failed_passes}", fontproperties=font_prop_small, color='darkgrey', ha='center')
+
+    st.pyplot(fig)
