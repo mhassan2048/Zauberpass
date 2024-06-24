@@ -38,11 +38,6 @@ def draw_pass(ax, row, pitch, comp_clr, regular_clr, failed_clr, key_pass_clr):
                         color=pass_color, lw=pass_width, zorder=3, transparent=True, 
                         alpha_start=0.75, alpha_end=0.01, ax=ax)
 
-def draw_heatmap(ax, pass_events, pitch, clr_map):
-    pass_end_locations = pass_events[['end_x', 'end_y']].to_numpy()
-    bin_statistic = pitch.bin_statistic_positional(pass_end_locations[:, 0], pass_end_locations[:, 1], statistic='count', positional='full', normalize=True)
-    pitch.heatmap_positional(bin_statistic, ax=ax, cmap=clr_map, edgecolors='lightgrey', linewidth=5, zorder=1, alpha=.03)
-
 def load_data():
     # Update the URL to your Google Drive direct download link
     url = "https://drive.google.com/uc?export=download&id=1iKLZKodLUMa9akCyCUhgS15bur4Hxu4t"
@@ -51,24 +46,24 @@ def load_data():
 
 # Streamlit app
 st.title("Zauberpass by The Real Deal - Euro 2024 Edition")
-st.sidebar.image("zplogo.png", use_column_width=True)  # Add your logo here
+st.image("zplogo.png", use_column_width=True)  # Add your logo here
 
 # Load data
 df = load_data()
 
 # Extract unique teams
 teams = sorted(df['team'].unique())
-selected_team = st.sidebar.selectbox("Select Team", teams, index=0)
+selected_team = st.selectbox("Select Team", teams, index=0)
 
 # Filter matches based on the selected team
 filtered_df_team = df[df['team'] == selected_team]
 matches = sorted(filtered_df_team['game'].unique())
-selected_match = st.sidebar.selectbox("Select Match", matches, index=0)
+selected_match = st.selectbox("Select Match", matches, index=0)
 
 # Filter players based on the selected team and game
 filtered_df_game = filtered_df_team[filtered_df_team['game'] == selected_match]
 players = sorted(filtered_df_game['player'].dropna().unique())
-selected_player = st.sidebar.selectbox("Select Player", players, index=0)
+selected_player = st.selectbox("Select Player", players, index=0)
 
 if st.button("Show Passmap"):
     # Filter data based on selections
@@ -78,7 +73,7 @@ if st.button("Show Passmap"):
 
     first_game_info = pass_events_sorted.iloc[0]['game'] if len(pass_events_sorted) > 0 else 'Game Information Not Available'
 
-    pitch = Pitch(spot_type='square', spot_scale=0.01, pitch_type='wyscout', line_color='lightgrey', linewidth=4, line_zorder=2, pitch_color='#6F0049')
+    pitch = Pitch(positional=True, positional_color='darkgrey',spot_type='square', spot_scale=0.01, pitch_type='wyscout', line_color='lightgrey', linewidth=4, line_zorder=2, pitch_color='#6F0049')
     fig, ax = pitch.draw(figsize=(12, 12), constrained_layout=True)
     fig.set_facecolor('#6F0049')
     ax.patch.set_facecolor('#6F0049')
@@ -103,8 +98,6 @@ if st.button("Show Passmap"):
     for _, row in pass_events_sorted.iterrows():
         draw_pass(ax, row, pitch, comp_clr, regular_clr, failed_clr, key_pass_clr)
 
-    draw_heatmap(ax, pass_events_sorted, pitch, clr_map)
-
     # Count the number of each type of pass
     num_regular_passes = len(pass_events_sorted[pass_events_sorted['outcome_type'] == 'Successful'])
     num_failed_passes = len(pass_events_sorted[pass_events_sorted['outcome_type'] != 'Successful'])
@@ -119,7 +112,5 @@ if st.button("Show Passmap"):
     plt.figtext(0.04, 0.105, f"Key Passes: {num_key_passes}", fontproperties=font_prop_small, color='#00aaff', ha='left')
     plt.figtext(0.04, 0.075, f"Failed Passes: {num_failed_passes}", fontproperties=font_prop_small, color='darkgrey', ha='left')
     plt.figtext(.95, 0.175, "Direction of play from left to right. Coordinates from Whoscored.", fontproperties=font_prop_small, color='grey', ha='right')
-
-
 
     st.pyplot(fig)
