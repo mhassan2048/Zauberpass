@@ -92,34 +92,8 @@ if st.button("Show Passmap"):
     # Display the image in the new axes
     img_ax.imshow(img)
     img_ax.axis('off')  # Turn off axis
-    
-    # Create an axis for the colorbar
-    cbar_ax = fig.add_axes([0.7, 0.120, 0.25, 0.02])  # Adjust the position and size as needed
-    
-    # Create a mappable object for the colorbar
-    from matplotlib.cm import ScalarMappable
-    from matplotlib.colors import Normalize
-    mappable = ScalarMappable(norm=Normalize(vmin=0, vmax=1), cmap="Greys_r")
-    
-    # Create the colorbar
-    cbar = plt.colorbar(mappable, cax=cbar_ax, orientation='horizontal')
-    cbar.set_label('Pass Destination Volume', fontsize=14, fontproperties=font_prop, ha='left')
-    cbar.ax.xaxis.set_label_position('top')
-    cbar.ax.xaxis.set_ticks([])  # Remove ticks
-    cbar.outline.set_visible(False)  # Remove border
-    cbar.solids.set(alpha=1)  # Adjust alpha value of the colorbar
-    
-    # Set the color of the label
-    cbar.ax.xaxis.label.set_color('white')
 
-    plt.figtext(0.05, 0.9, f"{selected_player} - Passes", fontproperties=font_prop_large, color='w', ha='left')
-    plt.figtext(0.05, 0.85, first_game_info, fontproperties=font_prop_medium, color='#2af5bf', ha='left')
-    plt.figtext(0.04, 0.165, "Regular", fontproperties=font_prop_small, color='#c791f2', ha='left')
-    plt.figtext(0.04, 0.135, "Progressive", fontproperties=font_prop_small, color='#ff9d00', ha='left')
-    plt.figtext(0.04, 0.105, "KeyPass", fontproperties=font_prop_small, color='#00aaff', ha='left')
-    plt.figtext(0.04, 0.075, "Failed", fontproperties=font_prop_small, color='darkgrey', ha='left')
-    plt.figtext(.95, 0.175, "Direction of play from left to right. Coordinates from Whoscored.", fontproperties=font_prop_small, color='grey', ha='right')
-
+    
     comp_clr = '#ff9d00'
     regular_clr = '#c791f2'
     failed_clr = 'darkgrey'
@@ -137,10 +111,15 @@ if st.button("Show Passmap"):
     num_key_passes = len(pass_events_sorted[pass_events_sorted['qualifiers'].str.contains('KeyPass', na=False)])
     num_progressive_passes = sum(pass_events_sorted.apply(lambda row: is_long_pass(row['x'], row['end_x']), axis=1))
 
-    # Display the counts below the pitch
-    plt.figtext(0.5, 0.02, f"Regular Passes: {num_regular_passes}", fontproperties=font_prop_small, color='#c791f2', ha='center')
-    plt.figtext(0.5, 0.04, f"Progressive Passes: {num_progressive_passes}", fontproperties=font_prop_small, color='#ff9d00', ha='center')
-    plt.figtext(0.5, 0.06, f"Key Passes: {num_key_passes}", fontproperties=font_prop_small, color='#00aaff', ha='center')
-    plt.figtext(0.5, 0.08, f"Failed Passes: {num_failed_passes}", fontproperties=font_prop_small, color='darkgrey', ha='center')
+
+    plt.figtext(0.05, 0.9, f"{selected_player} - Passes", fontproperties=font_prop_large, color='w', ha='left')
+    plt.figtext(0.05, 0.85, first_game_info, fontproperties=font_prop_medium, color='#2af5bf', ha='left')
+    plt.figtext(0.04, 0.165, f"Regular Passes: {num_regular_passes}", fontproperties=font_prop_small, color='#c791f2', ha='left')
+    plt.figtext(0.04, 0.135, f"Progressive Passes: {num_progressive_passes}", fontproperties=font_prop_small, color='#ff9d00', ha='left')
+    plt.figtext(0.04, 0.105, f"Key Passes: {num_key_passes}", fontproperties=font_prop_small, color='#00aaff', ha='left')
+    plt.figtext(0.04, 0.075, f"Failed Passes: {num_failed_passes}", fontproperties=font_prop_small, color='darkgrey', ha='left')
+    plt.figtext(.95, 0.175, "Direction of play from left to right. Coordinates from Whoscored.", fontproperties=font_prop_small, color='grey', ha='right')
+
+
 
     st.pyplot(fig)
