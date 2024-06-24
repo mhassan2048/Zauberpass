@@ -44,9 +44,15 @@ def load_data():
     df = pd.read_csv(url)
     return df
 
-# Streamlit app
+from PIL import Image
+
+# Load and resize the logo
+image = Image.open("zplogo.png")
+image = image.resize((100, 100))  # Resize to 100x100 pixels
+
+# Display the logo and title
+st.image(image, use_column_width=False)
 st.title("Zauberpass by The Real Deal - Euro 2024 Edition")
-st.image("zplogo.png", use_column_width=True)  # Add your logo here
 
 # Load data
 df = load_data()
