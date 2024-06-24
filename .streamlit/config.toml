@@ -6,4 +6,7 @@ textColor="#ffffff"
 font="monospace"
 
 [server]
-head="<!DOCTYPE html><html><head><link rel='icon' href='favicon.ico' type='image/x-icon'/></head><body>"
+head = """
+<title>Zauberpass - Euro</title>
+<link rel="icon" type="image/png" href="favicon.ico">
+"""
