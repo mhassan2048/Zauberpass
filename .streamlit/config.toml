@@ -8,5 +8,5 @@ font="monospace"
 [server]
 head = """
 <title>Zauberpass - Euro</title>
-<link rel="icon" type="image/png" href="favicon.ico">
+<link rel="icon" type="image/x-icon" href="https://raw.githubusercontent.com/mhassan2048/Zauberpass/main/.streamlit/favicon.ico">
 """
