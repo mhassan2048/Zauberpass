@@ -77,9 +77,9 @@ def update(frame, ax, pitch, pass_events_sorted, comp_clr, regular_clr, failed_c
         if receiver_text_obj:
             receiver_text_obj.remove()
 
-        font_properties_bottom = {'family': 'DIN Condensed', 'weight': 'bold', 'size': 20}
-        minute_text_obj = plt.figtext(0.95, 0.08, f"Minute: {minute}", fontdict=font_prop_small, color='w', ha='right')
-        receiver_text_obj = plt.figtext(0.95, 0.06, f"Receiver: {receiver}", fontdict=font_prop_small, color='#2af5bf', ha='right')
+        font_properties_bottom = fm.FontProperties(fname=font_path, size=20, weight='bold')
+        minute_text_obj = plt.figtext(0.95, 0.08, f"Minute: {minute}", fontproperties=font_properties_bottom, color='w', ha='right')
+        receiver_text_obj = plt.figtext(0.95, 0.06, f"Receiver: {receiver}", fontproperties=font_properties_bottom, color='#2af5bf', ha='right')
 
         draw_heatmap(ax, pass_events_sorted.iloc[:frame + 1], pitch, clr_map)
 
