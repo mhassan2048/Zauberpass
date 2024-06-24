@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 from mplsoccer import Pitch
 import matplotlib.image as mpimg
 import matplotlib.font_manager as fm
+from PIL import Image
 
 # Add custom font
 font_path = 'DIN-Condensed-Bold.ttf'
@@ -38,13 +39,14 @@ def draw_pass(ax, row, pitch, comp_clr, regular_clr, failed_clr, key_pass_clr):
                         color=pass_color, lw=pass_width, zorder=3, transparent=True, 
                         alpha_start=0.75, alpha_end=0.01, ax=ax)
 
-def load_data():
-    # Update the URL to your Google Drive direct download link
-    url = "https://drive.google.com/uc?export=download&id=1iKLZKodLUMa9akCyCUhgS15bur4Hxu4t"
+def load_data(tournament):
+    data_sources = {
+        "Euro": "https://drive.google.com/uc?export=download&id=1iKLZKodLUMa9akCyCUhgS15bur4Hxu4t",
+        "Copa": "https://example.com/copa-data.csv"  # Placeholder URL for Copa data
+    }
+    url = data_sources[tournament]
     df = pd.read_csv(url)
     return df
-
-from PIL import Image
 
 # Load and resize the logo
 image = Image.open("zplogo.png")
@@ -54,8 +56,15 @@ image = image.resize((100, 100))  # Resize to 100x100 pixels
 st.image(image, use_column_width=False)
 st.title("Zauberpass by The Real Deal - Euro 2024 Edition")
 
-# Load data
-df = load_data()
+# Add Tournament Dropdown
+tournaments = ["Euro", "Copa"]
+selected_tournament = st.selectbox("Select Tournament", tournaments)
+
+# Load data based on selected tournament
+df = load_data(selected_tournament)
+
+# Add Radio Buttons for Match Selection
+match_option = st.radio("Select Match View", ["Match by Match", "All Games"])
 
 # Extract unique teams
 teams = sorted(df['team'].unique())
@@ -64,7 +73,7 @@ selected_team = st.selectbox("Select Team", teams, index=0)
 # Filter matches based on the selected team
 filtered_df_team = df[df['team'] == selected_team]
 matches = sorted(filtered_df_team['game'].unique())
-selected_match = st.selectbox("Select Match", matches, index=0)
+selected_match = st.selectbox("Select Match", matches, index=0, disabled=(match_option == "All Games"))
 
 # Filter players based on the selected team and game
 filtered_df_game = filtered_df_team[filtered_df_team['game'] == selected_match]
@@ -73,11 +82,15 @@ selected_player = st.selectbox("Select Player", players, index=0)
 
 if st.button("Show Passmap"):
     # Filter data based on selections
-    match_df = filtered_df_game
+    if match_option == "All Games":
+        match_df = filtered_df_team
+        game_info = "All Games"
+    else:
+        match_df = filtered_df_game
+        game_info = pass_events_sorted.iloc[0]['game'] if len(pass_events_sorted) > 0 else 'Game Information Not Available'
+    
     player_passes = match_df[(match_df['player'] == selected_player) & (match_df['type'] == 'Pass')]
     pass_events_sorted = player_passes.sort_values(by=['minute', 'second'])
-
-    first_game_info = pass_events_sorted.iloc[0]['game'] if len(pass_events_sorted) > 0 else 'Game Information Not Available'
 
     pitch = Pitch(positional=True, positional_color='darkgrey',spot_type='square', spot_scale=0.01, pitch_type='wyscout', line_color='lightgrey', linewidth=4, line_zorder=2, pitch_color='#6F0049')
     fig, ax = pitch.draw(figsize=(12, 12), constrained_layout=True)
@@ -94,7 +107,6 @@ if st.button("Show Passmap"):
     img_ax.imshow(img)
     img_ax.axis('off')  # Turn off axis
 
-    
     comp_clr = '#ff9d00'
     regular_clr = '#c791f2'
     failed_clr = 'darkgrey'
@@ -110,9 +122,8 @@ if st.button("Show Passmap"):
     num_key_passes = len(pass_events_sorted[pass_events_sorted['qualifiers'].str.contains('KeyPass', na=False)])
     num_progressive_passes = sum(pass_events_sorted.apply(lambda row: is_long_pass(row['x'], row['end_x']), axis=1))
 
-
     plt.figtext(0.05, 0.9, f"{selected_player} - Passes", fontproperties=font_prop_large, color='w', ha='left')
-    plt.figtext(0.05, 0.85, first_game_info, fontproperties=font_prop_medium, color='#2af5bf', ha='left')
+    plt.figtext(0.05, 0.85, game_info, fontproperties=font_prop_medium, color='#2af5bf', ha='left')
     plt.figtext(0.04, 0.165, f"Regular Passes: {num_regular_passes}", fontproperties=font_prop_small, color='#c791f2', ha='left')
     plt.figtext(0.04, 0.135, f"Progressive Passes: {num_progressive_passes}", fontproperties=font_prop_small, color='#ff9d00', ha='left')
     plt.figtext(0.04, 0.105, f"Key Passes: {num_key_passes}", fontproperties=font_prop_small, color='#00aaff', ha='left')
