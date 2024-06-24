@@ -54,7 +54,7 @@ image = image.resize((100, 100))  # Resize to 100x100 pixels
 
 # Display the logo and title
 st.image(image, use_column_width=False)
-st.title("Zauberpass by The Real Deal - Euro 2024 Edition")
+st.title("Zauberpass by The Real Deal")
 
 # Add Tournament Dropdown
 tournaments = ["Euro", "Copa"]
@@ -63,8 +63,8 @@ selected_tournament = st.selectbox("Select Tournament", tournaments)
 # Load data based on selected tournament
 df = load_data(selected_tournament)
 
-# Add Radio Buttons for Match Selection
-match_option = st.radio("Select Match View", ["Match by Match", "All Games"])
+# Add Radio Buttons for Data Type Selection
+data_type_option = st.radio("Select Data Type", ["Player - Match by Match", "Player - All Games", "Team - Match by Match", "Team - All Games"])
 
 # Extract unique teams
 teams = sorted(df['team'].unique())
@@ -73,26 +73,30 @@ selected_team = st.selectbox("Select Team", teams, index=0)
 # Filter matches based on the selected team
 filtered_df_team = df[df['team'] == selected_team]
 matches = sorted(filtered_df_team['game'].unique())
-selected_match = st.selectbox("Select Match", matches, index=0, disabled=(match_option == "All Games"))
+selected_match = st.selectbox("Select Match", matches, index=0, disabled=("All Games" in data_type_option))
 
 # Filter players based on the selected team and game
 filtered_df_game = filtered_df_team[filtered_df_team['game'] == selected_match]
 players = sorted(filtered_df_game['player'].dropna().unique())
-selected_player = st.selectbox("Select Player", players, index=0)
+selected_player = st.selectbox("Select Player", players, index=0, disabled=("Team" in data_type_option))
 
 if st.button("Show Passmap"):
     # Filter data based on selections
-    if match_option == "All Games":
+    if "All Games" in data_type_option:
         match_df = filtered_df_team
         game_info = "All Games"
     else:
         match_df = filtered_df_game
-        game_info = pass_events_sorted.iloc[0]['game'] if len(pass_events_sorted) > 0 else 'Game Information Not Available'
+        game_info = match_df.iloc[0]['game'] if len(match_df) > 0 else 'Game Information Not Available'
     
-    player_passes = match_df[(match_df['player'] == selected_player) & (match_df['type'] == 'Pass')]
-    pass_events_sorted = player_passes.sort_values(by=['minute', 'second'])
+    if "Player" in data_type_option:
+        passes = match_df[(match_df['player'] == selected_player) & (match_df['type'] == 'Pass')]
+    else:
+        passes = match_df[match_df['type'] == 'Pass']
+    
+    pass_events_sorted = passes.sort_values(by=['minute', 'second'])
 
-    pitch = Pitch(positional=True, positional_color='darkgrey',spot_type='square', spot_scale=0.01, pitch_type='wyscout', line_color='lightgrey', linewidth=4, line_zorder=2, pitch_color='#6F0049')
+    pitch = Pitch(positional=True, positional_color='darkgrey', spot_type='square', spot_scale=0.01, pitch_type='wyscout', line_color='lightgrey', linewidth=4, line_zorder=2, pitch_color='#6F0049')
     fig, ax = pitch.draw(figsize=(12, 12), constrained_layout=True)
     fig.set_facecolor('#6F0049')
     ax.patch.set_facecolor('#6F0049')
@@ -122,7 +126,7 @@ if st.button("Show Passmap"):
     num_key_passes = len(pass_events_sorted[pass_events_sorted['qualifiers'].str.contains('KeyPass', na=False)])
     num_progressive_passes = sum(pass_events_sorted.apply(lambda row: is_long_pass(row['x'], row['end_x']), axis=1))
 
-    plt.figtext(0.05, 0.9, f"{selected_player} - Passes", fontproperties=font_prop_large, color='w', ha='left')
+    plt.figtext(0.05, 0.9, f"{selected_player if 'Player' in data_type_option else selected_team} - Passes", fontproperties=font_prop_large, color='w', ha='left')
     plt.figtext(0.05, 0.85, game_info, fontproperties=font_prop_medium, color='#2af5bf', ha='left')
     plt.figtext(0.04, 0.165, f"Regular Passes: {num_regular_passes}", fontproperties=font_prop_small, color='#c791f2', ha='left')
     plt.figtext(0.04, 0.135, f"Progressive Passes: {num_progressive_passes}", fontproperties=font_prop_small, color='#ff9d00', ha='left')
