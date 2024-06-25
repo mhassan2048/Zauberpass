@@ -14,14 +14,6 @@ font_prop_large = fm.FontProperties(fname=font_path, size=48, weight='bold')
 font_prop_medium = fm.FontProperties(fname=font_path, size=24, weight='bold')
 font_prop_small = fm.FontProperties(fname=font_path, size=20, weight='bold')
 
-def add_team_flag(team, fig, ax):
-    # Load the team flag
-    image_path = f'NT_flags/{team}.png'  # Path to the team flag
-    img = mpimg.imread(image_path)
-    img_ax = fig.add_axes([0.015, 0.875, 0.08, 0.08])  # Smaller axes for the flag
-    img_ax.imshow(img)
-    img_ax.axis('off')  # Turn off axis
-
 
 # Custom functions from the original code
 def is_long_pass(x_start, x_end):
@@ -78,12 +70,8 @@ def draw_passmap(df, team, game_info, player, data_type_option):
     img_ax.imshow(img)
     img_ax.axis('off')  # Turn off axis
     
-    # Add team flag
-    add_team_flag(team, fig, ax)
-    text = f" {player} - Passes" if "Player" in data_type_option else f" Passes"
-    plt.figtext(0.085, 0.9, text, fontproperties=font_prop_large, color='w', ha='left')
-    
-    plt.figtext(0.085, 0.85, game_info, fontproperties=font_prop_medium, color='#2af5bf', ha='left')
+    plt.figtext(0.05, 0.9, f"{player if 'Player' in data_type_option else team} - Passes", fontproperties=font_prop_large, color='w', ha='left')
+    plt.figtext(0.05, 0.85, game_info, fontproperties=font_prop_medium, color='#2af5bf', ha='left')
     plt.figtext(0.04, 0.165, f"Regular Passes: {num_regular_passes}", fontproperties=font_prop_small, color='#c791f2', ha='left')
     plt.figtext(0.04, 0.135, f"Progressive Passes: {num_progressive_passes}", fontproperties=font_prop_small, color='#ff9d00', ha='left')
     plt.figtext(0.04, 0.105, f"Key Passes: {num_key_passes}", fontproperties=font_prop_small, color='#00aaff', ha='left')
@@ -120,11 +108,8 @@ def draw_defensive_actions(df, team, game_info, player, data_type_option):
     img_ax.imshow(img)
     img_ax.axis('off')  # Turn off axis
     
-    # Add team flag
-    add_team_flag(team, fig, ax)
-    text = f" {player} - Defensive Actions" if "Player" in data_type_option else f" Defensive Actions"
-    plt.figtext(0.085, 0.9, text, fontproperties=font_prop_large, color='w', ha='left')
-    plt.figtext(0.085, 0.85, game_info, fontproperties=font_prop_medium, color='#2af5bf', ha='left')
+    plt.figtext(0.05, 0.9, f"{player if 'Player' in data_type_option else team} - Defenfive Actions Heatmap", fontproperties=font_prop_large, color='w', ha='left')
+    plt.figtext(0.05, 0.85, game_info, fontproperties=font_prop_medium, color='#2af5bf', ha='left')
     plt.figtext(0.5, 0.08, f"Defensive actions: tackles, interceptions, challanges, fouls. \nDirection of play from south to north. \nCoordinates from whoscored.", ha='center', fontproperties=font_prop_small, color="grey")
     
     st.pyplot(fig)
@@ -145,13 +130,9 @@ def draw_heatmap(df, team, game_info, player, data_type_option):
     img_ax = fig.add_axes([0.8, 0.84, 0.1, 0.1])  # Example: [left, bottom, width, height]
     img_ax.imshow(img)
     img_ax.axis('off')  # Turn off axis
-
     
-        # Add team flag
-    add_team_flag(team, fig, ax)
-    text = f" {player} - Heatmap" if "Player" in data_type_option else f" Heatmap"
-    plt.figtext(0.085, 0.9, text, fontproperties=font_prop_large, color='w', ha='left')
-    plt.figtext(0.085, 0.85, game_info, fontproperties=font_prop_medium, color='#2af5bf', ha='left')
+    plt.figtext(0.05, 0.9, f"{player if 'Player' in data_type_option else team} - Heatmap", fontproperties=font_prop_large, color='w', ha='left')
+    plt.figtext(0.05, 0.85, game_info, fontproperties=font_prop_medium, color='#2af5bf', ha='left')
     plt.figtext(.95, 0.175, "Direction of play from left to right. Coordinates from Whoscored.", fontproperties=font_prop_small, color='grey', ha='right')
 
     
@@ -180,13 +161,9 @@ def draw_takeons(df, team, game_info, player, data_type_option):
     img_ax = fig.add_axes([0.8, 0.84, 0.1, 0.1])  # Example: [left, bottom, width, height]
     img_ax.imshow(img)
     img_ax.axis('off')  # Turn off axis
-
     
-        # Add team flag
-    add_team_flag(team, fig, ax)
-    text = f" {player} - TakeOns" if "Player" in data_type_option else f" TakeOns"
-    plt.figtext(0.085, 0.9, text, fontproperties=font_prop_large, color='w', ha='left')
-    plt.figtext(0.085, 0.85, game_info, fontproperties=font_prop_medium, color='#2af5bf', ha='left')
+    plt.figtext(0.05, 0.9, f"{player if 'Player' in data_type_option else team} - Take-ons", fontproperties=font_prop_large, color='w', ha='left')
+    plt.figtext(0.05, 0.85, game_info, fontproperties=font_prop_medium, color='#2af5bf', ha='left')
     plt.figtext(0.04, 0.165, f"Completed: {count_s}", fontproperties=font_prop_small, color=comp_clr, ha='left')
     plt.figtext(0.04, 0.135, f"Failed: {count_f}", fontproperties=font_prop_small, color='darkgrey', ha='left')
     plt.figtext(.95, 0.175, "Direction of play from left to right. Coordinates from Whoscored.", fontproperties=font_prop_small, color='grey', ha='right')
@@ -210,12 +187,9 @@ def draw_pass_receptions(df, team, game_info, player, data_type_option):
     img_ax = fig.add_axes([0.8, 0.84, 0.1, 0.1])  # Example: [left, bottom, width, height]
     img_ax.imshow(img)
     img_ax.axis('off')  # Turn off axis
- 
-
-    # Add team flag
-    add_team_flag(team, fig, ax)
-    text = f" {player} - Pass Receptions" if "Player" in data_type_option else f" Pass Receptions"
-    plt.figtext(0.085, 0.85, game_info, fontproperties=font_prop_medium, color='#2af5bf', ha='left')
+    
+    plt.figtext(0.05, 0.9, f"{player if 'Player' in data_type_option else team} - Pass Receptions", fontproperties=font_prop_large, color='w', ha='left')
+    plt.figtext(0.05, 0.85, game_info, fontproperties=font_prop_medium, color='#2af5bf', ha='left')
     plt.figtext(.95, 0.175, "Direction of play from left to right. Coordinates from Whoscored.", fontproperties=font_prop_small, color='grey', ha='right')
     st.pyplot(fig)
 
