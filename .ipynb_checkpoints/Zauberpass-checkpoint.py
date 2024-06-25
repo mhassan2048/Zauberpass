@@ -97,7 +97,7 @@ def draw_defensive_actions(df, team, game_info, player, data_type_option):
     
     # Draw a line at the average 'x' of the defensive actions
     mean_y = team_data['y'].mean()
-    plt.axvline(x=mean_y, color='black', linestyle='-', linewidth=40, alpha=0.5)
+    plt.axvline(x=mean_y, color='lightgreen', linestyle='-', linewidth=40, alpha=0.3)
     plt.text(mean_y - 1, 50, 'Avg. Defensive Actions Height', color='w', fontproperties=font_prop_medium, va='bottom', ha='center', rotation=270)
 
     # Load your image
@@ -109,7 +109,7 @@ def draw_defensive_actions(df, team, game_info, player, data_type_option):
     
     plt.figtext(0.05, 0.9, f"{player if 'Player' in data_type_option else team} - Defenfive Actions Heatmap", fontproperties=font_prop_large, color='w', ha='left')
     plt.figtext(0.05, 0.85, game_info, fontproperties=font_prop_medium, color='#2af5bf', ha='left')
-    plt.figtext(0.5, 0.05, "Defensive actions: tackles, interceptions, challanges, fouls. Direction of play from south to north. Coordinates from whoscored.", ha='center', fontproperties=font_prop_medium, color="grey")
+    plt.figtext(0.5, 0.08, f"Defensive actions: tackles, interceptions, challanges, fouls. \nDirection of play from south to north. \nCoordinates from whoscored.", ha='center', fontproperties=font_prop_small, color="grey")
     
     st.pyplot(fig)
 
