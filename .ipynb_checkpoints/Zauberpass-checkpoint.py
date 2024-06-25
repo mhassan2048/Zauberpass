@@ -118,6 +118,8 @@ def draw_takeons(df, team, game_info, player, data_type_option):
     fig.set_facecolor('black')
     ax.patch.set_facecolor('black')
 
+    comp_clr = '#ff9d00'  # Define the color for successful take-ons
+
     for index, row in df.iterrows():
         if row['type'] == 'TakeOn' and row['outcome_type'] == 'Successful':
             plt.scatter(row['x'], row['y'], color=comp_clr, marker='H', s=1200, zorder=3, edgecolor='black', linewidth=0, alpha=.9)
@@ -125,6 +127,7 @@ def draw_takeons(df, team, game_info, player, data_type_option):
             plt.scatter(row['x'], row['y'], color='grey', marker='H', s=1200, zorder=3, edgecolor='grey', linewidth=0, alpha=.3)
 
     st.pyplot(fig)
+
 
 def draw_pass_receptions(df, team, game_info, player, data_type_option):
     pitch = Pitch(pitch_type='wyscout', line_color='lightgrey', linewidth=5, line_zorder=4, pitch_color='black')
