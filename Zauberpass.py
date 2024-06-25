@@ -145,12 +145,15 @@ def draw_takeons(df, team, game_info, player, data_type_option):
     plt.gca().invert_yaxis()
 
     comp_clr = '#ff9d00'  # Define the color for successful take-ons
-
+    count_s = 0
+    count_f = 0
     for index, row in df.iterrows():
         if row['type'] == 'TakeOn' and row['outcome_type'] == 'Successful':
             plt.scatter(row['x'], row['y'], color=comp_clr, marker='H', s=1200, zorder=3, edgecolor='black', linewidth=0, alpha=.9)
+            count_s+=1
         elif row['type'] == 'TakeOn' and row['outcome_type'] == 'Unsuccessful':
             plt.scatter(row['x'], row['y'], color='grey', marker='H', s=1200, zorder=3, edgecolor='grey', linewidth=0, alpha=.3)
+            count_f+=1
     # Load your image
     image_path = 'blogo.png'  # Replace with the path to your image
     img = mpimg.imread(image_path)
@@ -160,6 +163,8 @@ def draw_takeons(df, team, game_info, player, data_type_option):
     
     plt.figtext(0.05, 0.9, f"{player if 'Player' in data_type_option else team} - Take-ons", fontproperties=font_prop_large, color='w', ha='left')
     plt.figtext(0.05, 0.85, game_info, fontproperties=font_prop_medium, color='#2af5bf', ha='left')
+    plt.figtext(0.04, 0.165, f"Completed: {count_s}", fontproperties=font_prop_small, color=comp_clr, ha='left')
+    plt.figtext(0.04, 0.135, f"Failed: {count_f}", fontproperties=font_prop_small, color='darkgrey', ha='left')
     plt.figtext(.95, 0.175, "Direction of play from left to right. Coordinates from Whoscored.", fontproperties=font_prop_small, color='grey', ha='right')
     st.pyplot(fig)
 
@@ -186,8 +191,7 @@ def draw_pass_receptions(df, team, game_info, player, data_type_option):
     plt.figtext(0.05, 0.85, game_info, fontproperties=font_prop_medium, color='#2af5bf', ha='left')
     plt.figtext(.95, 0.175, "Direction of play from left to right. Coordinates from Whoscored.", fontproperties=font_prop_small, color='grey', ha='right')
     st.pyplot(fig)
-    
-    st.pyplot(fig)
+
 
 def load_data(tournament):
     data_sources = {
@@ -244,7 +248,14 @@ else:
 
 
 # Add buttons for new features
-if st.button("Show Passmap"):
+if st.button("Full Analysis"):
+    draw_heatmap(filtered_df, selected_team, game_info, selected_player, data_type_option)
+    draw_passmap(filtered_df, selected_team, game_info, selected_player, data_type_option)
+    draw_pass_receptions(filtered_df, selected_team, game_info, selected_player, data_type_option)
+    draw_defensive_actions(filtered_df, selected_team, game_info, selected_player, data_type_option)
+    draw_takeons(filtered_df, selected_team, game_info, selected_player, data_type_option)
+
+if st.button("Passmap"):
     draw_passmap(filtered_df, selected_team, game_info, selected_player, data_type_option)
 
 if st.button("TakeOns"):
@@ -258,3 +269,4 @@ if st.button("Pass Reception"):
 
 if st.button("Defensive Actions"):
     draw_defensive_actions(filtered_df, selected_team, game_info, selected_player, data_type_option)
+    
