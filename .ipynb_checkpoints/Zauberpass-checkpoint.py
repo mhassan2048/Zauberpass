@@ -84,7 +84,7 @@ if st.button("Show Passmap"):
     # Filter data based on selections
     if "All Games" in data_type_option:
         match_df = filtered_df_team
-        game_info = "All Games"
+        game_info = f"All Games -{selected_tournament}"
     else:
         match_df = filtered_df_game
         game_info = match_df.iloc[0]['game'] if len(match_df) > 0 else 'Game Information Not Available'
@@ -96,16 +96,16 @@ if st.button("Show Passmap"):
     
     pass_events_sorted = passes.sort_values(by=['minute', 'second'])
 
-    pitch = Pitch(positional=True, positional_color='darkgrey', spot_type='square', spot_scale=0.01, pitch_type='wyscout', line_color='lightgrey', linewidth=4, line_zorder=2, pitch_color='#6F0049')
+    pitch = Pitch(positional=True, positional_color='darkgrey', spot_type='square', spot_scale=0.01, pitch_type='wyscout', line_color='lightgrey', linewidth=4, line_zorder=2, pitch_color='black')
     fig, ax = pitch.draw(figsize=(12, 12), constrained_layout=True)
-    fig.set_facecolor('#6F0049')
-    ax.patch.set_facecolor('#6F0049')
+    fig.set_facecolor('black')
+    ax.patch.set_facecolor('black')
     plt.gca().invert_yaxis()
     
     # Load your image
-    image_path = 'RDPbrand.png'  # Replace with the path to your image
+    image_path = 'blogo.png'  # Replace with the path to your image
     img = mpimg.imread(image_path)
-    img_ax = fig.add_axes([0.8, 0.84, 0.15, 0.15])  # Example: [left, bottom, width, height]
+    img_ax = fig.add_axes([0.8, 0.84, 0.1, 0.1])  # Example: [left, bottom, width, height]
     
     # Display the image in the new axes
     img_ax.imshow(img)
