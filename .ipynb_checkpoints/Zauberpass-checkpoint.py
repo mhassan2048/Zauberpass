@@ -114,15 +114,15 @@ def draw_defensive_actions(df, team, game_info, player, data_type_option):
     st.pyplot(fig)
 
 def draw_heatmap(df, team, game_info, player, data_type_option):
-    pitch = Pitch(pitch_type='wyscout', line_color='w', linewidth=5, line_zorder=4, pitch_color='black')
-    fig, ax = pitch.draw(figsize=(20, 15))
+    pitch = Pitch(spot_type='square', spot_scale=0.01, pitch_type='wyscout', line_color='lightgrey', linewidth=4, line_zorder=2, pitch_color='black')
+    fig, ax = pitch.draw(figsize=(12, 12), constrained_layout=True)
     fig.set_facecolor('black')
-    ax.set_facecolor('black')
+    ax.patch.set_facecolor('black')
     plt.gca().invert_yaxis()
-    bs = pitch.bin_statistic(df.x, df.y, bins=(24, 16))
-    heatmap = pitch.heatmap(bs, ax=ax, edgecolor='black', linewidth=1, cmap='magma')
-    st.pyplot(fig)
-    
+
+    bs = pitch.bin_statistic(df.x, df.y, bins=(48, 32))
+    heatmap = pitch.heatmap(bs, ax=ax, edgecolor='black', linewidth=4, cmap='magma')
+
     # Load your image
     image_path = 'blogo.png'  # Replace with the path to your image
     img = mpimg.imread(image_path)
@@ -134,6 +134,8 @@ def draw_heatmap(df, team, game_info, player, data_type_option):
     plt.figtext(0.05, 0.85, game_info, fontproperties=font_prop_medium, color='#2af5bf', ha='left')
     plt.figtext(.95, 0.175, "Direction of play from left to right. Coordinates from Whoscored.", fontproperties=font_prop_small, color='grey', ha='right')
 
+    
+    st.pyplot(fig)
 def draw_takeons(df, team, game_info, player, data_type_option):
     pitch = Pitch(positional=True, positional_color='#3b3b3b', spot_type='square', spot_scale=0.01, pitch_type='wyscout', line_color='lightgrey', linewidth=4, line_zorder=2, pitch_color='black')
     fig, ax = pitch.draw(figsize=(12, 12), constrained_layout=True)
@@ -162,14 +164,15 @@ def draw_takeons(df, team, game_info, player, data_type_option):
 
 
 def draw_pass_receptions(df, team, game_info, player, data_type_option):
-    pitch = Pitch(pitch_type='wyscout', line_color='lightgrey', linewidth=5, line_zorder=4, pitch_color='black')
-    fig, ax = pitch.draw(figsize=(20, 15))
+    pitch = Pitch(spot_type='square', spot_scale=0.01, pitch_type='wyscout', line_color='lightgrey', linewidth=4, line_zorder=2, pitch_color='black')
+    fig, ax = pitch.draw(figsize=(12, 12), constrained_layout=True)
     fig.set_facecolor('black')
-    ax.set_facecolor('black')
+    ax.patch.set_facecolor('black')
     plt.gca().invert_yaxis()
 
+
     bs = pitch.bin_statistic(df.end_x, df.end_y, bins=(48, 32))
-    heatmap = pitch.heatmap(bs, ax=ax, edgecolor='black', linewidth=5, cmap='magma')
+    heatmap = pitch.heatmap(bs, ax=ax, edgecolor='black', linewidth=4, cmap='magma')
 
     # Load your image
     image_path = 'blogo.png'  # Replace with the path to your image
