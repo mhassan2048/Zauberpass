@@ -84,7 +84,7 @@ if st.button("Show Passmap"):
     # Filter data based on selections
     if "All Games" in data_type_option:
         match_df = filtered_df_team
-        game_info = f"All Games -{selected_tournament}"
+        game_info = f"All Games - {selected_tournament}"
     else:
         match_df = filtered_df_game
         game_info = match_df.iloc[0]['game'] if len(match_df) > 0 else 'Game Information Not Available'
