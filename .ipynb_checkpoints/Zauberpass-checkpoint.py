@@ -92,24 +92,13 @@ def draw_defensive_actions(df, team, game_info, player, data_type_option):
     else:
         team_data = df[(df['team'] == team) & (df['type'].isin(defensive_actions))]
 
-    # Ensure there are enough points to create a kdeplot
-    if len(team_data) > 1:
-        pitch.kdeplot(
-            team_data['x'], 
-            team_data['y'], 
-            ax=ax, 
-            shade=True, 
-            fill=True, 
-            thresh=0, 
-            cut=4, 
-            levels=10,  # Reduced number of levels
-            cmap='rocket'
-        )
+    bs = pitch.bin_statistic(team_data.x, team_data.y, bins=(48, 32))
+    heatmap = pitch.heatmap(bs, ax=ax, edgecolor='black', linewidth=4, cmap='rocket')
     
     # Draw a line at the average 'x' of the defensive actions
     mean_y = team_data['y'].mean()
     plt.axvline(x=mean_y, color='black', linestyle='-', linewidth=40, alpha=0.5)
-    plt.text(50, mean_y - 1, 'Avg. Defensive Actions Height', color='w', fontproperties=font_prop_medium, va='bottom', ha='center')
+    plt.text(mean_y - 1, 50 'Avg. Defensive Actions Height', color='w', fontproperties=font_prop_medium, va='bottom', ha='center', rotation=90)
 
     # Load your image
     image_path = 'blogo.png'  # Replace with the path to your image
