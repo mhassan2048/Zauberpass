@@ -46,6 +46,12 @@ def draw_passmap(df, team, game_info, player, data_type_option):
     fig.set_facecolor('black')
     ax.patch.set_facecolor('black')
     plt.gca().invert_yaxis()
+    
+    comp_clr = '#ff9d00'
+    regular_clr = '#c791f2'
+    failed_clr = 'darkgrey'
+    key_pass_clr = '#00aaff'
+    clr_map = "Greys_r"
 
     for _, row in pass_events_sorted.iterrows():
         draw_pass(ax, row, pitch, comp_clr, regular_clr, failed_clr, key_pass_clr)
@@ -55,11 +61,6 @@ def draw_passmap(df, team, game_info, player, data_type_option):
     num_key_passes = len(pass_events_sorted[pass_events_sorted['qualifiers'].str.contains('KeyPass', na=False)])
     num_progressive_passes = sum(pass_events_sorted.apply(lambda row: is_long_pass(row['x'], row['end_x']), axis=1))
 
-    comp_clr = '#ff9d00'
-    regular_clr = '#c791f2'
-    failed_clr = 'darkgrey'
-    key_pass_clr = '#00aaff'
-    clr_map = "Greys_r"
 
     # Load your image
     image_path = 'blogo.png'  # Replace with the path to your image
@@ -79,26 +80,24 @@ def draw_passmap(df, team, game_info, player, data_type_option):
     st.pyplot(fig)
 
 def draw_defensive_actions(df, team, game_info, player, data_type_option):
-    pitch = Pitch(positional=True, positional_color='#3b3b3b', spot_type='square', spot_scale=0.01, pitch_type='wyscout', line_color='lightgrey', linewidth=4, line_zorder=2, pitch_color='black')
-    fig, ax = pitch.draw(figsize=(12, 12), constrained_layout=True)
+    pitch = Pitch(spot_type='square', spot_scale=0.01, pitch_type='wyscout', line_color='lightgrey', linewidth=4, line_zorder=2, pitch_color='black')
+    fig, ax = pitch.draw(figsize=(12, 12))
     fig.set_facecolor('black')
-    ax.patch.set_facecolor('black')
+    ax.set_facecolor('black')
     plt.gca().invert_yaxis()
+    defensive_actions = ['Tackle', 'Challenge', 'Interception', 'Foul']
 
+    if "Player" in data_type_option:
+        team_data = df[(df['player'] == player) & (df['type'].isin(defensive_actions))]
+    else:
+        team_data = df[(df['team'] == team) & (df['type'].isin(defensive_actions))]
 
-    for index, row in df.iterrows():
-        if row['type'] == 'BallRecovery' and row['outcome_type'] == 'Successful':
-            plt.scatter(row['x'], row['y'], color='#2dfcc9', marker='H', s=1200, zorder=3, edgecolor='black', linewidth=1, alpha=1)
-        elif row['type'] == 'Tackle' and row['outcome_type'] == 'Successful':
-            plt.scatter(row['x'], row['y'], color='orangered', marker='H', s=1200, zorder=3, edgecolor='black', linewidth=1)
-        elif row['type'] == 'Challenge' and row['outcome_type'] == 'Successful':
-            plt.scatter(row['x'], row['y'], color='magenta', marker='H', s=1200, zorder=3, edgecolor='black', linewidth=1)
-        elif row['type'] == 'Interception' and row['outcome_type'] == 'Successful':
-            plt.scatter(row['x'], row['y'], color='deeppink', marker='H', s=1200, zorder=3, edgecolor='black', linewidth=1)
-        elif row['type'] == 'Clearance' and row['outcome_type'] == 'Successful':
-            plt.scatter(row['x'], row['y'], color='skyblue', marker='H', s=1200, zorder=3, edgecolor='black', linewidth=1)
-        elif row['type'] == 'Aerial' and row['outcome_type'] == 'Successful':
-            plt.scatter(row['x'], row['y'], color='#ff305a', marker='H', s=1200, zorder=3, edgecolor='black', linewidth=1)
+    pitch.kdeplot(team_data['x'], team_data['y'], ax=ax, shade=True, fill=True, thresh=0, cut=4, levels=500, cmap='rocket')
+    
+    # Draw a line at the average 'x' of the defensive actions
+    mean_x = team_data['x'].mean()
+    plt.axhline(y=mean_x, color='black', linestyle='-', linewidth=40, alpha=0.5)
+    plt.text(50, mean_x - 1, 'Avg. Defensive Actions Height', color='w', fontsize=28, va='bottom', ha='center')
 
     # Load your image
     image_path = 'blogo.png'  # Replace with the path to your image
@@ -107,9 +106,9 @@ def draw_defensive_actions(df, team, game_info, player, data_type_option):
     img_ax.imshow(img)
     img_ax.axis('off')  # Turn off axis
     
-    plt.figtext(0.05, 0.9, f"{player if 'Player' in data_type_option else team} - Successful Defensive Actions", fontproperties=font_prop_large, color='w', ha='left')
+    plt.figtext(0.05, 0.9, f"{player if 'Player' in data_type_option else team} - Defenfive Actions Heatmap.", fontproperties=font_prop_large, color='w', ha='left')
     plt.figtext(0.05, 0.85, game_info, fontproperties=font_prop_medium, color='#2af5bf', ha='left')
-    plt.figtext(.95, 0.175, "Direction of play from left to right. Coordinates from Whoscored.", fontproperties=font_prop_small, color='grey', ha='right')
+    fig.text(0.5, 0.05, "Defensive actions: tackles, interceptions, challanges, fouls. Direction of play from south to north. Coordinates from whoscored.", ha='center', fontsize=28, color='grey')
     
     st.pyplot(fig)
 
