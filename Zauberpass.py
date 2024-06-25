@@ -95,9 +95,9 @@ def draw_defensive_actions(df, team, game_info, player, data_type_option):
     pitch.kdeplot(team_data['x'], team_data['y'], ax=ax, shade=True, fill=True, thresh=0, cut=4, levels=500, cmap='rocket')
     
     # Draw a line at the average 'x' of the defensive actions
-    mean_x = team_data['x'].mean()
-    plt.axhline(y=mean_x, color='black', linestyle='-', linewidth=40, alpha=0.5)
-    plt.text(50, mean_x - 1, 'Avg. Defensive Actions Height', color='w', fontsize=28, va='bottom', ha='center')
+    mean_y = team_data['y'].mean()
+    plt.axhline(x=mean_y, color='black', linestyle='-', linewidth=40, alpha=0.5)
+    plt.text(50, mean_y - 1, 'Avg. Defensive Actions Height', color='w', fontproperties=font_prop_medium, va='bottom', ha='center')
 
     # Load your image
     image_path = 'blogo.png'  # Replace with the path to your image
@@ -108,7 +108,7 @@ def draw_defensive_actions(df, team, game_info, player, data_type_option):
     
     plt.figtext(0.05, 0.9, f"{player if 'Player' in data_type_option else team} - Defenfive Actions Heatmap.", fontproperties=font_prop_large, color='w', ha='left')
     plt.figtext(0.05, 0.85, game_info, fontproperties=font_prop_medium, color='#2af5bf', ha='left')
-    fig.text(0.5, 0.05, "Defensive actions: tackles, interceptions, challanges, fouls. Direction of play from south to north. Coordinates from whoscored.", ha='center', fontsize=28, color='grey')
+    plt.figtext(0.5, 0.05, "Defensive actions: tackles, interceptions, challanges, fouls. Direction of play from south to north. Coordinates from whoscored.", ha='center', fontproperties=font_prop_medium)
     
     st.pyplot(fig)
 
@@ -135,6 +135,7 @@ def draw_heatmap(df, team, game_info, player, data_type_option):
 
     
     st.pyplot(fig)
+
 def draw_takeons(df, team, game_info, player, data_type_option):
     pitch = Pitch(positional=True, positional_color='#3b3b3b', spot_type='square', spot_scale=0.01, pitch_type='wyscout', line_color='lightgrey', linewidth=4, line_zorder=2, pitch_color='black')
     fig, ax = pitch.draw(figsize=(12, 12), constrained_layout=True)
