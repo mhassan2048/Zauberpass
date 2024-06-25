@@ -41,24 +41,11 @@ def draw_pass(ax, row, pitch, comp_clr, regular_clr, failed_clr, key_pass_clr):
 def draw_passmap(df, team, game_info, player, data_type_option):
     pass_events_sorted = df.sort_values(by=['minute', 'second'])
 
-    pitch = Pitch(positional=True, positional_color='darkgrey', spot_type='square', spot_scale=0.01, pitch_type='wyscout', line_color='lightgrey', linewidth=4, line_zorder=2, pitch_color='black')
+    pitch = Pitch(positional=True, positional_color='#3b3b3b', spot_type='square', spot_scale=0.01, pitch_type='wyscout', line_color='lightgrey', linewidth=4, line_zorder=2, pitch_color='black')
     fig, ax = pitch.draw(figsize=(12, 12), constrained_layout=True)
     fig.set_facecolor('black')
     ax.patch.set_facecolor('black')
     plt.gca().invert_yaxis()
-
-    # Load your image
-    image_path = 'blogo.png'  # Replace with the path to your image
-    img = mpimg.imread(image_path)
-    img_ax = fig.add_axes([0.8, 0.84, 0.1, 0.1])  # Example: [left, bottom, width, height]
-    img_ax.imshow(img)
-    img_ax.axis('off')  # Turn off axis
-
-    comp_clr = '#ff9d00'
-    regular_clr = '#c791f2'
-    failed_clr = 'darkgrey'
-    key_pass_clr = '#00aaff'
-    clr_map = "Greys_r"
 
     for _, row in pass_events_sorted.iterrows():
         draw_pass(ax, row, pitch, comp_clr, regular_clr, failed_clr, key_pass_clr)
@@ -68,6 +55,19 @@ def draw_passmap(df, team, game_info, player, data_type_option):
     num_key_passes = len(pass_events_sorted[pass_events_sorted['qualifiers'].str.contains('KeyPass', na=False)])
     num_progressive_passes = sum(pass_events_sorted.apply(lambda row: is_long_pass(row['x'], row['end_x']), axis=1))
 
+    comp_clr = '#ff9d00'
+    regular_clr = '#c791f2'
+    failed_clr = 'darkgrey'
+    key_pass_clr = '#00aaff'
+    clr_map = "Greys_r"
+
+    # Load your image
+    image_path = 'blogo.png'  # Replace with the path to your image
+    img = mpimg.imread(image_path)
+    img_ax = fig.add_axes([0.8, 0.84, 0.1, 0.1])  # Example: [left, bottom, width, height]
+    img_ax.imshow(img)
+    img_ax.axis('off')  # Turn off axis
+    
     plt.figtext(0.05, 0.9, f"{player if 'Player' in data_type_option else team} - Passes", fontproperties=font_prop_large, color='w', ha='left')
     plt.figtext(0.05, 0.85, game_info, fontproperties=font_prop_medium, color='#2af5bf', ha='left')
     plt.figtext(0.04, 0.165, f"Regular Passes: {num_regular_passes}", fontproperties=font_prop_small, color='#c791f2', ha='left')
@@ -84,7 +84,7 @@ def draw_defensive_actions(df, team, game_info, player, data_type_option):
     fig.set_facecolor('black')
     ax.patch.set_facecolor('black')
     plt.gca().invert_yaxis()
-    defense = pd.DataFrame(columns=['csx1', 'csy1'])
+
 
     for index, row in df.iterrows():
         if row['type'] == 'BallRecovery' and row['outcome_type'] == 'Successful':
@@ -100,6 +100,17 @@ def draw_defensive_actions(df, team, game_info, player, data_type_option):
         elif row['type'] == 'Aerial' and row['outcome_type'] == 'Successful':
             plt.scatter(row['x'], row['y'], color='#ff305a', marker='H', s=1200, zorder=3, edgecolor='black', linewidth=1)
 
+    # Load your image
+    image_path = 'blogo.png'  # Replace with the path to your image
+    img = mpimg.imread(image_path)
+    img_ax = fig.add_axes([0.8, 0.84, 0.1, 0.1])  # Example: [left, bottom, width, height]
+    img_ax.imshow(img)
+    img_ax.axis('off')  # Turn off axis
+    
+    plt.figtext(0.05, 0.9, f"{player if 'Player' in data_type_option else team} - Successful Defensive Actions", fontproperties=font_prop_large, color='w', ha='left')
+    plt.figtext(0.05, 0.85, game_info, fontproperties=font_prop_medium, color='#2af5bf', ha='left')
+    plt.figtext(.95, 0.175, "Direction of play from left to right. Coordinates from Whoscored.", fontproperties=font_prop_small, color='grey', ha='right')
+    
     st.pyplot(fig)
 
 def draw_heatmap(df, team, game_info, player, data_type_option):
@@ -109,9 +120,19 @@ def draw_heatmap(df, team, game_info, player, data_type_option):
     ax.set_facecolor('black')
     plt.gca().invert_yaxis()
     bs = pitch.bin_statistic(df.x, df.y, bins=(24, 16))
-    heatmap = pitch.heatmap(bs, ax=ax, edgecolor='black', linewidth=1, cmap='cmr.gothic')
+    heatmap = pitch.heatmap(bs, ax=ax, edgecolor='black', linewidth=1, cmap='magma')
     st.pyplot(fig)
-
+    
+    # Load your image
+    image_path = 'blogo.png'  # Replace with the path to your image
+    img = mpimg.imread(image_path)
+    img_ax = fig.add_axes([0.8, 0.84, 0.1, 0.1])  # Example: [left, bottom, width, height]
+    img_ax.imshow(img)
+    img_ax.axis('off')  # Turn off axis
+    
+    plt.figtext(0.05, 0.9, f"{player if 'Player' in data_type_option else team} - Heatmap", fontproperties=font_prop_large, color='w', ha='left')
+    plt.figtext(0.05, 0.85, game_info, fontproperties=font_prop_medium, color='#2af5bf', ha='left')
+    plt.figtext(.95, 0.175, "Direction of play from left to right. Coordinates from Whoscored.", fontproperties=font_prop_small, color='grey', ha='right')
 
 def draw_takeons(df, team, game_info, player, data_type_option):
     pitch = Pitch(positional=True, positional_color='#3b3b3b', spot_type='square', spot_scale=0.01, pitch_type='wyscout', line_color='lightgrey', linewidth=4, line_zorder=2, pitch_color='black')
@@ -119,6 +140,7 @@ def draw_takeons(df, team, game_info, player, data_type_option):
     fig.set_facecolor('black')
     ax.patch.set_facecolor('black')
     plt.gca().invert_yaxis()
+
     comp_clr = '#ff9d00'  # Define the color for successful take-ons
 
     for index, row in df.iterrows():
@@ -126,7 +148,16 @@ def draw_takeons(df, team, game_info, player, data_type_option):
             plt.scatter(row['x'], row['y'], color=comp_clr, marker='H', s=1200, zorder=3, edgecolor='black', linewidth=0, alpha=.9)
         elif row['type'] == 'TakeOn' and row['outcome_type'] == 'Unsuccessful':
             plt.scatter(row['x'], row['y'], color='grey', marker='H', s=1200, zorder=3, edgecolor='grey', linewidth=0, alpha=.3)
-
+    # Load your image
+    image_path = 'blogo.png'  # Replace with the path to your image
+    img = mpimg.imread(image_path)
+    img_ax = fig.add_axes([0.8, 0.84, 0.1, 0.1])  # Example: [left, bottom, width, height]
+    img_ax.imshow(img)
+    img_ax.axis('off')  # Turn off axis
+    
+    plt.figtext(0.05, 0.9, f"{player if 'Player' in data_type_option else team} - Take-ons", fontproperties=font_prop_large, color='w', ha='left')
+    plt.figtext(0.05, 0.85, game_info, fontproperties=font_prop_medium, color='#2af5bf', ha='left')
+    plt.figtext(.95, 0.175, "Direction of play from left to right. Coordinates from Whoscored.", fontproperties=font_prop_small, color='grey', ha='right')
     st.pyplot(fig)
 
 
@@ -140,6 +171,18 @@ def draw_pass_receptions(df, team, game_info, player, data_type_option):
     bs = pitch.bin_statistic(df.end_x, df.end_y, bins=(48, 32))
     heatmap = pitch.heatmap(bs, ax=ax, edgecolor='black', linewidth=5, cmap='magma')
 
+    # Load your image
+    image_path = 'blogo.png'  # Replace with the path to your image
+    img = mpimg.imread(image_path)
+    img_ax = fig.add_axes([0.8, 0.84, 0.1, 0.1])  # Example: [left, bottom, width, height]
+    img_ax.imshow(img)
+    img_ax.axis('off')  # Turn off axis
+    
+    plt.figtext(0.05, 0.9, f"{player if 'Player' in data_type_option else team} - Pass Receptions", fontproperties=font_prop_large, color='w', ha='left')
+    plt.figtext(0.05, 0.85, game_info, fontproperties=font_prop_medium, color='#2af5bf', ha='left')
+    plt.figtext(.95, 0.175, "Direction of play from left to right. Coordinates from Whoscored.", fontproperties=font_prop_small, color='grey', ha='right')
+    st.pyplot(fig)
+    
     st.pyplot(fig)
 
 def load_data(tournament):
