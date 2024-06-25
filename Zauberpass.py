@@ -98,7 +98,7 @@ def draw_defensive_actions(df, team, game_info, player, data_type_option):
     # Draw a line at the average 'x' of the defensive actions
     mean_y = team_data['y'].mean()
     plt.axvline(x=mean_y, color='black', linestyle='-', linewidth=40, alpha=0.5)
-    plt.text(mean_y - 1, 50 'Avg. Defensive Actions Height', color='w', fontproperties=font_prop_medium, va='bottom', ha='center', rotation=90)
+    plt.text(mean_y - 1, 50, 'Avg. Defensive Actions Height', color='w', fontproperties=font_prop_medium, va='bottom', ha='center', rotation=90)
 
     # Load your image
     image_path = 'blogo.png'  # Replace with the path to your image
