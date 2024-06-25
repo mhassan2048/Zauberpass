@@ -92,7 +92,9 @@ def draw_defensive_actions(df, team, game_info, player, data_type_option):
     else:
         team_data = df[(df['team'] == team) & (df['type'].isin(defensive_actions))]
 
-    pitch.kdeplot(team_data['x'], team_data['y'], ax=ax, shade=True, fill=True, thresh=0, cut=4, levels=500, cmap='rocket')
+    # Ensure there are enough points to create a kdeplot
+    if len(team_data) > 1:
+        pitch.kdeplot(team_data['x'], team_data['y'], ax=ax, shade=True, fill=True, thresh=0, cut=4, levels=100, cmap='rocket')
     
     # Draw a line at the average 'x' of the defensive actions
     mean_y = team_data['y'].mean()
