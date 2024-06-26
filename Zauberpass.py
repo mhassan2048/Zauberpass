@@ -18,7 +18,6 @@ font_prop_small = fm.FontProperties(fname=font_path, size=20, weight='bold')
 
 
 def image_bg(img):
-    fig.set_facecolor(FIGURE_BACKGROUND)
     image = Image.open(img)
     ax_image = add_image(image, fig, left=0, bottom=0, width=1, height=1)
     ax_image.set_zorder(0)
