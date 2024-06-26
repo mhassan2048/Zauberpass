@@ -17,7 +17,7 @@ font_prop_medium = fm.FontProperties(fname=font_path, size=24, weight='bold')
 font_prop_small = fm.FontProperties(fname=font_path, size=20, weight='bold')
 
 
-def image_bg(img):
+def image_bg(img, fig):
     image_path = f"{img}.png"  # Assuming the background image is in PNG format
     image = Image.open(image_path)
     ax_image = add_image(image, fig, left=0, bottom=0, width=1, height=1)
@@ -57,7 +57,7 @@ def draw_passmap(df, team, game_info, player, data_type_option):
     ax.patch.set_facecolor('black')
     plt.gca().invert_yaxis()
     
-    image_bg("passmap_bg")
+    image_bg("passmap_bg", fig)
     
     comp_clr = '#ff9d00'
     regular_clr = '#c791f2'
