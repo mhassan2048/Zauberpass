@@ -51,10 +51,10 @@ def draw_pass(ax, row, pitch, comp_clr, regular_clr, failed_clr, key_pass_clr):
 def draw_passmap(df, team, game_info, player, data_type_option):
     pass_events_sorted = df.sort_values(by=['minute', 'second'])
     
-    pitch = Pitch(positional=True, positional_color='#3b3b3b', spot_type='square', spot_scale=0.01, pitch_type='wyscout', line_color='lightgrey', linewidth=4, line_zorder=2, pitch_color=None)
+    pitch = Pitch(positional=True, positional_color='#3b3b3b', spot_type='square', spot_scale=0.01, pitch_type='wyscout', line_color='lightgrey', linewidth=4, line_zorder=2, pitch_color='None')
     fig, ax = pitch.draw(figsize=(12, 12), constrained_layout=True)
-    fig.set_facecolor('black')
-    ax.patch.set_facecolor('black')
+    fig.set_facecolor('None')
+    ax.patch.set_facecolor('None')
     ax.set_zorder(1)
     plt.gca().invert_yaxis()
     
