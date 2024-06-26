@@ -6,6 +6,8 @@ from mplsoccer import Pitch
 import matplotlib.image as mpimg
 import matplotlib.font_manager as fm
 from PIL import Image
+from mplsoccer.utils import add_image
+
 
 # Add custom font
 font_path = 'DIN-Condensed-Bold.ttf'
@@ -14,6 +16,12 @@ font_prop_large = fm.FontProperties(fname=font_path, size=48, weight='bold')
 font_prop_medium = fm.FontProperties(fname=font_path, size=24, weight='bold')
 font_prop_small = fm.FontProperties(fname=font_path, size=20, weight='bold')
 
+
+def image_bg(img):
+    fig.set_facecolor(FIGURE_BACKGROUND)
+    image = Image.open(img)
+    ax_image = add_image(image, fig, left=0, bottom=0, width=1, height=1)
+    ax_image.set_zorder(0)
 
 # Custom functions from the original code
 def is_long_pass(x_start, x_end):
@@ -39,10 +47,11 @@ def draw_pass(ax, row, pitch, comp_clr, regular_clr, failed_clr, key_pass_clr):
             pitch.lines(xstart=x_start, ystart=y_start, xend=x_end, yend=y_end, 
                         color=pass_color, lw=pass_width, zorder=3, transparent=True, 
                         alpha_start=0.75, alpha_end=0.01, ax=ax)
+
 def draw_passmap(df, team, game_info, player, data_type_option):
     pass_events_sorted = df.sort_values(by=['minute', 'second'])
-
-    pitch = Pitch(positional=True, positional_color='#3b3b3b', spot_type='square', spot_scale=0.01, pitch_type='wyscout', line_color='lightgrey', linewidth=4, line_zorder=2, pitch_color='black')
+    image_bg("passmap_bg")
+    pitch = Pitch(positional=True, positional_color='#3b3b3b', spot_type='square', spot_scale=0.01, pitch_type='wyscout', line_color='lightgrey', linewidth=4, line_zorder=2, pitch_color=None)
     fig, ax = pitch.draw(figsize=(12, 12), constrained_layout=True)
     fig.set_facecolor('black')
     ax.patch.set_facecolor('black')
