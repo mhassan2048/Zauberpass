@@ -7,7 +7,7 @@ import matplotlib.image as mpimg
 import matplotlib.font_manager as fm
 from PIL import Image
 from mplsoccer.utils import add_image
-
+from matplotlib.offsetbox import OffsetImage, AnnotationBbox
 
 # Add custom font
 font_path = 'DIN-Condensed-Bold.ttf'
@@ -17,12 +17,12 @@ font_prop_medium = fm.FontProperties(fname=font_path, size=24, weight='bold')
 font_prop_small = fm.FontProperties(fname=font_path, size=20, weight='bold')
 
 
-def image_bg(img, fig):
-    image_path = f"{img}.png"  # Assuming the background image is in PNG format
-    image = Image.open(image_path)
-    ax_image = add_image(image, fig, left=0, bottom=0, width=1, height=1)
-    ax_image.set_zorder(0)
-
+def image_bg(fig, img):
+    image_path = img  # Path to the image file
+    image = mpimg.imread(image_path)
+    ax_bg = fig.add_axes([0, 0, 1, 1], zorder=0)  # Add an axis for the background image
+    ax_bg.imshow(image, aspect='auto')
+    ax_bg.axis('off')  # Hide the axis
 # Custom functions from the original code
 def is_long_pass(x_start, x_end):
     dist_x = np.abs(x_end - x_start)
@@ -53,11 +53,12 @@ def draw_passmap(df, team, game_info, player, data_type_option):
     
     pitch = Pitch(positional=True, positional_color='#3b3b3b', spot_type='square', spot_scale=0.01, pitch_type='wyscout', line_color='lightgrey', linewidth=4, line_zorder=2, pitch_color=None)
     fig, ax = pitch.draw(figsize=(12, 12), constrained_layout=True)
+    image_bg(fig, 'passmap_bg.png')
+
     fig.set_facecolor('black')
     ax.patch.set_facecolor('black')
     plt.gca().invert_yaxis()
-    
-    image_bg("passmap_bg", fig)
+
     
     comp_clr = '#ff9d00'
     regular_clr = '#c791f2'
