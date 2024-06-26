@@ -18,7 +18,8 @@ font_prop_small = fm.FontProperties(fname=font_path, size=20, weight='bold')
 
 
 def image_bg(img):
-    image = Image.open(img)
+    image_path = f"{img}.png"  # Assuming the background image is in PNG format
+    image = Image.open(image_path)
     ax_image = add_image(image, fig, left=0, bottom=0, width=1, height=1)
     ax_image.set_zorder(0)
 
@@ -49,7 +50,7 @@ def draw_pass(ax, row, pitch, comp_clr, regular_clr, failed_clr, key_pass_clr):
 
 def draw_passmap(df, team, game_info, player, data_type_option):
     pass_events_sorted = df.sort_values(by=['minute', 'second'])
-    image_bg("passmap_bg")
+    image_bg("passmap")
     pitch = Pitch(positional=True, positional_color='#3b3b3b', spot_type='square', spot_scale=0.01, pitch_type='wyscout', line_color='lightgrey', linewidth=4, line_zorder=2, pitch_color=None)
     fig, ax = pitch.draw(figsize=(12, 12), constrained_layout=True)
     fig.set_facecolor('black')
