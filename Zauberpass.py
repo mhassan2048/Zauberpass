@@ -55,10 +55,10 @@ def draw_passmap(df, team, game_info, player, data_type_option):
     fig, ax = pitch.draw(figsize=(12, 12), constrained_layout=True)
     fig.set_facecolor('None')
     ax.patch.set_facecolor('None')
- 
+    ax.set_zorder(1)
     plt.gca().invert_yaxis()
     
-    ax.set_zorder(1)
+
     image_bg("passmap_bg", fig)
     
     comp_clr = '#ff9d00'
@@ -98,11 +98,11 @@ def draw_defensive_actions(df, team, game_info, player, data_type_option):
     fig, ax = pitch.draw(figsize=(12, 12))
     fig.set_facecolor('None')
     ax.patch.set_facecolor('None')
- 
+    ax.set_zorder(1)
     plt.gca().invert_yaxis()
     defensive_actions = ['Tackle', 'Challenge', 'Interception', 'Foul']
     
-    ax.set_zorder(1)
+
     image_bg("passmap_bg", fig)
 
     if "Player" in data_type_option:
@@ -136,9 +136,10 @@ def draw_heatmap(df, team, game_info, player, data_type_option):
     fig, ax = pitch.draw(figsize=(12, 12), constrained_layout=True)
     fig.set_facecolor('None')
     ax.patch.set_facecolor('None')
+    ax.set_zorder(1)
     plt.gca().invert_yaxis()
     
-    ax.set_zorder(1)
+
     image_bg("passmap_bg", fig)
 
     bs = pitch.bin_statistic(df.x, df.y, bins=(48, 32))
@@ -163,9 +164,10 @@ def draw_takeons(df, team, game_info, player, data_type_option):
     fig, ax = pitch.draw(figsize=(12, 12), constrained_layout=True)
     fig.set_facecolor('None')
     ax.patch.set_facecolor('None')
+    ax.set_zorder(1)
     plt.gca().invert_yaxis()
     
-    ax.set_zorder(1)
+
     image_bg("passmap_bg", fig)
 
     comp_clr = '#ff9d00'  # Define the color for successful take-ons
@@ -198,9 +200,9 @@ def draw_pass_receptions(df, team, game_info, player, data_type_option):
     fig, ax = pitch.draw(figsize=(12, 12), constrained_layout=True)
     fig.set_facecolor('None')
     ax.patch.set_facecolor('None')
+    ax.set_zorder(1)
     plt.gca().invert_yaxis()
 
-    ax.set_zorder(1)
     image_bg("passmap_bg", fig)
     
     bs = pitch.bin_statistic(df.end_x, df.end_y, bins=(48, 32))
