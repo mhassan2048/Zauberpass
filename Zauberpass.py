@@ -94,10 +94,10 @@ def draw_passmap(df, team, game_info, player, data_type_option):
     st.pyplot(fig)
 
 def draw_defensive_actions(df, team, game_info, player, data_type_option):
-    pitch = Pitch(spot_type='square', spot_scale=0.01, pitch_type='wyscout', line_color='lightgrey', linewidth=4, line_zorder=2, pitch_color='black')
+    pitch = Pitch(spot_type='square', spot_scale=0.01, pitch_type='wyscout', line_color='lightgrey', linewidth=4, line_zorder=2, pitch_color='None')
     fig, ax = pitch.draw(figsize=(12, 12))
-    fig.set_facecolor('black')
-    ax.set_facecolor('black')
+    fig.set_facecolor('None')
+    ax.patch.set_facecolor('None')
  
     plt.gca().invert_yaxis()
     defensive_actions = ['Tackle', 'Challenge', 'Interception', 'Foul']
@@ -132,10 +132,10 @@ def draw_defensive_actions(df, team, game_info, player, data_type_option):
     st.pyplot(fig)
 
 def draw_heatmap(df, team, game_info, player, data_type_option):
-    pitch = Pitch(spot_type='square', spot_scale=0.01, pitch_type='wyscout', line_color='lightgrey', linewidth=4, line_zorder=2, pitch_color='black')
+    pitch = Pitch(spot_type='square', spot_scale=0.01, pitch_type='wyscout', line_color='lightgrey', linewidth=4, line_zorder=2, pitch_color='None')
     fig, ax = pitch.draw(figsize=(12, 12), constrained_layout=True)
-    fig.set_facecolor('black')
-    ax.patch.set_facecolor('black')
+    fig.set_facecolor('None')
+    ax.patch.set_facecolor('None')
     plt.gca().invert_yaxis()
     
     ax.set_zorder(1)
@@ -159,10 +159,10 @@ def draw_heatmap(df, team, game_info, player, data_type_option):
     st.pyplot(fig)
 
 def draw_takeons(df, team, game_info, player, data_type_option):
-    pitch = Pitch(positional=True, positional_color='#3b3b3b', spot_type='square', spot_scale=0.01, pitch_type='wyscout', line_color='lightgrey', linewidth=4, line_zorder=2, pitch_color='black')
+    pitch = Pitch(positional=True, positional_color='#3b3b3b', spot_type='square', spot_scale=0.01, pitch_type='wyscout', line_color='lightgrey', linewidth=4, line_zorder=2, pitch_color='None')
     fig, ax = pitch.draw(figsize=(12, 12), constrained_layout=True)
-    fig.set_facecolor('black')
-    ax.patch.set_facecolor('black')
+    fig.set_facecolor('None')
+    ax.patch.set_facecolor('None')
     plt.gca().invert_yaxis()
     
     ax.set_zorder(1)
@@ -194,10 +194,10 @@ def draw_takeons(df, team, game_info, player, data_type_option):
 
 
 def draw_pass_receptions(df, team, game_info, player, data_type_option):
-    pitch = Pitch(spot_type='square', spot_scale=0.01, pitch_type='wyscout', line_color='lightgrey', linewidth=4, line_zorder=2, pitch_color='black')
+    pitch = Pitch(spot_type='square', spot_scale=0.01, pitch_type='wyscout', line_color='lightgrey', linewidth=4, line_zorder=2, pitch_color='None')
     fig, ax = pitch.draw(figsize=(12, 12), constrained_layout=True)
-    fig.set_facecolor('black')
-    ax.patch.set_facecolor('black')
+    fig.set_facecolor('None')
+    ax.patch.set_facecolor('None')
     plt.gca().invert_yaxis()
 
     ax.set_zorder(1)
