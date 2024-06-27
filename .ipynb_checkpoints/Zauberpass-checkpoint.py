@@ -115,8 +115,8 @@ def draw_defensive_actions(df, team, game_info, player, data_type_option):
     
     # Draw a line at the average 'x' of the defensive actions
     mean_y = team_data['y'].mean()
-    plt.axvline(x=mean_y, color='lightgreen', linestyle='-', linewidth=40, alpha=0.3)
-    plt.text(mean_y - 1, 50, 'Avg. Defensive Actions Height', color='w', fontproperties=font_prop_medium, va='bottom', ha='center', rotation=270)
+    pitch.axvline(x=mean_y, color='lightgreen', linestyle='-', linewidth=40, alpha=0.3,ax=ax)
+    pitch.text(mean_y - 1, 50, 'Avg. Defensive Actions Height', color='w', ax=ax,fontproperties=font_prop_medium, va='bottom', ha='center', rotation=270)
 
     # Load your image
     image_path = 'blogo.png'  # Replace with the path to your image
@@ -175,10 +175,10 @@ def draw_takeons(df, team, game_info, player, data_type_option):
     count_f = 0
     for index, row in df.iterrows():
         if row['type'] == 'TakeOn' and row['outcome_type'] == 'Successful':
-            plt.scatter(row['x'], row['y'], color=comp_clr, marker='H', s=1200, zorder=3, edgecolor='black', linewidth=0, alpha=.9)
+            pitch.scatter(row['x'], row['y'], color=comp_clr, marker='H', s=1200, zorder=3, ax=ax,edgecolor='black', linewidth=0, alpha=.9)
             count_s+=1
         elif row['type'] == 'TakeOn' and row['outcome_type'] == 'Unsuccessful':
-            plt.scatter(row['x'], row['y'], color='grey', marker='H', s=1200, zorder=3, edgecolor='grey', linewidth=0, alpha=.3)
+            pitch.scatter(row['x'], row['y'], color='grey', marker='H', s=1200, zorder=3, ax=ax,edgecolor='grey', linewidth=0, alpha=.3)
             count_f+=1
     # Load your image
     image_path = 'blogo.png'  # Replace with the path to your image
