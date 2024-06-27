@@ -210,7 +210,7 @@ def draw_pass_receptions(df, team, game_info, player, data_type_option):
 def load_data(tournament):
     data_sources = {
         "Euro 2024": "https://drive.google.com/uc?export=download&id=1-IJfIqkYv39CRoSLgXdMd3QZrP0a9ViL",
-        "Copa America 2024": "https://drive.google.com/uc?export=download&id=1i0FYnilHtu_n3lmTpRNfLxuR8gbYgoDW"  # Placeholder URL for Copa data
+        "Copa America 2024": "https://drive.google.com/uc?export=download&id=1-ehpOjBEsZKRT5el17KaH7f5_QouaWum"  # Placeholder URL for Copa data
     }
     url = data_sources[tournament]
     df = pd.read_csv(url)
