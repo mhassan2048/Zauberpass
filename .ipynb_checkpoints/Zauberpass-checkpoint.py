@@ -118,15 +118,15 @@ def draw_defensive_actions(df, team, game_info, player, data_type_option):
 
     bin_statistic = pitch.bin_statistic_positional(df.x, df.y, statistic='count',
                                                positional='full', normalize=True)
-    pitch.heatmap_positional(bin_statistic, ax=ax, cmap='magma', edgecolors='#22312b')
-    pitch.scatter(df.x, df.y, c='white', s=2, ax=ax)
+    pitch.heatmap_positional(bin_statistic, ax=ax, cmap='sepia', edgecolors='darkgrey')
+    pitch.scatter(df.x, df.y, c='white', s=5, ax=ax)
     labels = pitch.label_heatmap(bin_statistic, color='#f4edf0', fontsize=18,
                              ax=ax, ha='center', va='center',
                              str_format='{:.0%}', path_effects=path_eff, rotation=270)
     
     # Draw a line at the average 'x' of the defensive actions
     mean_y = team_data['y'].mean()
-    ax.axvline(x=mean_y, color='lightgreen', linestyle='-', linewidth=40, alpha=0.3)
+    ax.axvline(x=mean_y, color='black', linestyle='-', linewidth=40, alpha=0.65)
     pitch.text(mean_y - 1, 50, 'Avg. Defensive Actions Height', color='w', ax=ax,fontproperties=font_prop_medium, va='bottom', ha='center', rotation=270)
 
     # Load your image
