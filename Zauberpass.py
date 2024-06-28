@@ -274,7 +274,7 @@ if "Player" in data_type_option:
 else:
     filtered_df = match_df
 
-compare = st.checkbox("Compare with another set of data")
+compare = st.checkbox("Compare")
 
 if compare:
     selected_tournament_compare = st.selectbox("Select Tournament for Comparison", tournaments, key='compare_tournament')
