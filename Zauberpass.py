@@ -2,13 +2,18 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-from mplsoccer import Pitch
+from mplsoccer import Pitch, FontManager
 import matplotlib.image as mpimg
 import matplotlib.font_manager as fm
 from PIL import Image
 from mplsoccer.utils import add_image
 import matplotlib.patheffects as path_effects
 
+# fontmanager for google font (robotto)
+robotto_regular = FontManager()
+
+path_eff = [path_effects.Stroke(linewidth=3, foreground='black'),
+            path_effects.Normal()]
 
 # Add custom font
 font_path = 'DIN-Condensed-Bold.ttf'
