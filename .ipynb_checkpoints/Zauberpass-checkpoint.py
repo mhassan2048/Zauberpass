@@ -7,6 +7,7 @@ import matplotlib.image as mpimg
 import matplotlib.font_manager as fm
 from PIL import Image
 from mplsoccer.utils import add_image
+import matplotlib.patheffects as path_effects
 
 
 # Add custom font
@@ -110,8 +111,13 @@ def draw_defensive_actions(df, team, game_info, player, data_type_option):
     else:
         team_data = df[(df['team'] == team) & (df['type'].isin(defensive_actions))]
 
-    bs = pitch.bin_statistic(team_data.x, team_data.y, bins=(48, 32))
-    heatmap = pitch.heatmap(bs, ax=ax, edgecolor='black', linewidth=4, cmap='rocket')
+    bin_statistic = pitch.bin_statistic_positional(df.x, df.y, statistic='count',
+                                               positional='full', normalize=True)
+    pitch.heatmap_positional(bin_statistic, ax=ax, cmap='magma', edgecolors='#22312b')
+    pitch.scatter(df.x, df.y, c='white', s=2, ax=ax)
+    labels = pitch.label_heatmap(bin_statistic, color='#f4edf0', fontsize=18,
+                             ax=ax, ha='center', va='center',
+                             str_format='{:.0%}', path_effects=path_eff, rotation=270)
     
     # Draw a line at the average 'x' of the defensive actions
     mean_y = team_data['y'].mean()
