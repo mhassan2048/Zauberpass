@@ -248,31 +248,37 @@ df = load_data(selected_tournament)
 # Add Radio Buttons for Data Type Selection
 data_type_option = st.radio("Select Data Type", ["Player - Match by Match", "Player - All Games", "Team - Match by Match", "Team - All Games"])
 
-# Extract unique teams
-teams = sorted(df['team'].unique())
-selected_team = st.selectbox("Select Team", teams, index=0)
+compare = st.checkbox("Compare with another set of data")
 
-# Filter matches based on the selected team
-filtered_df_team = df[df['team'] == selected_team]
-matches = sorted(filtered_df_team['game'].unique())
-selected_match = st.selectbox("Select Match", matches, index=0, disabled=("All Games" in data_type_option))
+if compare:
+    selected_tournament_compare = st.selectbox("Select Tournament for Comparison", tournaments, key='compare_tournament')
+    df_compare = load_data(selected_tournament_compare)
 
-# Filter players based on the selected team and game
-filtered_df_game = filtered_df_team[filtered_df_team['game'] == selected_match]
-players = sorted(filtered_df_game['player'].dropna().unique())
-selected_player = st.selectbox("Select Player", players, index=0, disabled=("Team" in data_type_option))
+    data_type_option_compare = st.radio("Select Data Type for Comparison", ["Player - Match by Match", "Player - All Games", "Team - Match by Match", "Team - All Games"], key='compare_data_type')
 
-if "All Games" in data_type_option:
-    match_df = filtered_df_team
-    game_info = f"All Games - {selected_tournament}"
-else:
-    match_df = filtered_df_game
-    game_info = match_df.iloc[0]['game'] if len(match_df) > 0 else 'Game Information Not Available'
+    teams_compare = sorted(df_compare['team'].unique())
+    selected_team_compare = st.selectbox("Select Team for Comparison", teams_compare, index=0, key='compare_team')
 
-if "Player" in data_type_option:
-    filtered_df = match_df[match_df['player'] == selected_player]
-else:
-    filtered_df = match_df
+    filtered_df_team_compare = df_compare[df_compare['team'] == selected_team_compare]
+    matches_compare = sorted(filtered_df_team_compare['game'].unique())
+    selected_match_compare = st.selectbox("Select Match for Comparison", matches_compare, index=0, disabled=("All Games" in data_type_option_compare), key='compare_match')
+
+    filtered_df_game_compare = filtered_df_team_compare[filtered_df_team_compare['game'] == selected_match_compare]
+    players_compare = sorted(filtered_df_game_compare['player'].dropna().unique())
+    selected_player_compare = st.selectbox("Select Player for Comparison", players_compare, index=0, disabled=("Team" in data_type_option_compare), key='compare_player')
+
+    if "All Games" in data_type_option_compare:
+        match_df_compare = filtered_df_team_compare
+        game_info_compare = f"All Games - {selected_tournament_compare}"
+    else:
+        match_df_compare = filtered_df_game_compare
+        game_info_compare = match_df_compare.iloc[0]['game'] if len(match_df_compare) > 0 else 'Game Information Not Available'
+
+    if "Player" in data_type_option_compare:
+        filtered_df_compare = match_df_compare[match_df_compare['player'] == selected_player_compare]
+    else:
+        filtered_df_compare = match_df_compare
+
 
 
 # Add buttons for new features
