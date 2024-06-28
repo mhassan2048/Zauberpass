@@ -266,11 +266,11 @@ if compare:
 
 # Add buttons for new features
 if st.button("Full Analysis"):
-    fig1_heatmap = draw_heatmap(filtered_df, selected_team, game_info, selected_player, data_type_option, "path/to/background_image1.png")
-    fig1_passmap = draw_passmap(filtered_df, selected_team, game_info, selected_player, data_type_option, "path/to/background_image1.png")
-    fig1_pass_receptions = draw_pass_receptions(filtered_df, selected_team, game_info, selected_player, data_type_option, "path/to/background_image1.png")
-    fig1_defensive_actions = draw_defensive_actions(filtered_df, selected_team, game_info, selected_player, data_type_option, "path/to/background_image1.png")
-    fig1_takeons = draw_takeons(filtered_df, selected_team, game_info, selected_player, data_type_option, "path/to/background_image1.png")
+    fig1_heatmap = draw_heatmap(filtered_df, selected_team, game_info, selected_player, data_type_option, "passmap_bg.png")
+    fig1_passmap = draw_passmap(filtered_df, selected_team, game_info, selected_player, data_type_option, "passmap_bg.png")
+    fig1_pass_receptions = draw_pass_receptions(filtered_df, selected_team, game_info, selected_player, data_type_option, "passmap_bg.png")
+    fig1_defensive_actions = draw_defensive_actions(filtered_df, selected_team, game_info, selected_player, data_type_option, "passmap_bg.png")
+    fig1_takeons = draw_takeons(filtered_df, selected_team, game_info, selected_player, data_type_option, "passmap_bg.png")
     
     st.pyplot(fig1_heatmap)
     st.pyplot(fig1_passmap)
@@ -279,11 +279,11 @@ if st.button("Full Analysis"):
     st.pyplot(fig1_takeons)
 
     if compare:
-        fig2_heatmap = draw_heatmap(filtered_df_compare, selected_team_compare, game_info_compare, selected_player_compare, data_type_option_compare, "path/to/background_image2.png")
-        fig2_passmap = draw_passmap(filtered_df_compare, selected_team_compare, game_info_compare, selected_player_compare, data_type_option_compare, "path/to/background_image2.png")
-        fig2_pass_receptions = draw_pass_receptions(filtered_df_compare, selected_team_compare, game_info_compare, selected_player_compare, data_type_option_compare, "path/to/background_image2.png")
-        fig2_defensive_actions = draw_defensive_actions(filtered_df_compare, selected_team_compare, game_info_compare, selected_player_compare, data_type_option_compare, "path/to/background_image2.png")
-        fig2_takeons = draw_takeons(filtered_df_compare, selected_team_compare, game_info_compare, selected_player_compare, data_type_option_compare, "path/to/background_image2.png")
+        fig2_heatmap = draw_heatmap(filtered_df_compare, selected_team_compare, game_info_compare, selected_player_compare, data_type_option_compare, "passmap_bg.png")
+        fig2_passmap = draw_passmap(filtered_df_compare, selected_team_compare, game_info_compare, selected_player_compare, data_type_option_compare, "passmap_bg.png")
+        fig2_pass_receptions = draw_pass_receptions(filtered_df_compare, selected_team_compare, game_info_compare, selected_player_compare, data_type_option_compare, "passmap_bg.png")
+        fig2_defensive_actions = draw_defensive_actions(filtered_df_compare, selected_team_compare, game_info_compare, selected_player_compare, data_type_option_compare, "passmap_bg.png")
+        fig2_takeons = draw_takeons(filtered_df_compare, selected_team_compare, game_info_compare, selected_player_compare, data_type_option_compare, "passmap_bg.png")
         
         st.pyplot(fig2_heatmap)
         st.pyplot(fig2_passmap)
@@ -292,33 +292,33 @@ if st.button("Full Analysis"):
         st.pyplot(fig2_takeons)
 
 if st.button("TakeOns"):
-    fig1 = draw_takeons(filtered_df, selected_team, game_info, selected_player, data_type_option, "path/to/background_image1.png")
+    fig1 = draw_takeons(filtered_df, selected_team, game_info, selected_player, data_type_option, "passmap_bg.png")
     st.pyplot(fig1)
 
     if compare:
-        fig2 = draw_takeons(filtered_df_compare, selected_team_compare, game_info_compare, selected_player_compare, data_type_option_compare, "path/to/background_image2.png")
+        fig2 = draw_takeons(filtered_df_compare, selected_team_compare, game_info_compare, selected_player_compare, data_type_option_compare, "passmap_bg.png")
         st.pyplot(fig2)
 
 if st.button("Heatmap"):
-    fig1 = draw_heatmap(filtered_df, selected_team, game_info, selected_player, data_type_option, "path/to/background_image1.png")
+    fig1 = draw_heatmap(filtered_df, selected_team, game_info, selected_player, data_type_option, "passmap_bg.png")
     st.pyplot(fig1)
 
     if compare:
-        fig2 = draw_heatmap(filtered_df_compare, selected_team_compare, game_info_compare, selected_player_compare, data_type_option_compare, "path/to/background_image2.png")
+        fig2 = draw_heatmap(filtered_df_compare, selected_team_compare, game_info_compare, selected_player_compare, data_type_option_compare, "passmap_bg.png")
         st.pyplot(fig2)
 
 if st.button("Pass Reception"):
-    fig1 = draw_pass_receptions(filtered_df, selected_team, game_info, selected_player, data_type_option, "path/to/background_image1.png")
+    fig1 = draw_pass_receptions(filtered_df, selected_team, game_info, selected_player, data_type_option, "passmap_bg.png")
     st.pyplot(fig1)
 
     if compare:
-        fig2 = draw_pass_receptions(filtered_df_compare, selected_team_compare, game_info_compare, selected_player_compare, data_type_option_compare, "path/to/background_image2.png")
+        fig2 = draw_pass_receptions(filtered_df_compare, selected_team_compare, game_info_compare, selected_player_compare, data_type_option_compare, "passmap_bg.png")
         st.pyplot(fig2)
 
 if st.button("Defensive Actions"):
-    fig1 = draw_defensive_actions(filtered_df, selected_team, game_info, selected_player, data_type_option, "path/to/background_image1.png")
+    fig1 = draw_defensive_actions(filtered_df, selected_team, game_info, selected_player, data_type_option, "passmap_bg.png")
     st.pyplot(fig1)
 
     if compare:
-        fig2 = draw_defensive_actions(filtered_df_compare, selected_team_compare, game_info_compare, selected_player_compare, data_type_option_compare, "path/to/background_image2.png")
+        fig2 = draw_defensive_actions(filtered_df_compare, selected_team_compare, game_info_compare, selected_player_compare, data_type_option_compare, "passmap_bg.png")
         st.pyplot(fig2)
