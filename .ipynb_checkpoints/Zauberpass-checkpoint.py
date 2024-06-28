@@ -122,7 +122,7 @@ def draw_defensive_actions(df, team, game_info, player, data_type_option):
     pitch.scatter(df.x, df.y, c='white', s=5, ax=ax)
     labels = pitch.label_heatmap(bin_statistic, color='#f4edf0', fontsize=18,
                              ax=ax, ha='center', va='center',
-                             str_format='{:.0%}', path_effects=path_eff, rotation=270)
+                             str_format='{:.0%}', path_effects=path_eff, rotation=0)
     
     # Draw a line at the average 'x' of the defensive actions
     mean_y = team_data['y'].mean()
