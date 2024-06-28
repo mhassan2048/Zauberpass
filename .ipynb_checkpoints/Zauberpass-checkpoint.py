@@ -12,7 +12,7 @@ import matplotlib.patheffects as path_effects
 # fontmanager for google font (robotto)
 robotto_regular = FontManager()
 
-path_eff = [path_effects.Stroke(linewidth=3, foreground='black'),
+path_eff = [path_effects.Stroke(linewidth=2, foreground='black'),
             path_effects.Normal()]
 
 # Add custom font
@@ -116,11 +116,11 @@ def draw_defensive_actions(df, team, game_info, player, data_type_option):
     else:
         team_data = df[(df['team'] == team) & (df['type'].isin(defensive_actions))]
 
-    bin_statistic = pitch.bin_statistic_positional(df.x, df.y, statistic='count',
+    bin_statistic = pitch.bin_statistic_positional(team_data.x, team_data.y, statistic='count',
                                                positional='full', normalize=True)
     pitch.heatmap_positional(bin_statistic, ax=ax, cmap='rocket', edgecolors='darkgrey')
     pitch.scatter(df.x, df.y, c='white', s=5, ax=ax)
-    labels = pitch.label_heatmap(bin_statistic, color='#f4edf0', fontsize=18,
+    labels = pitch.label_heatmap(bin_statistic, color='#f4edf0', fontsize=36,
                              ax=ax, ha='center', va='center',
                              str_format='{:.0%}', path_effects=path_eff, rotation=0)
     
@@ -153,8 +153,13 @@ def draw_heatmap(df, team, game_info, player, data_type_option):
 
     image_bg("passmap_bg", fig)
 
-    bs = pitch.bin_statistic(df.x, df.y, bins=(48, 32))
-    heatmap = pitch.heatmap(bs, ax=ax, edgecolor='black', linewidth=4, cmap='magma')
+    bin_statistic = pitch.bin_statistic_positional(df.x, df.y, statistic='count',
+                                               positional='full', normalize=True)
+    pitch.heatmap_positional(bin_statistic, ax=ax, cmap='rocket', edgecolors='darkgrey')
+    pitch.scatter(df.x, df.y, c='white', s=5, ax=ax)
+    labels = pitch.label_heatmap(bin_statistic, color='#f4edf0', fontsize=36,
+                             ax=ax, ha='center', va='center',
+                             str_format='{:.0%}', path_effects=path_eff, rotation=0)
 
     # Load your image
     image_path = 'blogo.png'  # Replace with the path to your image
@@ -216,8 +221,15 @@ def draw_pass_receptions(df, team, game_info, player, data_type_option):
 
     image_bg("passmap_bg", fig)
     
-    bs = pitch.bin_statistic(df.end_x, df.end_y, bins=(48, 32))
-    heatmap = pitch.heatmap(bs, ax=ax, edgecolor='black', linewidth=4, cmap='magma')
+    
+    
+    bin_statistic = pitch.bin_statistic_positional(df.end_x, df.end_y, statistic='count',
+                                               positional='full', normalize=True)
+    pitch.heatmap_positional(bin_statistic, ax=ax, cmap='rocket', edgecolors='darkgrey')
+    pitch.scatter(df.x, df.y, c='white', s=5, ax=ax)
+    labels = pitch.label_heatmap(bin_statistic, color='#f4edf0', fontsize=36,
+                             ax=ax, ha='center', va='center',
+                             str_format='{:.0%}', path_effects=path_eff, rotation=0)
 
     # Load your image
     image_path = 'blogo.png'  # Replace with the path to your image
