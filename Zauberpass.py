@@ -120,7 +120,7 @@ def draw_defensive_actions(df, team, game_info, player, data_type_option):
                                                positional='full', normalize=True)
     pitch.heatmap_positional(bin_statistic, ax=ax, cmap='rocket', edgecolors='darkgrey')
     pitch.scatter(df.x, df.y, c='white', s=5, ax=ax)
-    labels = pitch.label_heatmap(bin_statistic, color='lightgreen', fontsize=28,
+    labels = pitch.label_heatmap(bin_statistic, color='lightgreen', fontsize=24,
                              ax=ax, ha='center', va='center',
                              str_format='{:.0%}', path_effects=path_eff, rotation=0)
     
@@ -157,7 +157,7 @@ def draw_heatmap(df, team, game_info, player, data_type_option):
                                                positional='full', normalize=True)
     pitch.heatmap_positional(bin_statistic, ax=ax, cmap='rocket', edgecolors='darkgrey')
     pitch.scatter(df.x, df.y, c='white', s=5, ax=ax)
-    labels = pitch.label_heatmap(bin_statistic, color='#f4edf0', fontsize=28,
+    labels = pitch.label_heatmap(bin_statistic, color='lightgreen', fontsize=24,
                              ax=ax, ha='center', va='center',
                              str_format='{:.0%}', path_effects=path_eff, rotation=0)
 
@@ -227,7 +227,7 @@ def draw_pass_receptions(df, team, game_info, player, data_type_option):
                                                positional='full', normalize=True)
     pitch.heatmap_positional(bin_statistic, ax=ax, cmap='rocket', edgecolors='darkgrey')
     pitch.scatter(df.x, df.y, c='white', s=5, ax=ax)
-    labels = pitch.label_heatmap(bin_statistic, color='#f4edf0', fontsize=28,
+    labels = pitch.label_heatmap(bin_statistic, color='lightgreen', fontsize=24,
                              ax=ax, ha='center', va='center',
                              str_format='{:.0%}', path_effects=path_eff, rotation=0)
 
