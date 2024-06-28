@@ -91,7 +91,7 @@ def draw_passmap(df, team, game_info, player, data_type_option):
     plt.figtext(0.04, 0.075, f"Failed Passes: {num_failed_passes}", fontproperties=font_prop_small, color='darkgrey', ha='left')
     plt.figtext(.95, 0.175, "Direction of play from left to right. Coordinates from Whoscored.", fontproperties=font_prop_small, color='grey', ha='right')
 
-    st.pyplot(fig)
+    return fig
 
 def draw_defensive_actions(df, team, game_info, player, data_type_option):
     pitch = Pitch(spot_type='square', spot_scale=0.01, pitch_type='wyscout', line_color='lightgrey', linewidth=4, line_zorder=2, pitch_color='None')
@@ -129,7 +129,7 @@ def draw_defensive_actions(df, team, game_info, player, data_type_option):
     plt.figtext(0.05, 0.85, game_info, fontproperties=font_prop_medium, color='#2af5bf', ha='left')
     plt.figtext(0.5, 0.08, f"Defensive actions: tackles, interceptions, challanges, fouls. \nDirection of play from south to north. \nCoordinates from whoscored.", ha='center', fontproperties=font_prop_small, color="grey")
     
-    st.pyplot(fig)
+    return fig
 
 def draw_heatmap(df, team, game_info, player, data_type_option):
     pitch = Pitch(spot_type='square', spot_scale=0.01, pitch_type='wyscout', line_color='lightgrey', linewidth=4, line_zorder=2, pitch_color='None')
@@ -157,7 +157,7 @@ def draw_heatmap(df, team, game_info, player, data_type_option):
     plt.figtext(.95, 0.175, "Direction of play from left to right. Coordinates from Whoscored.", fontproperties=font_prop_small, color='grey', ha='right')
 
     
-    st.pyplot(fig)
+    return fig
 
 def draw_takeons(df, team, game_info, player, data_type_option):
     pitch = Pitch(positional=True, positional_color='#3b3b3b', spot_type='square', spot_scale=0.01, pitch_type='wyscout', line_color='lightgrey', linewidth=4, line_zorder=2, pitch_color='None')
@@ -192,7 +192,7 @@ def draw_takeons(df, team, game_info, player, data_type_option):
     plt.figtext(0.04, 0.165, f"Completed: {count_s}", fontproperties=font_prop_small, color=comp_clr, ha='left')
     plt.figtext(0.04, 0.135, f"Failed: {count_f}", fontproperties=font_prop_small, color='darkgrey', ha='left')
     plt.figtext(.95, 0.175, "Direction of play from left to right. Coordinates from Whoscored.", fontproperties=font_prop_small, color='grey', ha='right')
-    st.pyplot(fig)
+    return fig
 
 
 def draw_pass_receptions(df, team, game_info, player, data_type_option):
@@ -218,7 +218,7 @@ def draw_pass_receptions(df, team, game_info, player, data_type_option):
     plt.figtext(0.05, 0.9, f"{player if 'Player' in data_type_option else team} - Pass Receptions", fontproperties=font_prop_large, color='w', ha='left')
     plt.figtext(0.05, 0.85, game_info, fontproperties=font_prop_medium, color='#2af5bf', ha='left')
     plt.figtext(.95, 0.175, "Direction of play from left to right. Coordinates from Whoscored.", fontproperties=font_prop_small, color='grey', ha='right')
-    st.pyplot(fig)
+    return fig
 
 
 def load_data(tournament):
@@ -277,23 +277,91 @@ else:
 
 # Add buttons for new features
 if st.button("Full Analysis"):
-    draw_heatmap(filtered_df, selected_team, game_info, selected_player, data_type_option)
-    draw_passmap(filtered_df, selected_team, game_info, selected_player, data_type_option)
-    draw_pass_receptions(filtered_df, selected_team, game_info, selected_player, data_type_option)
-    draw_defensive_actions(filtered_df, selected_team, game_info, selected_player, data_type_option)
-    draw_takeons(filtered_df, selected_team, game_info, selected_player, data_type_option)
+    col1, col2 = st.columns(2)
+
+    with col1:
+        fig1_heatmap = draw_heatmap(filtered_df, selected_team, game_info, selected_player, data_type_option)
+        fig1_passmap = draw_passmap(filtered_df, selected_team, game_info, selected_player, data_type_option)
+        fig1_pass_receptions = draw_pass_receptions(filtered_df, selected_team, game_info, selected_player, data_type_option)
+        fig1_defensive_actions = draw_defensive_actions(filtered_df, selected_team, game_info, selected_player, data_type_option)
+        fig1_takeons = draw_takeons(filtered_df, selected_team, game_info, selected_player, data_type_option)
+
+        st.pyplot(fig1_heatmap)
+        st.pyplot(fig1_passmap)
+        st.pyplot(fig1_pass_receptions)
+        st.pyplot(fig1_defensive_actions)
+        st.pyplot(fig1_takeons)
+
+    if compare:
+        with col2:
+            fig2_heatmap = draw_heatmap(filtered_df_compare, selected_team_compare, game_info_compare, selected_player_compare, data_type_option_compare)
+            fig2_passmap = draw_passmap(filtered_df_compare, selected_team_compare, game_info_compare, selected_player_compare, data_type_option_compare)
+            fig2_pass_receptions = draw_pass_receptions(filtered_df_compare, selected_team_compare, game_info_compare, selected_player_compare, data_type_option_compare)
+            fig2_defensive_actions = draw_defensive_actions(filtered_df_compare, selected_team_compare, game_info_compare, selected_player_compare, data_type_option_compare)
+            fig2_takeons = draw_takeons(filtered_df_compare, selected_team_compare, game_info_compare, selected_player_compare, data_type_option_compare)
+
+            st.pyplot(fig2_heatmap)
+            st.pyplot(fig2_passmap)
+            st.pyplot(fig2_pass_receptions)
+            st.pyplot(fig2_defensive_actions)
+            st.pyplot(fig2_takeons)
 
 if st.button("Passmap"):
-    draw_passmap(filtered_df, selected_team, game_info, selected_player, data_type_option)
+    col1, col2 = st.columns(2)
+
+    with col1:
+        fig1 = draw_passmap(filtered_df, selected_team, game_info, selected_player, data_type_option)
+        st.pyplot(fig1)
+
+    if compare:
+        with col2:
+            fig2 = draw_passmap(filtered_df_compare, selected_team_compare, game_info_compare, selected_player_compare, data_type_option_compare)
+            st.pyplot(fig2)
 
 if st.button("TakeOns"):
-    draw_takeons(filtered_df, selected_team, game_info, selected_player, data_type_option)
+    col1, col2 = st.columns(2)
+
+    with col1:
+        fig1 = draw_takeons(filtered_df, selected_team, game_info, selected_player, data_type_option)
+        st.pyplot(fig1)
+
+    if compare:
+        with col2:
+            fig2 = draw_takeons(filtered_df_compare, selected_team_compare, game_info_compare, selected_player_compare, data_type_option_compare)
+            st.pyplot(fig2)
 
 if st.button("Heatmap"):
-    draw_heatmap(filtered_df, selected_team, game_info, selected_player, data_type_option)
+    col1, col2 = st.columns(2)
+
+    with col1:
+        fig1 = draw_heatmap(filtered_df, selected_team, game_info, selected_player, data_type_option)
+        st.pyplot(fig1)
+
+    if compare:
+        with col2:
+            fig2 = draw_heatmap(filtered_df_compare, selected_team_compare, game_info_compare, selected_player_compare, data_type_option_compare)
+            st.pyplot(fig2)
 
 if st.button("Pass Reception"):
-    draw_pass_receptions(filtered_df, selected_team, game_info, selected_player, data_type_option)
+    col1, col2 = st.columns(2)
+
+    with col1:
+        fig1 = draw_pass_receptions(filtered_df, selected_team, game_info, selected_player, data_type_option)
+        st.pyplot(fig1)
+
+    if compare:
+        with col2:
+            fig2 = draw_pass_receptions(filtered_df_compare, selected_team_compare, game_info_compare, selected_player_compare, data_type_option_compare)
+            st.pyplot(fig2)
 
 if st.button("Defensive Actions"):
-    draw_defensive_actions(filtered_df, selected_team, game_info, selected_player, data_type_option)
+    col1, col2 = st.columns(2)
+
+    with col1:
+        fig1 = draw_defensive_actions(filtered_df, selected_team, game_info, selected_player, data_type_option)
+        st.pyplot(fig1)
+
+    if compare:
+        with col2:
+            fig2 = draw_defensive_actions(filtered_df_compare, selected_team_compare, game_info_compare, selected_player_compare, data_type_option_compare)
+            st.pyplot(fig2)
