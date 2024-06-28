@@ -48,24 +48,21 @@ def draw_pass(ax, row, pitch, comp_clr, regular_clr, failed_clr, key_pass_clr):
                         color=pass_color, lw=pass_width, zorder=3, transparent=True, 
                         alpha_start=0.75, alpha_end=0.01, ax=ax)
 
-def draw_passmap(df, team, game_info, player, data_type_option):
+def draw_passmap(ax, df, team, game_info, player, data_type_option):
     pass_events_sorted = df.sort_values(by=['minute', 'second'])
     
     pitch = Pitch(positional=True, positional_color='#3b3b3b', spot_type='square', spot_scale=0.01, pitch_type='wyscout', line_color='lightgrey', linewidth=4, line_zorder=2, pitch_color='None')
-    fig, ax = pitch.draw(figsize=(12, 12), constrained_layout=True)
-    fig.set_facecolor('None')
-    ax.patch.set_facecolor('None')
+    pitch.draw(ax=ax)
+    ax.set_facecolor('None')
     ax.set_zorder(1)
     plt.gca().invert_yaxis()
     
-
     image_bg("passmap_bg", fig)
     
     comp_clr = '#ff9d00'
     regular_clr = '#c791f2'
     failed_clr = 'darkgrey'
     key_pass_clr = '#00aaff'
-    clr_map = "Greys_r"
 
     for _, row in pass_events_sorted.iterrows():
         draw_pass(ax, row, pitch, comp_clr, regular_clr, failed_clr, key_pass_clr)
@@ -75,33 +72,21 @@ def draw_passmap(df, team, game_info, player, data_type_option):
     num_key_passes = len(pass_events_sorted[pass_events_sorted['qualifiers'].str.contains('KeyPass', na=False)])
     num_progressive_passes = sum(pass_events_sorted.apply(lambda row: is_long_pass(row['x'], row['end_x']), axis=1))
 
+    ax.set_title(f"{player if 'Player' in data_type_option else team} - Passes", fontproperties=font_prop_large, color='w', loc='left')
+    ax.text(0.05, 0.85, game_info, fontproperties=font_prop_medium, color='#2af5bf', ha='left', transform=ax.transAxes)
+    ax.text(0.04, 0.165, f"Regular Passes: {num_regular_passes}", fontproperties=font_prop_small, color='#c791f2', ha='left', transform=ax.transAxes)
+    ax.text(0.04, 0.135, f"Progressive Passes: {num_progressive_passes}", fontproperties=font_prop_small, color='#ff9d00', ha='left', transform=ax.transAxes)
+    ax.text(0.04, 0.105, f"Key Passes: {num_key_passes}", fontproperties=font_prop_small, color='#00aaff', ha='left', transform=ax.transAxes)
+    ax.text(0.04, 0.075, f"Failed Passes: {num_failed_passes}", fontproperties=font_prop_small, color='darkgrey', ha='left', transform=ax.transAxes)
+    ax.text(.95, 0.175, "Direction of play from left to right. Coordinates from Whoscored.", fontproperties=font_prop_small, color='grey', ha='right', transform=ax.transAxes)
 
-    # Load your image
-    image_path = 'blogo.png'  # Replace with the path to your image
-    img = mpimg.imread(image_path)
-    img_ax = fig.add_axes([0.8, 0.84, 0.1, 0.1])  # Example: [left, bottom, width, height]
-    img_ax.imshow(img)
-    img_ax.axis('off')  # Turn off axis
-    
-    plt.figtext(0.05, 0.9, f"{player if 'Player' in data_type_option else team} - Passes", fontproperties=font_prop_large, color='w', ha='left')
-    plt.figtext(0.05, 0.85, game_info, fontproperties=font_prop_medium, color='#2af5bf', ha='left')
-    plt.figtext(0.04, 0.165, f"Regular Passes: {num_regular_passes}", fontproperties=font_prop_small, color='#c791f2', ha='left')
-    plt.figtext(0.04, 0.135, f"Progressive Passes: {num_progressive_passes}", fontproperties=font_prop_small, color='#ff9d00', ha='left')
-    plt.figtext(0.04, 0.105, f"Key Passes: {num_key_passes}", fontproperties=font_prop_small, color='#00aaff', ha='left')
-    plt.figtext(0.04, 0.075, f"Failed Passes: {num_failed_passes}", fontproperties=font_prop_small, color='darkgrey', ha='left')
-    plt.figtext(.95, 0.175, "Direction of play from left to right. Coordinates from Whoscored.", fontproperties=font_prop_small, color='grey', ha='right')
-
-    st.pyplot(fig)
-
-def draw_defensive_actions(df, team, game_info, player, data_type_option):
+def draw_defensive_actions(ax, df, team, game_info, player, data_type_option):
     pitch = Pitch(spot_type='square', spot_scale=0.01, pitch_type='wyscout', line_color='lightgrey', linewidth=4, line_zorder=2, pitch_color='None')
-    fig, ax = pitch.draw(figsize=(12, 12))
-    fig.set_facecolor('None')
-    ax.patch.set_facecolor('None')
+    pitch.draw(ax=ax)
+    ax.set_facecolor('None')
     ax.set_zorder(1)
     plt.gca().invert_yaxis()
     defensive_actions = ['Tackle', 'Challenge', 'Interception', 'Foul']
-    
 
     image_bg("passmap_bg", fig)
 
@@ -111,120 +96,78 @@ def draw_defensive_actions(df, team, game_info, player, data_type_option):
         team_data = df[(df['team'] == team) & (df['type'].isin(defensive_actions))]
 
     bs = pitch.bin_statistic(team_data.x, team_data.y, bins=(48, 32))
-    heatmap = pitch.heatmap(bs, ax=ax, edgecolor='black', linewidth=4, cmap='rocket')
+    pitch.heatmap(bs, ax=ax, edgecolor='black', linewidth=4, cmap='rocket')
     
-    # Draw a line at the average 'x' of the defensive actions
     mean_y = team_data['y'].mean()
     ax.axvline(x=mean_y, color='lightgreen', linestyle='-', linewidth=40, alpha=0.3)
     pitch.text(mean_y - 1, 50, 'Avg. Defensive Actions Height', color='w', ax=ax,fontproperties=font_prop_medium, va='bottom', ha='center', rotation=270)
 
-    # Load your image
-    image_path = 'blogo.png'  # Replace with the path to your image
-    img = mpimg.imread(image_path)
-    img_ax = fig.add_axes([0.8, 0.84, 0.1, 0.1])  # Example: [left, bottom, width, height]
-    img_ax.imshow(img)
-    img_ax.axis('off')  # Turn off axis
-    
-    plt.figtext(0.05, 0.9, f"{player if 'Player' in data_type_option else team} - Defenfive Actions Heatmap", fontproperties=font_prop_large, color='w', ha='left')
-    plt.figtext(0.05, 0.85, game_info, fontproperties=font_prop_medium, color='#2af5bf', ha='left')
-    plt.figtext(0.5, 0.08, f"Defensive actions: tackles, interceptions, challanges, fouls. \nDirection of play from south to north. \nCoordinates from whoscored.", ha='center', fontproperties=font_prop_small, color="grey")
-    
-    st.pyplot(fig)
+    ax.set_title(f"{player if 'Player' in data_type_option else team} - Defensive Actions Heatmap", fontproperties=font_prop_large, color='w', loc='left')
+    ax.text(0.05, 0.85, game_info, fontproperties=font_prop_medium, color='#2af5bf', ha='left', transform=ax.transAxes)
+    ax.text(0.5, 0.08, "Defensive actions: tackles, interceptions, challenges, fouls. \nDirection of play from south to north. \nCoordinates from Whoscored.", ha='center', fontproperties=font_prop_small, color="grey", transform=ax.transAxes)
 
-def draw_heatmap(df, team, game_info, player, data_type_option):
+def draw_heatmap(ax, df, team, game_info, player, data_type_option):
     pitch = Pitch(spot_type='square', spot_scale=0.01, pitch_type='wyscout', line_color='lightgrey', linewidth=4, line_zorder=2, pitch_color='None')
-    fig, ax = pitch.draw(figsize=(12, 12), constrained_layout=True)
-    fig.set_facecolor('None')
-    ax.patch.set_facecolor('None')
+    pitch.draw(ax=ax)
+    ax.set_facecolor('None')
     ax.set_zorder(1)
     plt.gca().invert_yaxis()
-    
 
     image_bg("passmap_bg", fig)
 
     bs = pitch.bin_statistic(df.x, df.y, bins=(48, 32))
-    heatmap = pitch.heatmap(bs, ax=ax, edgecolor='black', linewidth=4, cmap='magma')
+    pitch.heatmap(bs, ax=ax, edgecolor='black', linewidth=4, cmap='magma')
 
-    # Load your image
-    image_path = 'blogo.png'  # Replace with the path to your image
-    img = mpimg.imread(image_path)
-    img_ax = fig.add_axes([0.8, 0.84, 0.1, 0.1])  # Example: [left, bottom, width, height]
-    img_ax.imshow(img)
-    img_ax.axis('off')  # Turn off axis
-    
-    plt.figtext(0.05, 0.9, f"{player if 'Player' in data_type_option else team} - Heatmap", fontproperties=font_prop_large, color='w', ha='left')
-    plt.figtext(0.05, 0.85, game_info, fontproperties=font_prop_medium, color='#2af5bf', ha='left')
-    plt.figtext(.95, 0.175, "Direction of play from left to right. Coordinates from Whoscored.", fontproperties=font_prop_small, color='grey', ha='right')
+    ax.set_title(f"{player if 'Player' in data_type_option else team} - Heatmap", fontproperties=font_prop_large, color='w', loc='left')
+    ax.text(0.05, 0.85, game_info, fontproperties=font_prop_medium, color='#2af5bf', ha='left', transform=ax.transAxes)
+    ax.text(.95, 0.175, "Direction of play from left to right. Coordinates from Whoscored.", fontproperties=font_prop_small, color='grey', ha='right', transform=ax.transAxes)
 
-    
-    st.pyplot(fig)
-
-def draw_takeons(df, team, game_info, player, data_type_option):
+def draw_takeons(ax, df, team, game_info, player, data_type_option):
     pitch = Pitch(positional=True, positional_color='#3b3b3b', spot_type='square', spot_scale=0.01, pitch_type='wyscout', line_color='lightgrey', linewidth=4, line_zorder=2, pitch_color='None')
-    fig, ax = pitch.draw(figsize=(12, 12), constrained_layout=True)
-    fig.set_facecolor('None')
-    ax.patch.set_facecolor('None')
+    pitch.draw(ax=ax)
+    ax.set_facecolor('None')
     ax.set_zorder(1)
     plt.gca().invert_yaxis()
-    
 
     image_bg("passmap_bg", fig)
 
-    comp_clr = '#ff9d00'  # Define the color for successful take-ons
+    comp_clr = '#ff9d00'
     count_s = 0
     count_f = 0
     for index, row in df.iterrows():
         if row['type'] == 'TakeOn' and row['outcome_type'] == 'Successful':
             pitch.scatter(row['x'], row['y'], color=comp_clr, marker='H', s=1200, zorder=3, ax=ax,edgecolor='black', linewidth=0, alpha=.9)
-            count_s+=1
+            count_s += 1
         elif row['type'] == 'TakeOn' and row['outcome_type'] == 'Unsuccessful':
             pitch.scatter(row['x'], row['y'], color='grey', marker='H', s=1200, zorder=3, ax=ax,edgecolor='grey', linewidth=0, alpha=.3)
-            count_f+=1
-    # Load your image
-    image_path = 'blogo.png'  # Replace with the path to your image
-    img = mpimg.imread(image_path)
-    img_ax = fig.add_axes([0.8, 0.84, 0.1, 0.1])  # Example: [left, bottom, width, height]
-    img_ax.imshow(img)
-    img_ax.axis('off')  # Turn off axis
-    
-    plt.figtext(0.05, 0.9, f"{player if 'Player' in data_type_option else team} - Take-ons", fontproperties=font_prop_large, color='w', ha='left')
-    plt.figtext(0.05, 0.85, game_info, fontproperties=font_prop_medium, color='#2af5bf', ha='left')
-    plt.figtext(0.04, 0.165, f"Completed: {count_s}", fontproperties=font_prop_small, color=comp_clr, ha='left')
-    plt.figtext(0.04, 0.135, f"Failed: {count_f}", fontproperties=font_prop_small, color='darkgrey', ha='left')
-    plt.figtext(.95, 0.175, "Direction of play from left to right. Coordinates from Whoscored.", fontproperties=font_prop_small, color='grey', ha='right')
-    st.pyplot(fig)
+            count_f += 1
 
+    ax.set_title(f"{player if 'Player' in data_type_option else team} - Take-ons", fontproperties=font_prop_large, color='w', loc='left')
+    ax.text(0.05, 0.85, game_info, fontproperties=font_prop_medium, color='#2af5bf', ha='left', transform=ax.transAxes)
+    ax.text(0.04, 0.165, f"Completed: {count_s}", fontproperties=font_prop_small, color=comp_clr, ha='left', transform=ax.transAxes)
+    ax.text(0.04, 0.135, f"Failed: {count_f}", fontproperties=font_prop_small, color='darkgrey', ha='left', transform=ax.transAxes)
+    ax.text(.95, 0.175, "Direction of play from left to right. Coordinates from Whoscored.", fontproperties=font_prop_small, color='grey', ha='right', transform=ax.transAxes)
 
-def draw_pass_receptions(df, team, game_info, player, data_type_option):
+def draw_pass_receptions(ax, df, team, game_info, player, data_type_option):
     pitch = Pitch(spot_type='square', spot_scale=0.01, pitch_type='wyscout', line_color='lightgrey', linewidth=4, line_zorder=2, pitch_color='None')
-    fig, ax = pitch.draw(figsize=(12, 12), constrained_layout=True)
-    fig.set_facecolor('None')
-    ax.patch.set_facecolor('None')
+    pitch.draw(ax=ax)
+    ax.set_facecolor('None')
     ax.set_zorder(1)
     plt.gca().invert_yaxis()
 
     image_bg("passmap_bg", fig)
     
     bs = pitch.bin_statistic(df.end_x, df.end_y, bins=(48, 32))
-    heatmap = pitch.heatmap(bs, ax=ax, edgecolor='black', linewidth=4, cmap='magma')
+    pitch.heatmap(bs, ax=ax, edgecolor='black', linewidth=4, cmap='magma')
 
-    # Load your image
-    image_path = 'blogo.png'  # Replace with the path to your image
-    img = mpimg.imread(image_path)
-    img_ax = fig.add_axes([0.8, 0.84, 0.1, 0.1])  # Example: [left, bottom, width, height]
-    img_ax.imshow(img)
-    img_ax.axis('off')  # Turn off axis
-    
-    plt.figtext(0.05, 0.9, f"{player if 'Player' in data_type_option else team} - Pass Receptions", fontproperties=font_prop_large, color='w', ha='left')
-    plt.figtext(0.05, 0.85, game_info, fontproperties=font_prop_medium, color='#2af5bf', ha='left')
-    plt.figtext(.95, 0.175, "Direction of play from left to right. Coordinates from Whoscored.", fontproperties=font_prop_small, color='grey', ha='right')
-    st.pyplot(fig)
-
+    ax.set_title(f"{player if 'Player' in data_type_option else team} - Pass Receptions", fontproperties=font_prop_large, color='w', loc='left')
+    ax.text(0.05, 0.85, game_info, fontproperties=font_prop_medium, color='#2af5bf', ha='left', transform=ax.transAxes)
+    ax.text(.95, 0.175, "Direction of play from left to right. Coordinates from Whoscored.", fontproperties=font_prop_small, color='grey', ha='right', transform=ax.transAxes)
 
 def load_data(tournament):
     data_sources = {
         "Euro 2024": "https://drive.google.com/uc?export=download&id=1-IJfIqkYv39CRoSLgXdMd3QZrP0a9ViL",
-        "Copa America 2024": "https://drive.google.com/uc?export=download&id=1-ehpOjBEsZKRT5el17KaH7f5_QouaWum"  # Placeholder URL for Copa data
+        "Copa America 2024": "https://drive.google.com/uc?export=download&id=1-ehpOjBEsZKRT5el17KaH7f5_QouaWum"
     }
     url = data_sources[tournament]
     df = pd.read_csv(url)
@@ -232,7 +175,7 @@ def load_data(tournament):
 
 # Load and resize the logo
 image = Image.open("zplogo.png")
-image = image.resize((100, 100))  # Resize to 100x100 pixels
+image = image.resize((100, 100))
 
 # Display the logo and title
 st.image(image, use_column_width=False)
@@ -274,27 +217,92 @@ if "Player" in data_type_option:
 else:
     filtered_df = match_df
 
+# Add options for the second set of data for comparison
+compare = st.checkbox("Compare with another set of data")
+
+if compare:
+    # Add Tournament Dropdown for comparison
+    selected_tournament_compare = st.selectbox("Select Tournament for Comparison", tournaments, key='compare_tournament')
+    df_compare = load_data(selected_tournament_compare)
+
+    # Add Radio Buttons for Data Type Selection for comparison
+    data_type_option_compare = st.radio("Select Data Type for Comparison", ["Player - Match by Match", "Player - All Games", "Team - Match by Match", "Team - All Games"], key='compare_data_type')
+
+    # Extract unique teams for comparison
+    teams_compare = sorted(df_compare['team'].unique())
+    selected_team_compare = st.selectbox("Select Team for Comparison", teams_compare, index=0, key='compare_team')
+
+    # Filter matches based on the selected team for comparison
+    filtered_df_team_compare = df_compare[df_compare['team'] == selected_team_compare]
+    matches_compare = sorted(filtered_df_team_compare['game'].unique())
+    selected_match_compare = st.selectbox("Select Match for Comparison", matches_compare, index=0, disabled=("All Games" in data_type_option_compare), key='compare_match')
+
+    # Filter players based on the selected team and game for comparison
+    filtered_df_game_compare = filtered_df_team_compare[filtered_df_team_compare['game'] == selected_match_compare]
+    players_compare = sorted(filtered_df_game_compare['player'].dropna().unique())
+    selected_player_compare = st.selectbox("Select Player for Comparison", players_compare, index=0, disabled=("Team" in data_type_option_compare), key='compare_player')
+
+    if "All Games" in data_type_option_compare:
+        match_df_compare = filtered_df_team_compare
+        game_info_compare = f"All Games - {selected_tournament_compare}"
+    else:
+        match_df_compare = filtered_df_game_compare
+        game_info_compare = match_df_compare.iloc[0]['game'] if len(match_df_compare) > 0 else 'Game Information Not Available'
+
+    if "Player" in data_type_option_compare:
+        filtered_df_compare = match_df_compare[match_df_compare['player'] == selected_player_compare]
+    else:
+        filtered_df_compare = match_df_compare
 
 # Add buttons for new features
 if st.button("Full Analysis"):
-    draw_heatmap(filtered_df, selected_team, game_info, selected_player, data_type_option)
-    draw_passmap(filtered_df, selected_team, game_info, selected_player, data_type_option)
-    draw_pass_receptions(filtered_df, selected_team, game_info, selected_player, data_type_option)
-    draw_defensive_actions(filtered_df, selected_team, game_info, selected_player, data_type_option)
-    draw_takeons(filtered_df, selected_team, game_info, selected_player, data_type_option)
+    fig, axs = plt.subplots(2, 5, figsize=(24, 12), constrained_layout=True)
+    draw_heatmap(axs[0, 0], filtered_df, selected_team, game_info, selected_player, data_type_option)
+    draw_passmap(axs[0, 1], filtered_df, selected_team, game_info, selected_player, data_type_option)
+    draw_pass_receptions(axs[0, 2], filtered_df, selected_team, game_info, selected_player, data_type_option)
+    draw_defensive_actions(axs[0, 3], filtered_df, selected_team, game_info, selected_player, data_type_option)
+    draw_takeons(axs[0, 4], filtered_df, selected_team, game_info, selected_player, data_type_option)
+
+    if compare:
+        draw_heatmap(axs[1, 0], filtered_df_compare, selected_team_compare, game_info_compare, selected_player_compare, data_type_option_compare)
+        draw_passmap(axs[1, 1], filtered_df_compare, selected_team_compare, game_info_compare, selected_player_compare, data_type_option_compare)
+        draw_pass_receptions(axs[1, 2], filtered_df_compare, selected_team_compare, game_info_compare, selected_player_compare, data_type_option_compare)
+        draw_defensive_actions(axs[1, 3], filtered_df_compare, selected_team_compare, game_info_compare, selected_player_compare, data_type_option_compare)
+        draw_takeons(axs[1, 4], filtered_df_compare, selected_team_compare, game_info_compare, selected_player_compare, data_type_option_compare)
+
+    st.pyplot(fig)
 
 if st.button("Passmap"):
-    draw_passmap(filtered_df, selected_team, game_info, selected_player, data_type_option)
+    fig, axs = plt.subplots(1, 2, figsize=(24, 12), constrained_layout=True)
+    draw_passmap(axs[0], filtered_df, selected_team, game_info, selected_player, data_type_option)
+    if compare:
+        draw_passmap(axs[1], filtered_df_compare, selected_team_compare, game_info_compare, selected_player_compare, data_type_option_compare)
+    st.pyplot(fig)
 
 if st.button("TakeOns"):
-    draw_takeons(filtered_df, selected_team, game_info, selected_player, data_type_option)
+    fig, axs = plt.subplots(1, 2, figsize=(24, 12), constrained_layout=True)
+    draw_takeons(axs[0], filtered_df, selected_team, game_info, selected_player, data_type_option)
+    if compare:
+        draw_takeons(axs[1], filtered_df_compare, selected_team_compare, game_info_compare, selected_player_compare, data_type_option_compare)
+    st.pyplot(fig)
 
 if st.button("Heatmap"):
-    draw_heatmap(filtered_df, selected_team, game_info, selected_player, data_type_option)
+    fig, axs = plt.subplots(1, 2, figsize=(24, 12), constrained_layout=True)
+    draw_heatmap(axs[0], filtered_df, selected_team, game_info, selected_player, data_type_option)
+    if compare:
+        draw_heatmap(axs[1], filtered_df_compare, selected_team_compare, game_info_compare, selected_player_compare, data_type_option_compare)
+    st.pyplot(fig)
 
 if st.button("Pass Reception"):
-    draw_pass_receptions(filtered_df, selected_team, game_info, selected_player, data_type_option)
+    fig, axs = plt.subplots(1, 2, figsize=(24, 12), constrained_layout=True)
+    draw_pass_receptions(axs[0], filtered_df, selected_team, game_info, selected_player, data_type_option)
+    if compare:
+        draw_pass_receptions(axs[1], filtered_df_compare, selected_team_compare, game_info_compare, selected_player_compare, data_type_option_compare)
+    st.pyplot(fig)
 
 if st.button("Defensive Actions"):
-    draw_defensive_actions(filtered_df, selected_team, game_info, selected_player, data_type_option)
-    
+    fig, axs = plt.subplots(1, 2, figsize=(24, 12), constrained_layout=True)
+    draw_defensive_actions(axs[0], filtered_df, selected_team, game_info, selected_player, data_type_option)
+    if compare:
+        draw_defensive_actions(axs[1], filtered_df_compare, selected_team_compare, game_info_compare, selected_player_compare, data_type_option_compare)
+    st.pyplot(fig)
