@@ -78,6 +78,102 @@ def draw_passmap(df, team, game_info, player, data_type_option, image_path):
 
     return fig
 
+
+def draw_heatmap(df, team, game_info, player, data_type_option, image_path):
+    fig, ax = plt.subplots(figsize=(12, 12), constrained_layout=True)
+    pitch = Pitch(spot_type='square', spot_scale=0.01, pitch_type='wyscout', line_color='lightgrey', linewidth=4, line_zorder=2, pitch_color='None')
+    pitch.draw(ax=ax)
+    ax.set_facecolor('None')
+    ax.set_zorder(1)
+    plt.gca().invert_yaxis()
+    
+    image_bg(image_path, fig)
+    
+    bs = pitch.bin_statistic(df.x, df.y, bins=(48, 32))
+    pitch.heatmap(bs, ax=ax, edgecolor='black', linewidth=4, cmap='magma')
+
+    ax.set_title(f"{player if 'Player' in data_type_option else team} - Heatmap", fontproperties=font_prop_large, color='w', loc='left')
+    ax.text(0.05, 0.85, game_info, fontproperties=font_prop_medium, color='#2af5bf', ha='left', transform=ax.transAxes)
+    ax.text(.95, 0.175, "Direction of play from left to right. Coordinates from Whoscored.", fontproperties=font_prop_small, color='grey', ha='right', transform=ax.transAxes)
+
+    return fig
+
+def draw_defensive_actions(df, team, game_info, player, data_type_option, image_path):
+    fig, ax = plt.subplots(figsize=(12, 12), constrained_layout=True)
+    pitch = Pitch(spot_type='square', spot_scale=0.01, pitch_type='wyscout', line_color='lightgrey', linewidth=4, line_zorder=2, pitch_color='None')
+    pitch.draw(ax=ax)
+    ax.set_facecolor('None')
+    ax.set_zorder(1)
+    plt.gca().invert_yaxis()
+    defensive_actions = ['Tackle', 'Challenge', 'Interception', 'Foul']
+    
+    image_bg(image_path, fig)
+    
+    if "Player" in data_type_option:
+        team_data = df[(df['player'] == player) & (df['type'].isin(defensive_actions))]
+    else:
+        team_data = df[(df['team'] == team) & (df['type'].isin(defensive_actions))]
+
+    bs = pitch.bin_statistic(team_data.x, team_data.y, bins=(48, 32))
+    pitch.heatmap(bs, ax=ax, edgecolor='black', linewidth=4, cmap='rocket')
+    
+    mean_y = team_data['y'].mean()
+    ax.axvline(x=mean_y, color='lightgreen', linestyle='-', linewidth=40, alpha=0.3)
+    pitch.text(mean_y - 1, 50, 'Avg. Defensive Actions Height', color='w', ax=ax,fontproperties=font_prop_medium, va='bottom', ha='center', rotation=270)
+
+    ax.set_title(f"{player if 'Player' in data_type_option else team} - Defensive Actions Heatmap", fontproperties=font_prop_large, color='w', loc='left')
+    ax.text(0.05, 0.85, game_info, fontproperties=font_prop_medium, color='#2af5bf', ha='left', transform=ax.transAxes)
+    ax.text(0.5, 0.08, "Defensive actions: tackles, interceptions, challenges, fouls. \nDirection of play from south to north. \nCoordinates from Whoscored.", ha='center', fontproperties=font_prop_small, color="grey", transform=ax.transAxes)
+
+    return fig
+
+def draw_takeons(df, team, game_info, player, data_type_option, image_path):
+    fig, ax = plt.subplots(figsize=(12, 12), constrained_layout=True)
+    pitch = Pitch(positional=True, positional_color='#3b3b3b', spot_type='square', spot_scale=0.01, pitch_type='wyscout', line_color='lightgrey', linewidth=4, line_zorder=2, pitch_color='None')
+    pitch.draw(ax=ax)
+    ax.set_facecolor('None')
+    ax.set_zorder(1)
+    plt.gca().invert_yaxis()
+    
+    image_bg(image_path, fig)
+    
+    comp_clr = '#ff9d00'
+    count_s = 0
+    count_f = 0
+    for index, row in df.iterrows():
+        if row['type'] == 'TakeOn' and row['outcome_type'] == 'Successful':
+            pitch.scatter(row['x'], row['y'], color=comp_clr, marker='H', s=1200, zorder=3, ax=ax, edgecolor='black', linewidth=0, alpha=.9)
+            count_s += 1
+        elif row['type'] == 'TakeOn' and row['outcome_type'] == 'Unsuccessful':
+            pitch.scatter(row['x'], row['y'], color='grey', marker='H', s=1200, zorder=3, ax=ax, edgecolor='grey', linewidth=0, alpha=.3)
+
+    ax.set_title(f"{player if 'Player' in data_type_option else team} - Take-ons", fontproperties=font_prop_large, color='w', loc='left')
+    ax.text(0.05, 0.85, game_info, fontproperties=font_prop_medium, color='#2af5bf', ha='left', transform=ax.transAxes)
+    ax.text(0.04, 0.165, f"Completed: {count_s}", fontproperties=font_prop_small, color=comp_clr, ha='left', transform=ax.transAxes)
+    ax.text(0.04, 0.135, f"Failed: {count_f}", fontproperties=font_prop_small, color='darkgrey', ha='left', transform=ax.transAxes)
+    ax.text(.95, 0.175, "Direction of play from left to right. Coordinates from Whoscored.", fontproperties=font_prop_small, color='grey', ha='right', transform=ax.transAxes)
+
+    return fig
+
+def draw_pass_receptions(df, team, game_info, player, data_type_option, image_path):
+    fig, ax = plt.subplots(figsize=(12, 12), constrained_layout=True)
+    pitch = Pitch(spot_type='square', spot_scale=0.01, pitch_type='wyscout', line_color='lightgrey', linewidth=4, line_zorder=2, pitch_color='None')
+    pitch.draw(ax=ax)
+    ax.set_facecolor('None')
+    ax.set_zorder(1)
+    plt.gca().invert_yaxis()
+    
+    image_bg(image_path, fig)
+    
+    bs = pitch.bin_statistic(df.end_x, df.end_y, bins=(48, 32))
+    pitch.heatmap(bs, ax=ax, edgecolor='black', linewidth=4, cmap='magma')
+
+    ax.set_title(f"{player if 'Player' in data_type_option else team} - Pass Receptions", fontproperties=font_prop_large, color='w', loc='left')
+    ax.text(0.05, 0.85, game_info, fontproperties=font_prop_medium, color='#2af5bf', ha='left', transform=ax.transAxes)
+    ax.text(.95, 0.175, "Direction of play from left to right. Coordinates from Whoscored.", fontproperties=font_prop_small, color='grey', ha='right', transform=ax.transAxes)
+
+    return fig
+
 def load_data(tournament):
     data_sources = {
         "Euro 2024": "https://drive.google.com/uc?export=download&id=1-IJfIqkYv39CRoSLgXdMd3QZrP0a9ViL",
