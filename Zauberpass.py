@@ -248,6 +248,32 @@ df = load_data(selected_tournament)
 # Add Radio Buttons for Data Type Selection
 data_type_option = st.radio("Select Data Type", ["Player - Match by Match", "Player - All Games", "Team - Match by Match", "Team - All Games"])
 
+# Extract unique teams
+teams = sorted(df['team'].unique())
+selected_team = st.selectbox("Select Team", teams, index=0)
+
+# Filter matches based on the selected team
+filtered_df_team = df[df['team'] == selected_team]
+matches = sorted(filtered_df_team['game'].unique())
+selected_match = st.selectbox("Select Match", matches, index=0, disabled=("All Games" in data_type_option))
+
+# Filter players based on the selected team and game
+filtered_df_game = filtered_df_team[filtered_df_team['game'] == selected_match]
+players = sorted(filtered_df_game['player'].dropna().unique())
+selected_player = st.selectbox("Select Player", players, index=0, disabled=("Team" in data_type_option))
+
+if "All Games" in data_type_option:
+    match_df = filtered_df_team
+    game_info = f"All Games - {selected_tournament}"
+else:
+    match_df = filtered_df_game
+    game_info = match_df.iloc[0]['game'] if len(match_df) > 0 else 'Game Information Not Available'
+
+if "Player" in data_type_option:
+    filtered_df = match_df[match_df['player'] == selected_player]
+else:
+    filtered_df = match_df
+
 compare = st.checkbox("Compare with another set of data")
 
 if compare:
@@ -278,7 +304,6 @@ if compare:
         filtered_df_compare = match_df_compare[match_df_compare['player'] == selected_player_compare]
     else:
         filtered_df_compare = match_df_compare
-
 
 
 # Add buttons for new features
