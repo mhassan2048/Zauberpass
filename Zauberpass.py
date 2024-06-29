@@ -250,6 +250,13 @@ def find_top_pass_clusters(df, num_clusters=3):
     if passes.empty:
         return None, None
 
+    # Remove rows with non-finite values in the necessary columns
+    passes = passes[['x', 'y', 'end_x', 'end_y']].dropna()
+    passes = passes[np.isfinite(passes).all(1)]
+
+    if passes.empty:
+        return None, None
+
     # Perform KMeans clustering
     kmeans = KMeans(n_clusters=num_clusters, random_state=0).fit(passes[['x', 'y', 'end_x', 'end_y']])
     passes['cluster'] = kmeans.labels_
@@ -274,6 +281,7 @@ def find_top_pass_clusters(df, num_clusters=3):
         })
     
     return passes, cluster_info
+
 
 def draw_pass_clusters(passes, cluster_info, team, game_info, player, data_type_option):
     pitch = Pitch(pitch_type='wyscout', line_color='lightgrey', linewidth=2, pitch_color='#22312b')
