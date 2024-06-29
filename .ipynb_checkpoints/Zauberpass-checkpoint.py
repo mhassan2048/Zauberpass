@@ -284,8 +284,12 @@ def find_top_pass_clusters(df, num_clusters=3):
 
 
 def draw_pass_clusters(passes, cluster_info, team, game_info, player, data_type_option):
-    pitch = Pitch(pitch_type='wyscout', line_color='lightgrey', linewidth=2, pitch_color='#22312b')
-    fig, ax = pitch.draw(figsize=(12, 8))
+    pitch = Pitch(spot_type='square', spot_scale=0.01, pitch_type='wyscout', line_color='lightgrey', linewidth=4, line_zorder=2, pitch_color='None')
+    fig, ax = pitch.draw(figsize=(12, 12), constrained_layout=True)
+    fig.set_facecolor('None')
+    ax.patch.set_facecolor('None')
+    ax.set_zorder(1)
+    plt.gca().invert_yaxis()
     
     colors = ['#4fff7e', '#fc77db', '#5fc8e8']
     arrow_length_scale = 2
@@ -302,10 +306,17 @@ def draw_pass_clusters(passes, cluster_info, team, game_info, player, data_type_
         delta_y = (cluster['avg_end_y'] - cluster['avg_start_y']) * arrow_length_scale
         pitch.arrows(avg_x, avg_y, avg_x + delta_x, avg_y + delta_y, color=colors[i], ax=ax, 
                      width=2, headwidth=3, headlength=3, path_effects=path_eff)
-
+    # Load your image
+    image_path = 'blogo.png'  # Replace with the path to your image
+    img = mpimg.imread(image_path)
+    img_ax = fig.add_axes([0.85, 0.85, 0.1, 0.1])  # Example: [left, bottom, width, height]
+    img_ax.imshow(img)
+    img_ax.axis('off')  # Turn off axis
+    
     plt.figtext(0.05, 0.9, f"{player if 'Player' in data_type_option else team} - Top 3 Pass Clusters", fontproperties=font_prop_large, color='w', ha='left')
     plt.figtext(0.05, 0.85, game_info, fontproperties=font_prop_medium, color='#2af5bf', ha='left')
     plt.figtext(.95, 0.175, "Direction of play from left to right. Coordinates from Whoscored.", fontproperties=font_prop_small, color='grey', ha='right')
+    return fig
     
     return fig
 
