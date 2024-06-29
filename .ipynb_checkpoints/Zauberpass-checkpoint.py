@@ -245,6 +245,7 @@ def draw_pass_receptions(df, team, game_info, player, data_type_option):
 
 def find_top_pass_clusters(df, num_clusters=3):
     # Filter successful passes
+    passes = df[df['type'] == 'Pass']
     passes = df[df['outcome_type'] == 'Successful']
 
     if passes.empty:
@@ -291,13 +292,14 @@ def draw_pass_clusters(passes, cluster_info, team, game_info, player, data_type_
     ax.set_zorder(1)
     plt.gca().invert_yaxis()
     
-    colors = ['#4fff7e', '#fc77db', '#5fc8e8']
-    arrow_length_scale = 2
+    
+    colors = ['lightgreen', 'deeppink', 'royalblue']
+    arrow_length_scale = 3
 
     for i, cluster in enumerate(cluster_info):
         cluster_data = passes[passes['cluster'] == cluster['cluster']]
         pitch.lines(xstart=cluster_data['x'], ystart=cluster_data['y'], xend=cluster_data['end_x'], 
-                    yend=cluster_data['end_y'], color=colors[i], lw=5, zorder=3, alpha_start=0.2, alpha_end=0.8, ax=ax)
+                    yend=cluster_data['end_y'], color=colors[i], lw=3, zorder=3, alpha_start=0.01, alpha_end=0.8, ax=ax)
         
         # Plot the average direction arrow
         avg_x = cluster['avg_start_x']
@@ -305,7 +307,9 @@ def draw_pass_clusters(passes, cluster_info, team, game_info, player, data_type_
         delta_x = (cluster['avg_end_x'] - cluster['avg_start_x']) * arrow_length_scale
         delta_y = (cluster['avg_end_y'] - cluster['avg_start_y']) * arrow_length_scale
         pitch.arrows(avg_x, avg_y, avg_x + delta_x, avg_y + delta_y, color=colors[i], ax=ax, 
-                     width=2, headwidth=3, headlength=3, path_effects=path_eff)
+                     width=2, headwidth=3, headlength=3, path_effects=path_eff, zorder=4)
+    
+    
     # Load your image
     image_path = 'blogo.png'  # Replace with the path to your image
     img = mpimg.imread(image_path)
