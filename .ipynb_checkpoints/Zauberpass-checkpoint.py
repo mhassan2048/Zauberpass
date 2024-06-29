@@ -3,13 +3,12 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from mplsoccer import Pitch, FontManager
+from sklearn.cluster import KMeans
 import matplotlib.image as mpimg
 import matplotlib.font_manager as fm
 from PIL import Image
 from mplsoccer.utils import add_image
-from sklearn.cluster import KMeans
 import matplotlib.patheffects as path_effects
-
 # fontmanager for google font (robotto)
 robotto_regular = FontManager()
 
