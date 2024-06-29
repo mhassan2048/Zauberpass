@@ -311,8 +311,8 @@ def draw_pass_clusters(passes, cluster_info, team, game_info, player, data_type_
         avg_y = cluster['avg_start_y']
         delta_x = (cluster['avg_end_x'] - cluster['avg_start_x']) * arrow_length_scale
         delta_y = (cluster['avg_end_y'] - cluster['avg_start_y']) * arrow_length_scale
-        pitch.arrows(avg_x, avg_y, avg_x + delta_x, avg_y + delta_y, color=arrow_color, ax=ax, 
-                     width=6, headwidth=5, headlength=5, path_effects=path_eff, zorder=4)
+        pitch.arrows(avg_x, avg_y, avg_x + delta_x, avg_y + delta_y, color=colors[i], ax=ax, 
+                     width=7, headwidth=5, headlength=5, path_effects=path_eff, zorder=4)
     
     # Load your image
     image_path = 'blogo.png'  # Replace with the path to your image
