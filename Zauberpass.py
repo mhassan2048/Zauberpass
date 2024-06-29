@@ -85,7 +85,7 @@ def draw_passmap(df, team, game_info, player, data_type_option):
     # Load your image
     image_path = 'blogo.png'  # Replace with the path to your image
     img = mpimg.imread(image_path)
-    img_ax = fig.add_axes([0.85, 0.85, 0.1, 0.1])  # Example: [left, bottom, width, height]
+    img_ax = fig.add_axes([0.85, 0.85, 0.15, 0.15])  # Example: [left, bottom, width, height]
     img_ax.imshow(img)
     img_ax.axis('off')  # Turn off axis
     
@@ -132,7 +132,7 @@ def draw_defensive_actions(df, team, game_info, player, data_type_option):
     # Load your image
     image_path = 'blogo.png'  # Replace with the path to your image
     img = mpimg.imread(image_path)
-    img_ax = fig.add_axes([0.85, 0.85, 0.1, 0.1])  # Example: [left, bottom, width, height]
+    img_ax = fig.add_axes([0.85, 0.85, 0.15, 0.15])  # Example: [left, bottom, width, height]
     img_ax.imshow(img)
     img_ax.axis('off')  # Turn off axis
     
@@ -164,7 +164,7 @@ def draw_heatmap(df, team, game_info, player, data_type_option):
     # Load your image
     image_path = 'blogo.png'  # Replace with the path to your image
     img = mpimg.imread(image_path)
-    img_ax = fig.add_axes([0.85, 0.85, 0.1, 0.1])  # Example: [left, bottom, width, height]
+    img_ax = fig.add_axes([0.85, 0.85, 0.15, 0.15])  # Example: [left, bottom, width, height]
     img_ax.imshow(img)
     img_ax.axis('off')  # Turn off axis
     
@@ -199,7 +199,7 @@ def draw_takeons(df, team, game_info, player, data_type_option):
     # Load your image
     image_path = 'blogo.png'  # Replace with the path to your image
     img = mpimg.imread(image_path)
-    img_ax = fig.add_axes([0.85, 0.85, 0.1, 0.1])  # Example: [left, bottom, width, height]
+    img_ax = fig.add_axes([0.85, 0.85, 0.15, 0.15])  # Example: [left, bottom, width, height]
     img_ax.imshow(img)
     img_ax.axis('off')  # Turn off axis
     
@@ -234,7 +234,7 @@ def draw_pass_receptions(df, team, game_info, player, data_type_option):
     # Load your image
     image_path = 'blogo.png'  # Replace with the path to your image
     img = mpimg.imread(image_path)
-    img_ax = fig.add_axes([0.85, 0.85, 0.1, 0.1])  # Example: [left, bottom, width, height]
+    img_ax = fig.add_axes([0.85, 0.85, 0.15, 0.15])  # Example: [left, bottom, width, height]
     img_ax.imshow(img)
     img_ax.axis('off')  # Turn off axis
     
@@ -317,7 +317,7 @@ def draw_pass_clusters(passes, cluster_info, team, game_info, player, data_type_
     # Load your image
     image_path = 'blogo.png'  # Replace with the path to your image
     img = mpimg.imread(image_path)
-    img_ax = fig.add_axes([0.85, 0.85, 0.1, 0.1])  # Example: [left, bottom, width, height]
+    img_ax = fig.add_axes([0.85, 0.85, 0.15, 0.15])  # Example: [left, bottom, width, height]
     img_ax.imshow(img)
     img_ax.axis('off')  # Turn off axis
     
