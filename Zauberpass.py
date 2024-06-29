@@ -340,7 +340,7 @@ def load_data(tournament):
     return df
 
 # Load and resize the logo
-image = Image.open("zplogo.png")
+image = Image.open("zplogo2.png")
 image = image.resize((100, 100))  # Resize to 100x100 pixels
 
 # Display the logo and title
