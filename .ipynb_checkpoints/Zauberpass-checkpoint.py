@@ -261,7 +261,7 @@ def find_top_pass_clusters(df, num_clusters=10, top_n=3):
         return None, None
 
     # Perform KMeans clustering
-    kmeans = KMeans(n_clusters=num_clusters, random_state=0).fit(passes[['x', 'y', 'end_x', 'end_y']])
+    kmeans = KMeans(n_clusters=num_clusters, random_state=100).fit(passes[['x', 'y', 'end_x', 'end_y']])
     passes['cluster'] = kmeans.labels_
 
     # Find top clusters by number of passes
@@ -299,12 +299,12 @@ def draw_pass_clusters(passes, cluster_info, team, game_info, player, data_type_
     
     colors = ['lightgreen', 'deeppink', 'royalblue']
     arrow_color = 'gold'
-    arrow_length_scale = 3
+    arrow_length_scale = 2
 
     for i, cluster in enumerate(cluster_info):
         cluster_data = passes[passes['cluster'] == cluster['cluster']]
         pitch.lines(xstart=cluster_data['x'], ystart=cluster_data['y'], xend=cluster_data['end_x'], 
-                    yend=cluster_data['end_y'], color=colors[i], lw=3, zorder=3, alpha_start=0.01, alpha_end=0.8, ax=ax)
+                    yend=cluster_data['end_y'], color=colors[i], lw=3, zorder=3, transparent=True, alpha_start=0.25, alpha_end=0.01, ax=ax)
         
         # Plot the average direction arrow
         avg_x = cluster['avg_start_x']
@@ -312,7 +312,7 @@ def draw_pass_clusters(passes, cluster_info, team, game_info, player, data_type_
         delta_x = (cluster['avg_end_x'] - cluster['avg_start_x']) * arrow_length_scale
         delta_y = (cluster['avg_end_y'] - cluster['avg_start_y']) * arrow_length_scale
         pitch.arrows(avg_x, avg_y, avg_x + delta_x, avg_y + delta_y, color=arrow_color, ax=ax, 
-                     width=2, headwidth=3, headlength=3, path_effects=path_eff, zorder=4)
+                     width=6, headwidth=5, headlength=5, path_effects=path_eff, zorder=4)
     
     # Load your image
     image_path = 'blogo.png'  # Replace with the path to your image
