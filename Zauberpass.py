@@ -7,6 +7,7 @@ import matplotlib.image as mpimg
 import matplotlib.font_manager as fm
 from PIL import Image
 from mplsoccer.utils import add_image
+from sklearn.cluster import KMeans
 import matplotlib.patheffects as path_effects
 
 # fontmanager for google font (robotto)
@@ -243,6 +244,63 @@ def draw_pass_receptions(df, team, game_info, player, data_type_option):
     plt.figtext(.95, 0.175, "Direction of play from left to right. Coordinates from Whoscored.", fontproperties=font_prop_small, color='grey', ha='right')
     return fig
 
+def find_top_pass_clusters(df, num_clusters=3):
+    # Filter successful passes
+    passes = df[df['outcome_type'] == 'Successful']
+
+    if passes.empty:
+        return None, None
+
+    # Perform KMeans clustering
+    kmeans = KMeans(n_clusters=num_clusters, random_state=0).fit(passes[['x', 'y', 'end_x', 'end_y']])
+    passes['cluster'] = kmeans.labels_
+
+    # Find top clusters by number of passes
+    top_clusters = passes['cluster'].value_counts().nlargest(num_clusters).index
+
+    cluster_info = []
+    for cluster in top_clusters:
+        cluster_data = passes[passes['cluster'] == cluster]
+        avg_start_x = cluster_data['x'].mean()
+        avg_start_y = cluster_data['y'].mean()
+        avg_end_x = cluster_data['end_x'].mean()
+        avg_end_y = cluster_data['end_y'].mean()
+        cluster_info.append({
+            'cluster': cluster,
+            'avg_start_x': avg_start_x,
+            'avg_start_y': avg_start_y,
+            'avg_end_x': avg_end_x,
+            'avg_end_y': avg_end_y,
+            'count': len(cluster_data)
+        })
+    
+    return passes, cluster_info
+
+def draw_pass_clusters(passes, cluster_info, team, game_info, player, data_type_option):
+    pitch = Pitch(pitch_type='wyscout', line_color='lightgrey', linewidth=2, pitch_color='#22312b')
+    fig, ax = pitch.draw(figsize=(12, 8))
+    
+    colors = ['#4fff7e', '#fc77db', '#5fc8e8']
+    arrow_length_scale = 2
+
+    for i, cluster in enumerate(cluster_info):
+        cluster_data = passes[passes['cluster'] == cluster['cluster']]
+        pitch.lines(xstart=cluster_data['x'], ystart=cluster_data['y'], xend=cluster_data['end_x'], 
+                    yend=cluster_data['end_y'], color=colors[i], lw=5, zorder=3, alpha_start=0.2, alpha_end=0.8, ax=ax)
+        
+        # Plot the average direction arrow
+        avg_x = cluster['avg_start_x']
+        avg_y = cluster['avg_start_y']
+        delta_x = (cluster['avg_end_x'] - cluster['avg_start_x']) * arrow_length_scale
+        delta_y = (cluster['avg_end_y'] - cluster['avg_start_y']) * arrow_length_scale
+        pitch.arrows(avg_x, avg_y, avg_x + delta_x, avg_y + delta_y, color=colors[i], ax=ax, 
+                     width=2, headwidth=3, headlength=3, path_effects=path_eff)
+
+    plt.figtext(0.05, 0.9, f"{player if 'Player' in data_type_option else team} - Top 3 Pass Clusters", fontproperties=font_prop_large, color='w', ha='left')
+    plt.figtext(0.05, 0.85, game_info, fontproperties=font_prop_medium, color='#2af5bf', ha='left')
+    plt.figtext(.95, 0.175, "Direction of play from left to right. Coordinates from Whoscored.", fontproperties=font_prop_small, color='grey', ha='right')
+    
+    return fig
 
 def load_data(tournament):
     data_sources = {
@@ -329,7 +387,6 @@ if compare:
         filtered_df_compare = match_df_compare
 
 
-# Add buttons for new features
 if st.button("Full Analysis"):
     col1, col2 = st.columns(2)
 
@@ -339,7 +396,14 @@ if st.button("Full Analysis"):
         fig1_pass_receptions = draw_pass_receptions(filtered_df, selected_team, game_info, selected_player, data_type_option)
         fig1_defensive_actions = draw_defensive_actions(filtered_df, selected_team, game_info, selected_player, data_type_option)
         fig1_takeons = draw_takeons(filtered_df, selected_team, game_info, selected_player, data_type_option)
-
+        
+        passes, cluster_info = find_top_pass_clusters(filtered_df)
+        if passes is not None and cluster_info is not None:
+            fig1_clusters = draw_pass_clusters(passes, cluster_info, selected_team, game_info, selected_player, data_type_option)
+            st.pyplot(fig1_clusters)
+        else:
+            st.write("No successful passes found for clustering.")
+        
         st.pyplot(fig1_heatmap)
         st.pyplot(fig1_passmap)
         st.pyplot(fig1_pass_receptions)
@@ -354,11 +418,38 @@ if st.button("Full Analysis"):
             fig2_defensive_actions = draw_defensive_actions(filtered_df_compare, selected_team_compare, game_info_compare, selected_player_compare, data_type_option_compare)
             fig2_takeons = draw_takeons(filtered_df_compare, selected_team_compare, game_info_compare, selected_player_compare, data_type_option_compare)
 
+            passes_compare, cluster_info_compare = find_top_pass_clusters(filtered_df_compare)
+            if passes_compare is not None and cluster_info_compare is not None:
+                fig2_clusters = draw_pass_clusters(passes_compare, cluster_info_compare, selected_team_compare, game_info_compare, selected_player_compare, data_type_option_compare)
+                st.pyplot(fig2_clusters)
+            else:
+                st.write("No successful passes found for clustering.")
+                
             st.pyplot(fig2_heatmap)
             st.pyplot(fig2_passmap)
             st.pyplot(fig2_pass_receptions)
             st.pyplot(fig2_defensive_actions)
             st.pyplot(fig2_takeons)
+
+if st.button("Top 3 Pass Clusters"):
+    col1, col2 = st.columns(2)
+
+    with col1:
+        passes, cluster_info = find_top_pass_clusters(filtered_df)
+        if passes is not None and cluster_info is not None:
+            fig1 = draw_pass_clusters(passes, cluster_info, selected_team, game_info, selected_player, data_type_option)
+            st.pyplot(fig1)
+        else:
+            st.write("No successful passes found for clustering.")
+
+    if compare:
+        with col2:
+            passes_compare, cluster_info_compare = find_top_pass_clusters(filtered_df_compare)
+            if passes_compare is not None and cluster_info_compare is not None:
+                fig2 = draw_pass_clusters(passes_compare, cluster_info_compare, selected_team_compare, game_info_compare, selected_player_compare, data_type_option_compare)
+                st.pyplot(fig2)
+            else:
+                st.write("No successful passes found for clustering.")
 
 if st.button("Passmap"):
     col1, col2 = st.columns(2)
