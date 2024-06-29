@@ -243,10 +243,12 @@ def draw_pass_receptions(df, team, game_info, player, data_type_option):
     plt.figtext(.95, 0.175, "Direction of play from left to right. Coordinates from Whoscored.", fontproperties=font_prop_small, color='grey', ha='right')
     return fig
 
-def find_top_pass_clusters(df, num_clusters=3):
+from sklearn.cluster import KMeans
+
+def find_top_pass_clusters(df, num_clusters=10, top_n=3):
     # Filter successful passes
     passes = df[df['type'] == 'Pass']
-    passes = df[df['outcome_type'] == 'Successful']
+    passes = passes[passes['outcome_type'] == 'Successful']
 
     if passes.empty:
         return None, None
@@ -263,7 +265,7 @@ def find_top_pass_clusters(df, num_clusters=3):
     passes['cluster'] = kmeans.labels_
 
     # Find top clusters by number of passes
-    top_clusters = passes['cluster'].value_counts().nlargest(num_clusters).index
+    top_clusters = passes['cluster'].value_counts().nlargest(top_n).index
 
     cluster_info = []
     for cluster in top_clusters:
@@ -284,6 +286,7 @@ def find_top_pass_clusters(df, num_clusters=3):
     return passes, cluster_info
 
 
+
 def draw_pass_clusters(passes, cluster_info, team, game_info, player, data_type_option):
     pitch = Pitch(spot_type='square', spot_scale=0.01, pitch_type='wyscout', line_color='lightgrey', linewidth=4, line_zorder=2, pitch_color='None')
     fig, ax = pitch.draw(figsize=(12, 12), constrained_layout=True)
@@ -292,8 +295,10 @@ def draw_pass_clusters(passes, cluster_info, team, game_info, player, data_type_
     ax.set_zorder(1)
     plt.gca().invert_yaxis()
     
+    image_bg("passmap_bg", fig)
     
     colors = ['lightgreen', 'deeppink', 'royalblue']
+    arrow_color = 'gold'
     arrow_length_scale = 3
 
     for i, cluster in enumerate(cluster_info):
@@ -306,9 +311,8 @@ def draw_pass_clusters(passes, cluster_info, team, game_info, player, data_type_
         avg_y = cluster['avg_start_y']
         delta_x = (cluster['avg_end_x'] - cluster['avg_start_x']) * arrow_length_scale
         delta_y = (cluster['avg_end_y'] - cluster['avg_start_y']) * arrow_length_scale
-        pitch.arrows(avg_x, avg_y, avg_x + delta_x, avg_y + delta_y, color=colors[i], ax=ax, 
+        pitch.arrows(avg_x, avg_y, avg_x + delta_x, avg_y + delta_y, color=arrow_color, ax=ax, 
                      width=2, headwidth=3, headlength=3, path_effects=path_eff, zorder=4)
-    
     
     # Load your image
     image_path = 'blogo.png'  # Replace with the path to your image
@@ -321,8 +325,7 @@ def draw_pass_clusters(passes, cluster_info, team, game_info, player, data_type_
     plt.figtext(0.05, 0.85, game_info, fontproperties=font_prop_medium, color='#2af5bf', ha='left')
     plt.figtext(.95, 0.175, "Direction of play from left to right. Coordinates from Whoscored.", fontproperties=font_prop_small, color='grey', ha='right')
     return fig
-    
-    return fig
+
 
 def load_data(tournament):
     data_sources = {
