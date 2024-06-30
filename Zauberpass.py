@@ -212,6 +212,11 @@ def draw_takeons(df, team, game_info, player, data_type_option):
 
 
 def draw_pass_receptions(df, team, game_info, player, data_type_option):
+    required_columns = ['minute', 'second', 'game_id', 'x', 'y', 'end_x', 'end_y', 'player', 'type', 'outcome_type']
+    missing_columns = [col for col in required_columns if col not in df.columns]
+    if missing_columns:
+        raise KeyError(f"Missing required columns in the DataFrame: {missing_columns}")
+    
     pitch = Pitch(spot_type='square', spot_scale=0.01, pitch_type='wyscout', line_color='lightgrey', linewidth=4, line_zorder=2, pitch_color='None')
     fig, ax = pitch.draw(figsize=(12, 12), constrained_layout=True)
     fig.set_facecolor('None')
@@ -221,18 +226,20 @@ def draw_pass_receptions(df, team, game_info, player, data_type_option):
 
     image_bg("passmap_bg", fig)
     
-    # Filter for successful passes
-    df = df[df['type'] == 'Pass']
-    df = df[df['outcome_type'] == 'Successful']
-    
+    # Filter for the specific team and successful passes
+    df = df[(df['team'] == team) & (df['type'] == 'Pass') & (df['outcome_type'] == 'Successful')]
+
     if 'Player' in data_type_option:
         # Identify pass receptions for the specific player
-        df['next_player'] = df['player'].shift(-1)
-        df['next_start_x'] = df['start_x'].shift(-1)
-        df['next_start_y'] = df['start_y'].shift(-1)
-        receptions = df[(df['next_player'] == player) & (df['player'] != player)]
-        end_x = receptions['end_x']
-        end_y = receptions['end_y']
+        df['passer'] = df['player']
+        df['recipient'] = df['passer'].shift(-1)
+        df['time'] = df['minute'] * 60 + df['second']
+        df_recipient = df[(df['type'] == 'Pass') & (df['outcome_type'] == 'Successful') & (df['recipient'] == player)]
+
+        # Ensure the game_id matches for consecutive rows
+        condition = df['game_id'] == df['game_id'].shift(-1)
+        end_x = df_recipient['end_x']
+        end_y = df_recipient['end_y']
     else:
         end_x = df['end_x']
         end_y = df['end_y']
@@ -256,7 +263,6 @@ def draw_pass_receptions(df, team, game_info, player, data_type_option):
     plt.figtext(0.05, 0.85, game_info, fontproperties=font_prop_medium, color='#2af5bf', ha='left')
     plt.figtext(.95, 0.175, "Direction of play from left to right. Coordinates from Opta.", fontproperties=font_prop_small, color='grey', ha='right')
     return fig
-from sklearn.cluster import KMeans
 
 def find_top_pass_clusters(df, num_clusters=10, top_n=3):
     # Filter successful passes
