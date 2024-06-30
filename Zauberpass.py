@@ -221,15 +221,29 @@ def draw_pass_receptions(df, team, game_info, player, data_type_option):
 
     image_bg("passmap_bg", fig)
     
+    # Filter for successful passes
+    df = df[df['type'] == 'Pass']
+    df = df[df['outcome_type'] == 'Successful']
     
+    if 'Player' in data_type_option:
+        # Identify pass receptions for the specific player
+        df['next_player'] = df['player'].shift(-1)
+        df['next_start_x'] = df['start_x'].shift(-1)
+        df['next_start_y'] = df['start_y'].shift(-1)
+        receptions = df[(df['next_player'] == player) & (df['player'] != player)]
+        end_x = receptions['end_x']
+        end_y = receptions['end_y']
+    else:
+        end_x = df['end_x']
+        end_y = df['end_y']
     
-    bin_statistic = pitch.bin_statistic_positional(df.end_x, df.end_y, statistic='count',
-                                               positional='full', normalize=True)
+    bin_statistic = pitch.bin_statistic_positional(end_x, end_y, statistic='count',
+                                                   positional='full', normalize=True)
     pitch.heatmap_positional(bin_statistic, ax=ax, cmap='rocket', edgecolors='darkgrey')
-    pitch.scatter(df.end_x, df.end_y, c='white', s=5, ax=ax)
+    pitch.scatter(end_x, end_y, c='white', s=5, ax=ax)
     labels = pitch.label_heatmap(bin_statistic, color='lightgreen', fontsize=24,
-                             ax=ax, ha='center', va='center',
-                             str_format='{:.0%}', path_effects=path_eff, rotation=0)
+                                 ax=ax, ha='center', va='center',
+                                 str_format='{:.0%}', path_effects=path_eff, rotation=0)
 
     # Load your image
     image_path = 'blogo.png'  # Replace with the path to your image
@@ -242,7 +256,6 @@ def draw_pass_receptions(df, team, game_info, player, data_type_option):
     plt.figtext(0.05, 0.85, game_info, fontproperties=font_prop_medium, color='#2af5bf', ha='left')
     plt.figtext(.95, 0.175, "Direction of play from left to right. Coordinates from Opta.", fontproperties=font_prop_small, color='grey', ha='right')
     return fig
-
 from sklearn.cluster import KMeans
 
 def find_top_pass_clusters(df, num_clusters=10, top_n=3):
