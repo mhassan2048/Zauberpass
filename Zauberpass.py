@@ -23,7 +23,7 @@ font_prop_large = fm.FontProperties(fname=font_path, size=48, weight='bold')
 font_prop_medium = fm.FontProperties(fname=font_path, size=24, weight='bold')
 font_prop_small = fm.FontProperties(fname=font_path, size=20, weight='bold')
 
-def add_team_flag(fig, team_name, alpha=1.0):
+def add_team_flag(fig, team_name, alpha=.75):
     flag_image_path = f'flags/{team_name}.png'
     if os.path.isfile(flag_image_path):
         img = mpimg.imread(flag_image_path)
