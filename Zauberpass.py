@@ -125,8 +125,8 @@ def draw_defensive_actions(df, team, game_info, player, data_type_option):
                              str_format='{:.0%}', path_effects=path_eff, rotation=0)
     
     # Draw a line at the average 'x' of the defensive actions
-    mean_y = team_data['y'].mean()
-    ax.axvline(x=mean_y, color='black', linestyle='-', linewidth=40, alpha=0.65)
+    mean_x = team_data['x'].mean()
+    ax.axvline(x=mean_x, color='black', linestyle='-', linewidth=40, alpha=0.65)
     pitch.text(mean_y - 1, 50, 'Avg. Defensive Actions Height', color='w', ax=ax,fontproperties=font_prop_medium, va='bottom', ha='center', rotation=270)
 
     # Load your image
@@ -395,7 +395,8 @@ if "All Games" in data_type_option:
     game_info = f"All Games - {selected_tournament}"
 else:
     match_df = filtered_df_game
-    game_info = match_df.iloc[0]['game'] if len(match_df) > 0 else 'Game Information Not Available'
+    game_info_full = match_df.iloc[0]['game']
+    game_info = game_info_full.split(' ', 1)[1]+f" {selected_tournament}" if len(match_df) > 0 else 'Game Information Not Available'
 
 if "Player" in data_type_option:
     filtered_df = match_df[match_df['player'] == selected_player]
