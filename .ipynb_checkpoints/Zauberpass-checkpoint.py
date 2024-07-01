@@ -144,7 +144,7 @@ def draw_defensive_actions(df, team, game_info, player, data_type_option):
 
     bin_statistic = pitch.bin_statistic_positional(team_data.x, team_data.y, statistic='count',
                                                positional='full', normalize=True)
-    pitch.heatmap_positional(bin_statistic, ax=ax, cmap='rocket', edgecolors='darkgrey')
+    hm=pitch.heatmap_positional(bin_statistic, ax=ax, cmap='rocket', edgecolors='darkgrey')
     pitch.scatter(team_data.x, team_data.y, c='white', s=5, ax=ax)
     labels = pitch.label_heatmap(bin_statistic, color='lightgreen', fontsize=24,
                              ax=ax, ha='center', va='center',
