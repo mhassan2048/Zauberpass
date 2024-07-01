@@ -22,6 +22,13 @@ font_prop_large = fm.FontProperties(fname=font_path, size=48, weight='bold')
 font_prop_medium = fm.FontProperties(fname=font_path, size=24, weight='bold')
 font_prop_small = fm.FontProperties(fname=font_path, size=20, weight='bold')
 
+def add_team_flag(fig, team_name):
+    flag_image_path = os.path.join('flags', f'{team_name}.png')
+    if os.path.isfile(flag_image_path):
+        img = mpimg.imread(flag_image_path)
+        img_ax = fig.add_axes([0.80, 0.85, 0.1, 0.1])  # Adjusted coordinates for flag
+        img_ax.imshow(img)
+        img_ax.axis('off')  # Turn off axis
 
 def image_bg(img, fig):
     image_path = f"{img}.png"  # Assuming the background image is in PNG format
@@ -67,6 +74,7 @@ def draw_passmap(df, team, game_info, player, data_type_option):
 
     image_bg("passmap_bg", fig)
     
+    
     comp_clr = '#ff9d00'
     regular_clr = '#c791f2'
     failed_clr = 'darkgrey'
@@ -88,6 +96,8 @@ def draw_passmap(df, team, game_info, player, data_type_option):
     img_ax = fig.add_axes([0.85, 0.85, 0.1, 0.1])  # Example: [left, bottom, width, height]
     img_ax.imshow(img)
     img_ax.axis('off')  # Turn off axis
+    
+    add_team_flag(fig, team)
     
     plt.figtext(0.05, 0.9, f"{player if 'Player' in data_type_option else team} - Passes", fontproperties=font_prop_large, color='w', ha='left')
     plt.figtext(0.05, 0.85, game_info, fontproperties=font_prop_medium, color='#2af5bf', ha='left')
@@ -136,6 +146,8 @@ def draw_defensive_actions(df, team, game_info, player, data_type_option):
     img_ax.imshow(img)
     img_ax.axis('off')  # Turn off axis
     
+    add_team_flag(fig, team)
+    
     plt.figtext(0.05, 0.9, f"{player if 'Player' in data_type_option else team} - Defenfive Actions Heatmap", fontproperties=font_prop_large, color='w', ha='left')
     plt.figtext(0.05, 0.85, game_info, fontproperties=font_prop_medium, color='#2af5bf', ha='left')
     plt.figtext(0.5, 0.08, f"Defensive actions: tackles, interceptions, challanges, fouls. \nDirection of play from south to north. \nCoordinates from Opta.", ha='center', fontproperties=font_prop_small, color="grey")
@@ -167,6 +179,8 @@ def draw_heatmap(df, team, game_info, player, data_type_option):
     img_ax = fig.add_axes([0.85, 0.85, 0.1, 0.1])  # Example: [left, bottom, width, height]
     img_ax.imshow(img)
     img_ax.axis('off')  # Turn off axis
+    
+    add_team_flag(fig, team)
     
     plt.figtext(0.05, 0.9, f"{player if 'Player' in data_type_option else team} - Heatmap", fontproperties=font_prop_large, color='w', ha='left')
     plt.figtext(0.05, 0.85, game_info, fontproperties=font_prop_medium, color='#2af5bf', ha='left')
@@ -202,6 +216,8 @@ def draw_takeons(df, team, game_info, player, data_type_option):
     img_ax = fig.add_axes([0.85, 0.85, 0.1, 0.1])  # Example: [left, bottom, width, height]
     img_ax.imshow(img)
     img_ax.axis('off')  # Turn off axis
+    
+    add_team_flag(fig, team)
     
     plt.figtext(0.05, 0.9, f"{player if 'Player' in data_type_option else team} - Take-ons", fontproperties=font_prop_large, color='w', ha='left')
     plt.figtext(0.05, 0.85, game_info, fontproperties=font_prop_medium, color='#2af5bf', ha='left')
@@ -258,6 +274,8 @@ def draw_pass_receptions(df, team, game_info, player, data_type_option):
     img_ax = fig.add_axes([0.85, 0.85, 0.1, 0.1])  # Example: [left, bottom, width, height]
     img_ax.imshow(img)
     img_ax.axis('off')  # Turn off axis
+    
+    add_team_flag(fig, team)
     
     plt.figtext(0.05, 0.9, f"{player if 'Player' in data_type_option else team} - Pass Receptions", fontproperties=font_prop_large, color='w', ha='left')
     plt.figtext(0.05, 0.85, game_info, fontproperties=font_prop_medium, color='#2af5bf', ha='left')
@@ -344,6 +362,8 @@ def draw_pass_clusters(passes, cluster_info, team, game_info, player, data_type_
     img_ax = fig.add_axes([0.85, 0.85, 0.1, 0.1])  # Example: [left, bottom, width, height]
     img_ax.imshow(img)
     img_ax.axis('off')  # Turn off axis
+    
+    add_team_flag(fig, team)
     
     plt.figtext(0.05, 0.9, f"{player if 'Player' in data_type_option else team} - Top 3 Pass Clusters", fontproperties=font_prop_large, color='w', ha='left')
     plt.figtext(0.05, 0.85, game_info, fontproperties=font_prop_medium, color='#2af5bf', ha='left')
