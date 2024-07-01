@@ -126,8 +126,8 @@ def draw_defensive_actions(df, team, game_info, player, data_type_option):
     
     # Draw a line at the average 'x' of the defensive actions
     mean_x = team_data['x'].mean()
-    ax.axvline(x=mean_x, color='darkred', linestyle='-', linewidth=40, alpha=0.65)
-    pitch.text(mean_x - 1, 50, 'Avg. Defensive Actions Height', color='w', ax=ax,fontproperties=font_prop_medium, va='bottom', ha='center', rotation=270)
+    ax.axvline(x=mean_x, color='darkred', linestyle='-', linewidth=40, alpha=0.95, zorder=5)
+    pitch.text(mean_x - 1, 50, 'Avg. Defensive Actions Height', color='w', ax=ax,fontproperties=font_prop_medium, va='bottom', ha='center', rotation=270, zorder=6)
 
     # Load your image
     image_path = 'blogo.png'  # Replace with the path to your image
@@ -392,11 +392,11 @@ selected_player = st.selectbox("Select Player", players, index=0, disabled=("Tea
 
 if "All Games" in data_type_option:
     match_df = filtered_df_team
-    game_info = f"All Games - {selected_tournament}"
+    game_info = f"All Games in {selected_tournament}"
 else:
     match_df = filtered_df_game
     game_info_full = match_df.iloc[0]['game']
-    game_info = game_info_full.split(' ', 1)[1]+f" {selected_tournament}" if len(match_df) > 0 else 'Game Information Not Available'
+    game_info = game_info_full.split(' ', 1)[1]+f" in {selected_tournament}" if len(match_df) > 0 else 'Game Information Not Available'
 
 if "Player" in data_type_option:
     filtered_df = match_df[match_df['player'] == selected_player]
