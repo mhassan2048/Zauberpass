@@ -43,7 +43,14 @@ def image_bg(img, fig):
     ax_image = add_image(image, fig, left=0, bottom=0, width=1, height=1)
     ax_image.set_zorder(0)
 
-# Custom functions from the original code
+def add_colorbar(fig, mappable, position=[0.05, 0.05, 0.25, 0.03], labels=['Low', 'High'], font_prop=None):
+    cbar_ax = fig.add_axes(position)  # Adjust the position and size
+    cbar_obj = fig.colorbar(mappable, cax=cbar_ax, orientation='horizontal')
+    cbar_ax.set_xticks([0, 1])  # Only show low and high
+    cbar_ax.set_xticklabels(labels, fontproperties=font_prop, color='white')
+    cbar_ax.tick_params(colors='white')  # Set tick color to white
+    
+    # Custom functions from the original code
 def is_long_pass(x_start, x_end):
     dist_x = np.abs(x_end - x_start)
     return ((x_start < 50 and x_end < 50 and x_end > x_start and dist_x >= 30) or 
@@ -158,6 +165,9 @@ def draw_defensive_actions(df, team, game_info, player, data_type_option):
     plt.figtext(0.05, 0.9, f"{player if 'Player' in data_type_option else team} - Defenfive Actions Heatmap", fontproperties=font_prop_large, color='w', ha='left')
     plt.figtext(0.05, 0.85, game_info, fontproperties=font_prop_medium, color='#2af5bf', ha='left')
     plt.figtext(0.5, 0.08, f"Defensive actions: tackles, interceptions, challanges, fouls. \nDirection of play from south to north. \nCoordinates from Opta.", ha='center', fontproperties=font_prop_small, color="grey")
+
+    # Add the colorbar using the new function
+    add_colorbar(fig, hm, position=[0.05, 0.05, 0.25, 0.03], font_prop=font_prop_small)
     
     return fig
 
