@@ -27,7 +27,7 @@ def add_team_flag(fig, team_name):
     flag_image_path = f'flags/{team_name}.png'
     if os.path.isfile(flag_image_path):
         img = mpimg.imread(flag_image_path)
-        img_ax = fig.add_axes([0.77, 0.88, 0.07, 0.07])  # Adjusted coordinates for flag
+        img_ax = fig.add_axes([0.77, 0.865, 0.07, 0.07])  # Adjusted coordinates for flag
         img_ax.imshow(img)
         img_ax.axis('off')  # Turn off axis
     else:
