@@ -45,14 +45,18 @@ def image_bg(img, fig):
     ax_image.set_zorder(0)
 
 
-def add_colorbar(fig, mappable, position=[0.05, 0.05, 0.25, 0.03], labels=['Low', 'High'], font_prop=None):
+def add_colorbar(fig, cmap, position=[0.05, 0.05, 0.25, 0.03], labels=['Low', 'High'], font_prop=None):
+    norm = colors.Normalize(vmin=0, vmax=1)
+    sm = cm.ScalarMappable(cmap=cmap, norm=norm)
+    sm.set_array([])  # Only needed for standalone colorbar
+
     cbar_ax = fig.add_axes(position)  # Adjust the position and size
-    cbar = plt.colorbar(mappable, cax=cbar_ax, orientation='horizontal')
+    cbar = plt.colorbar(sm, cax=cbar_ax, orientation='horizontal')
     cbar.ax.set_xticks([0, 1])  # Only show low and high
     cbar.ax.set_xticklabels(labels, fontproperties=font_prop, color='white')
     cbar.ax.tick_params(colors='white')  # Set tick color to white
-    
     # Custom functions from the original code
+
 def is_long_pass(x_start, x_end):
     dist_x = np.abs(x_end - x_start)
     return ((x_start < 50 and x_end < 50 and x_end > x_start and dist_x >= 30) or 
@@ -144,7 +148,7 @@ def draw_defensive_actions(df, team, game_info, player, data_type_option):
 
     bin_statistic = pitch.bin_statistic_positional(team_data.x, team_data.y, statistic='count',
                                                positional='full', normalize=True)
-    hm=pitch.heatmap_positional(bin_statistic, ax=ax, cmap='rocket', edgecolors='darkgrey')
+    pitch.heatmap_positional(bin_statistic, ax=ax, cmap='rocket', edgecolors='darkgrey')
     pitch.scatter(team_data.x, team_data.y, c='white', s=5, ax=ax)
     labels = pitch.label_heatmap(bin_statistic, color='lightgreen', fontsize=24,
                              ax=ax, ha='center', va='center',
@@ -168,7 +172,9 @@ def draw_defensive_actions(df, team, game_info, player, data_type_option):
     plt.figtext(0.05, 0.85, game_info, fontproperties=font_prop_medium, color='#2af5bf', ha='left')
     plt.figtext(0.5, 0.08, f"Defensive actions: tackles, interceptions, challanges, fouls. \nDirection of play from south to north. \nCoordinates from Opta.", ha='center', fontproperties=font_prop_small, color="grey")
 
-    add_colorbar(fig, list(hm.values())[0], position=[0.05, 0.05, 0.25, 0.03], font_prop=font_prop_small)
+    # Add the colorbar using the new function
+    add_colorbar(fig, cmap='rocket', position=[0.05, 0.05, 0.25, 0.03], font_prop=font_prop_small)
+    
 
     
     return fig
