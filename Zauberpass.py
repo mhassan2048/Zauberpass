@@ -32,7 +32,7 @@ def add_team_flag(fig, team_name, alpha=.75):
         # Apply the alpha to the image
         np_img[:, :, 3] = (np_img[:, :, 3] * alpha).astype(np.uint8)
         
-        img_ax = fig.add_axes([0.77, 0.8675, 0.07, 0.07])  # Adjusted coordinates for flag
+        img_ax = fig.add_axes([0.775, 0.8675, 0.07, 0.07])  # Adjusted coordinates for flag
         img_ax.imshow(np_img)
         img_ax.axis('off')  # Turn off axis
     else:
