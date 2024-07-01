@@ -266,21 +266,25 @@ def draw_pass_receptions(df, team, game_info, player, data_type_option):
 
 def find_top_pass_clusters(df, num_clusters=10, top_n=3):
     # Filter successful passes
-    passes = df[df['type'] == 'Pass']
-    passes = passes[passes['outcome_type'] == 'Successful']
+    passes = df[(df['type'] == 'Pass') & (df['outcome_type'] == 'Successful')]
 
     if passes.empty:
         return None, None
 
     # Remove rows with non-finite values in the necessary columns
     passes = passes[['x', 'y', 'end_x', 'end_y']].dropna()
-    passes = passes[np.isfinite(passes).all(1)]
 
-    if passes.empty:
-        return None, None
+    # Ensure columns are numeric
+    required_columns = ['x', 'y', 'end_x', 'end_y']
+    if not all(pd.api.types.is_numeric_dtype(passes[col]) for col in required_columns):
+        raise ValueError("One or more columns are not numeric.")
+
+    # Ensure there are enough data points for clustering
+    if len(passes) < num_clusters:
+        raise ValueError(f"Number of data points ({len(passes)}) is less than the number of clusters ({num_clusters}).")
 
     # Perform KMeans clustering
-    kmeans = KMeans(n_clusters=num_clusters, random_state=100).fit(passes[['x', 'y', 'end_x', 'end_y']])
+    kmeans = KMeans(n_clusters=num_clusters, random_state=100).fit(passes)
     passes['cluster'] = kmeans.labels_
 
     # Find top clusters by number of passes
@@ -301,7 +305,7 @@ def find_top_pass_clusters(df, num_clusters=10, top_n=3):
             'avg_end_y': avg_end_y,
             'count': len(cluster_data)
         })
-    
+
     return passes, cluster_info
 
 
