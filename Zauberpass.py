@@ -23,13 +23,15 @@ font_prop_medium = fm.FontProperties(fname=font_path, size=24, weight='bold')
 font_prop_small = fm.FontProperties(fname=font_path, size=20, weight='bold')
 
 def add_team_flag(fig, team_name):
-    flag_image_path = os.path.join('flags', f'{team_name}.png')
+    current_dir = os.path.dirname(__file__)
+    flag_image_path = os.path.join(current_dir, 'flags', f'{team_name}.png')
     if os.path.isfile(flag_image_path):
         img = mpimg.imread(flag_image_path)
         img_ax = fig.add_axes([0.80, 0.85, 0.1, 0.1])  # Adjusted coordinates for flag
         img_ax.imshow(img)
-        img_ax.axis('off')
-        img_ax.set_zorder(1)# Turn off axis
+        img_ax.axis('off')  # Turn off axis
+    else:
+        st.warning(f"Flag image for {team_name} not found.")
 
 def image_bg(img, fig):
     image_path = f"{img}.png"  # Assuming the background image is in PNG format
