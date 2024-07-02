@@ -435,6 +435,11 @@ def draw_carries(df, team, game_info, player, data_type_option):
     prg = 0
     reg = 0
     
+    if "Player" in data_type_option:
+        df = df[df['player'] == player]
+    else:
+        df = df[df['team'] == team]
+    
     for x in range(len(df['game_id']) - 1):
         if df['type_id'][x] == 21:
             xs = df['start_x'][x]
