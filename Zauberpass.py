@@ -125,7 +125,7 @@ def draw_passmap(df, team, game_info, player, data_type_option):
     
     add_team_flag(fig, team, alpha=.75)
     
-    plt.figtext(0.05, 0.9, f"{player if 'Player' in data_type_option else team} - Passes", fontproperties=font_prop_title, color='deepink', ha='left')
+    plt.figtext(0.05, 0.9, f"{player if 'Player' in data_type_option else team} - Passes", fontproperties=font_prop_title, color='deeppink', ha='left')
     plt.figtext(0.05, 0.85, game_info, fontproperties=font_prop_medium, color='gold', ha='left')
     plt.figtext(0.04, 0.165, f"Regular Passes: {num_regular_passes}", fontproperties=font_prop_small, color='#c791f2', ha='left')
     plt.figtext(0.04, 0.135, f"Progressive Passes: {num_progressive_passes}", fontproperties=font_prop_small, color='#ff9d00', ha='left')
