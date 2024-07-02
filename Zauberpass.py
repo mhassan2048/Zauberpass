@@ -57,7 +57,7 @@ def add_colorbar(fig, cmap, position=[0.05, 0.1, 0.25, 0.02], labels=['Low', 'Hi
     cbar_ax = fig.add_axes(position)  # Adjust the position and size
     cbar = plt.colorbar(sm, cax=cbar_ax, orientation='horizontal')
     cbar.ax.set_xticks([0, 1])  # Only show low and high
-    cbar.ax.set_xticklabels(labels, fontproperties=font_prop_small, color=grey')
+    cbar.ax.set_xticklabels(labels, fontproperties=font_prop_small, color='grey')
     cbar.ax.tick_params(colors='grey')  # Set tick color to white
 
 def is_long_pass(x_start, x_end):
