@@ -11,7 +11,11 @@ import matplotlib.font_manager as fm
 from PIL import Image
 from mplsoccer.utils import add_image
 import matplotlib.patheffects as path_effects
-# fontmanager for google font (robotto)
+import matplotlib.cm as cm
+import matplotlib.colors as mcolors
+
+
+
 robotto_regular = FontManager()
 
 path_eff = [path_effects.Stroke(linewidth=2.5, foreground='black'),
