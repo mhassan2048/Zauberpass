@@ -99,7 +99,7 @@ def draw_passmap(df, team, game_info, player, data_type_option):
     plt.gca().invert_yaxis()
     
 
-    image_bg("bg", fig)
+    image_bg("passmap_bg", fig)
     
     
     comp_clr = '#ff9d00'
@@ -146,7 +146,7 @@ def draw_defensive_actions(df, team, game_info, player, data_type_option):
     defensive_actions = ['Tackle', 'Challenge', 'Interception', 'Foul']
     
 
-    image_bg("bg", fig)
+    image_bg("passmap_bg", fig)
 
     if "Player" in data_type_option:
         team_data = df[(df['player'] == player) & (df['type'].isin(defensive_actions))]
@@ -193,7 +193,7 @@ def draw_heatmap(df, team, game_info, player, data_type_option):
     plt.gca().invert_yaxis()
     
 
-    image_bg("bg", fig)
+    image_bg("passmap_bg", fig)
 
     bin_statistic = pitch.bin_statistic_positional(df.x, df.y, statistic='count',
                                                positional='full', normalize=True)
@@ -230,7 +230,7 @@ def draw_takeons(df, team, game_info, player, data_type_option):
     plt.gca().invert_yaxis()
     
 
-    image_bg("bg", fig)
+    image_bg("passmap_bg", fig)
 
     comp_clr = '#ff9d00'  # Define the color for successful take-ons
     count_s = 0
@@ -271,7 +271,7 @@ def draw_pass_receptions(df, team, game_info, player, data_type_option):
     ax.set_zorder(1)
     plt.gca().invert_yaxis()
 
-    image_bg("bg", fig)
+    image_bg("passmap_bg", fig)
     
     # Filter for the specific team and successful passes
     df = df[(df['team'] == team) & (df['type'] == 'Pass') & (df['outcome_type'] == 'Successful')]
@@ -369,7 +369,7 @@ def draw_pass_clusters(passes, cluster_info, team, game_info, player, data_type_
     ax.set_zorder(1)
     plt.gca().invert_yaxis()
     
-    image_bg("bg", fig)
+    image_bg("passmap_bg", fig)
     
     colors = ['lightgreen', 'deeppink', 'royalblue']
     arrow_color = 'gold'
@@ -438,7 +438,7 @@ def draw_carries(df, team, game_info, player, data_type_option):
     ax.set_zorder(1)
     
     # Add background image
-    image_bg("bg", fig)
+    image_bg("passmap_bg", fig)
     
     prg = 0
     reg = 0
