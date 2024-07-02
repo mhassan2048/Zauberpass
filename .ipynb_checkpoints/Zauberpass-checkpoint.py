@@ -22,7 +22,7 @@ path_eff = [path_effects.Stroke(linewidth=2.5, foreground='black'),
 
 
 font_path = 'font1.ttf'
-font_path2 = 'font2.otf'
+font_path2 = 'font2.ttf'
 font_prop_title = fm.FontProperties(fname=font_path2, size=40, weight='bold')
 font_prop = fm.FontProperties(fname=font_path)
 font_prop_title = fm.FontProperties(fname=font_path, size=40, weight='bold')
