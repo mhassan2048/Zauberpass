@@ -173,7 +173,7 @@ def draw_defensive_actions(df, team, game_info, player, data_type_option):
     
     plt.figtext(0.05, 0.9, f"{player if 'Player' in data_type_option else team} - Defenfive Actions Heatmap", fontproperties=font_prop_large, color='w', ha='left')
     plt.figtext(0.05, 0.85, game_info, fontproperties=font_prop_medium, color='#2af5bf', ha='left')
-    plt.figtext(0.95, 0.08, f"Defensive actions: tackles, interceptions, challanges, fouls. \nDirection of play from south to north. \nCoordinates from Opta.", ha='right', fontproperties=font_prop_small, color="grey")
+    plt.figtext(0.95, 0.095, f"Defensive actions: tackles, interceptions, challanges, fouls. \nDirection of play from south to north. \nCoordinates from Opta.", ha='right', fontproperties=font_prop_small, color="grey")
 
     # Add the colorbar using the new function
     add_colorbar(fig, cmap='rocket', position=[0.05, 0.15, 0.25, 0.02], font_prop=font_prop_small)
