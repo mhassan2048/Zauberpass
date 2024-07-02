@@ -20,9 +20,11 @@ robotto_regular = FontManager()
 path_eff = [path_effects.Stroke(linewidth=2.5, foreground='black'),
             path_effects.Normal()]
 
-font_path = 'DIN-Condensed-Bold.ttf'
+font_path = 'Moderniz.otf'
+font_path2 = 'DIN-Condensed-Bold.ttf'
+font_prop_title = fm.FontProperties(fname=font_path2, size=40, weight='bold')
 font_prop = fm.FontProperties(fname=font_path)
-font_prop_large = fm.FontProperties(fname=font_path, size=40, weight='bold')
+font_prop_title = fm.FontProperties(fname=font_path, size=40, weight='bold')
 font_prop_medium = fm.FontProperties(fname=font_path, size=24, weight='bold')
 font_prop_small = fm.FontProperties(fname=font_path, size=18, weight='bold')
 
@@ -123,8 +125,8 @@ def draw_passmap(df, team, game_info, player, data_type_option):
     
     add_team_flag(fig, team, alpha=.75)
     
-    plt.figtext(0.05, 0.9, f"{player if 'Player' in data_type_option else team} - Passes", fontproperties=font_prop_large, color='w', ha='left')
-    plt.figtext(0.05, 0.85, game_info, fontproperties=font_prop_medium, color='#2af5bf', ha='left')
+    plt.figtext(0.05, 0.9, f"{player if 'Player' in data_type_option else team} - Passes", fontproperties=font_prop_title, color='deepink', ha='left')
+    plt.figtext(0.05, 0.85, game_info, fontproperties=font_prop_medium, color='gold', ha='left')
     plt.figtext(0.04, 0.165, f"Regular Passes: {num_regular_passes}", fontproperties=font_prop_small, color='#c791f2', ha='left')
     plt.figtext(0.04, 0.135, f"Progressive Passes: {num_progressive_passes}", fontproperties=font_prop_small, color='#ff9d00', ha='left')
     plt.figtext(0.04, 0.105, f"Key Passes: {num_key_passes}", fontproperties=font_prop_small, color='#00aaff', ha='left')
@@ -172,7 +174,7 @@ def draw_defensive_actions(df, team, game_info, player, data_type_option):
     
     add_team_flag(fig, team, alpha=.75)
     
-    plt.figtext(0.05, 0.9, f"{player if 'Player' in data_type_option else team} - Defenfive Actions Heatmap", fontproperties=font_prop_large, color='w', ha='left')
+    plt.figtext(0.05, 0.9, f"{player if 'Player' in data_type_option else team} - Defenfive Actions Heatmap", fontproperties=font_prop_title, color='w', ha='left')
     plt.figtext(0.05, 0.85, game_info, fontproperties=font_prop_medium, color='#2af5bf', ha='left')
     plt.figtext(0.95, 0.1, f"Defensive actions: tackles, interceptions, challanges, fouls. \nDirection of play from south to north. \nCoordinates from Opta.", ha='right', fontproperties=font_prop_small, color="grey")
 
@@ -209,7 +211,7 @@ def draw_heatmap(df, team, game_info, player, data_type_option):
     
     add_team_flag(fig, team, alpha=.75)
     
-    plt.figtext(0.05, 0.9, f"{player if 'Player' in data_type_option else team} - Heatmap", fontproperties=font_prop_large, color='w', ha='left')
+    plt.figtext(0.05, 0.9, f"{player if 'Player' in data_type_option else team} - Heatmap", fontproperties=font_prop_title, color='w', ha='left')
     plt.figtext(0.05, 0.85, game_info, fontproperties=font_prop_medium, color='#2af5bf', ha='left')
     plt.figtext(.95, 0.175, "Direction of play from left to right. Coordinates from Opta.", fontproperties=font_prop_small, color='grey', ha='right')
 
@@ -248,7 +250,7 @@ def draw_takeons(df, team, game_info, player, data_type_option):
     
     add_team_flag(fig, team, alpha=.75)
     
-    plt.figtext(0.05, 0.9, f"{player if 'Player' in data_type_option else team} - Take-ons", fontproperties=font_prop_large, color='w', ha='left')
+    plt.figtext(0.05, 0.9, f"{player if 'Player' in data_type_option else team} - Take-ons", fontproperties=font_prop_title, color='w', ha='left')
     plt.figtext(0.05, 0.85, game_info, fontproperties=font_prop_medium, color='#2af5bf', ha='left')
     plt.figtext(0.04, 0.165, f"Completed: {count_s}", fontproperties=font_prop_small, color=comp_clr, ha='left')
     plt.figtext(0.04, 0.135, f"Failed: {count_f}", fontproperties=font_prop_small, color='darkgrey', ha='left')
@@ -305,7 +307,7 @@ def draw_pass_receptions(df, team, game_info, player, data_type_option):
     
     add_team_flag(fig, team, alpha=.75)
     
-    plt.figtext(0.05, 0.9, f"{player if 'Player' in data_type_option else team} - Pass Receptions", fontproperties=font_prop_large, color='w', ha='left')
+    plt.figtext(0.05, 0.9, f"{player if 'Player' in data_type_option else team} - Pass Receptions", fontproperties=font_prop_title, color='w', ha='left')
     plt.figtext(0.05, 0.85, game_info, fontproperties=font_prop_medium, color='#2af5bf', ha='left')
     plt.figtext(.95, 0.175, "Direction of play from left to right. Coordinates from Opta.", fontproperties=font_prop_small, color='grey', ha='right')
     
@@ -394,7 +396,7 @@ def draw_pass_clusters(passes, cluster_info, team, game_info, player, data_type_
     
     add_team_flag(fig, team, alpha=.75)
     
-    plt.figtext(0.05, 0.9, f"{player if 'Player' in data_type_option else team} - Top 3 Pass Clusters", fontproperties=font_prop_large, color='w', ha='left')
+    plt.figtext(0.05, 0.9, f"{player if 'Player' in data_type_option else team} - Top 3 Pass Clusters", fontproperties=font_prop_title, color='w', ha='left')
     plt.figtext(0.05, 0.85, game_info, fontproperties=font_prop_medium, color='#2af5bf', ha='left')
     plt.figtext(0.04, 0.165, f"Cluster rank 1", fontproperties=font_prop_small, color=colors[0], ha='left')
     plt.figtext(0.04, 0.135, f"Cluster rank 2", fontproperties=font_prop_small, color=colors[1], ha='left')
@@ -469,7 +471,7 @@ def draw_carries(df, team, game_info, player, data_type_option):
     
     add_team_flag(fig, team, alpha=0.75)
     
-    plt.figtext(0.05, 0.9, f"{player if 'Player' in data_type_option else team} - Carries", fontproperties=font_prop_large, color='w', ha='left')
+    plt.figtext(0.05, 0.9, f"{player if 'Player' in data_type_option else team} - Carries", fontproperties=font_prop_title, color='w', ha='left')
     plt.figtext(0.05, 0.85, game_info, fontproperties=font_prop_medium, color='#2af5bf', ha='left')
     plt.figtext(0.04, 0.165, f"Progressive Carries: {prg}", fontproperties=font_prop_small, color="#fca103", ha='left')
     plt.figtext(0.04, 0.135, f"Regular Carries: {reg}", fontproperties=font_prop_small, color="grey", ha='left')
