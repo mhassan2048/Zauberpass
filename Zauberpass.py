@@ -23,7 +23,7 @@ path_eff = [path_effects.Stroke(linewidth=2.5, foreground='black'),
 
 font_path = 'font1.ttf'
 font_path2 = 'font2.ttf'
-font_prop_title = fm.FontProperties(fname=font_path2, size=40, weight='bold')
+font_prop_title = fm.FontProperties(fname=font_path, size=40, weight='bold')
 font_prop = fm.FontProperties(fname=font_path)
 font_prop_title = fm.FontProperties(fname=font_path, size=40, weight='bold')
 font_prop_medium = fm.FontProperties(fname=font_path, size=24, weight='bold')
@@ -126,8 +126,8 @@ def draw_passmap(df, team, game_info, player, data_type_option):
     
     add_team_flag(fig, team, alpha=.75)
     
-    plt.figtext(0.05, 0.9, f"{player if 'Player' in data_type_option else team} - Passes", fontproperties=font_prop_title, color='deeppink', ha='left')
-    plt.figtext(0.05, 0.85, game_info, fontproperties=font_prop_medium, color='gold', ha='left')
+    plt.figtext(0.05, 0.9, f"{player if 'Player' in data_type_option else team} - Passes", fontproperties=font_prop_title, color='w', ha='left')
+    plt.figtext(0.05, 0.85, game_info, fontproperties=font_prop_medium, color='#2af5bf', ha='left')
     plt.figtext(0.04, 0.165, f"Regular Passes: {num_regular_passes}", fontproperties=font_prop_small, color='#c791f2', ha='left')
     plt.figtext(0.04, 0.135, f"Progressive Passes: {num_progressive_passes}", fontproperties=font_prop_small, color='#ff9d00', ha='left')
     plt.figtext(0.04, 0.105, f"Key Passes: {num_key_passes}", fontproperties=font_prop_small, color='#00aaff', ha='left')
