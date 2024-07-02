@@ -454,10 +454,10 @@ def draw_carries(df, team, game_info, player, data_type_option):
             dist = np.sqrt((xe - xs) ** 2)
 
             if (xe > 50 and (xe - xs) >= 10) or (82 <= xe <= 100 and 17 <= ye <= 83 and xe > xs):
-                pitch.lines(xstart=xs, ystart=ys, xend=xe, yend=ye, color="#fca103", lw=5, zorder=3, transparent=True, alpha_start=1, alpha_end=0.01, ax=ax)
+                pitch.lines(xstart=xs, ystart=ys, xend=xe, yend=ye, color="#fca103", lw=5, zorder=3, transparent=True, alpha_start=.01, alpha_end=1, ax=ax)
                 prg += 1            
             else:
-                pitch.lines(xstart=xs, ystart=ys, xend=xe, yend=ye, color="grey", lw=4, zorder=2, transparent=True, alpha_start=0.75, alpha_end=0.01, ax=ax)
+                pitch.lines(xstart=xs, ystart=ys, xend=xe, yend=ye, color="grey", lw=4, zorder=2, transparent=True, alpha_start=.01, alpha_end=0.75, ax=ax)
                 reg += 1
     
     # Load and add your image
