@@ -14,14 +14,12 @@ import matplotlib.patheffects as path_effects
 import matplotlib.cm as cm
 import matplotlib.colors as mcolors
 
-
-
+# Define font properties and path effects
 robotto_regular = FontManager()
 
 path_eff = [path_effects.Stroke(linewidth=2.5, foreground='black'),
             path_effects.Normal()]
 
-# Add custom font
 font_path = 'DIN-Condensed-Bold.ttf'
 font_prop = fm.FontProperties(fname=font_path)
 font_prop_large = fm.FontProperties(fname=font_path, size=40, weight='bold')
@@ -29,6 +27,9 @@ font_prop_medium = fm.FontProperties(fname=font_path, size=24, weight='bold')
 font_prop_small = fm.FontProperties(fname=font_path, size=18, weight='bold')
 
 def add_team_flag(fig, team_name, alpha=.75):
+    """
+    Adds a team flag to the figure if the flag image exists.
+    """
     flag_image_path = f'flags/{team_name}.png'
     if os.path.isfile(flag_image_path):
         img = Image.open(flag_image_path).convert("RGBA")
@@ -42,12 +43,12 @@ def add_team_flag(fig, team_name, alpha=.75):
         img_ax.axis('off')  # Turn off axis
     else:
         st.warning(f"Flag image for {team_name} not found.")
+
 def image_bg(img, fig):
     image_path = f"{img}.png"  # Assuming the background image is in PNG format
     image = Image.open(image_path)
     ax_image = add_image(image, fig, left=0, bottom=0, width=1, height=1)
     ax_image.set_zorder(0)
-
 
 def add_colorbar(fig, cmap, position=[0.05, 0.15, 0.25, 0.02], labels=['Low', 'High'], font_prop=None):
     norm = mcolors.Normalize(vmin=0, vmax=1)
@@ -178,8 +179,6 @@ def draw_defensive_actions(df, team, game_info, player, data_type_option):
     # Add the colorbar using the new function
     add_colorbar(fig, cmap='rocket', position=[0.05, 0.15, 0.25, 0.02], font_prop=font_prop_small)
     
-
-    
     return fig
 
 def draw_heatmap(df, team, game_info, player, data_type_option):
@@ -255,7 +254,6 @@ def draw_takeons(df, team, game_info, player, data_type_option):
     plt.figtext(0.04, 0.135, f"Failed: {count_f}", fontproperties=font_prop_small, color='darkgrey', ha='left')
     plt.figtext(.95, 0.175, "Direction of play from left to right. Coordinates from Opta.", fontproperties=font_prop_small, color='grey', ha='right')
     return fig
-
 
 def draw_pass_receptions(df, team, game_info, player, data_type_option):
     required_columns = ['minute', 'second', 'game_id', 'x', 'y', 'end_x', 'end_y', 'player', 'type', 'outcome_type']
@@ -360,8 +358,6 @@ def find_top_pass_clusters(df, num_clusters=10, top_n=3):
 
     return passes, cluster_info
 
-
-
 def draw_pass_clusters(passes, cluster_info, team, game_info, player, data_type_option):
     pitch = Pitch(positional=True, positional_color='#3b3b3b',spot_type='square', spot_scale=0.01, pitch_type='wyscout', line_color='lightgrey', linewidth=4, line_zorder=2, pitch_color='None')
     fig, ax = pitch.draw(figsize=(12, 12), constrained_layout=True)
@@ -406,15 +402,70 @@ def draw_pass_clusters(passes, cluster_info, team, game_info, player, data_type_
     plt.figtext(.95, 0.175, "Direction of play from left to right. Coordinates from Opta.", fontproperties=font_prop_small, color='grey', ha='right')
     return fig
 
-
 def load_data(tournament):
     data_sources = {
         "Euro 2024": "https://drive.google.com/uc?export=download&id=1-IJfIqkYv39CRoSLgXdMd3QZrP0a9ViL",
-        "Copa America 2024": "https://drive.google.com/uc?export=download&id=1-ehpOjBEsZKRT5el17KaH7f5_QouaWum"  # Placeholder URL for Copa data
+        "Euro 2024 Spadl": "https://drive.google.com/uc?export=download&id=1-jL8HwJQRC13qgHzks4Y5Kzi8wbwH6Wv",
+        "Copa America 2024": "https://drive.google.com/uc?export=download&id=1-ehpOjBEsZKRT5el17KaH7f5_QouaWum",
+        "Copa America 2024 Spadl": "https://drive.google.com/uc?export=download&id=1-mrCWGOphVYR65mQzRetL5AvcKvoPjvn"
     }
     url = data_sources[tournament]
     df = pd.read_csv(url)
     return df
+
+def load_spadl_data(tournament):
+    spadl_data_sources = {
+        "Euro 2024": "https://drive.google.com/uc?export=download&id=1-jL8HwJQRC13qgHzks4Y5Kzi8wbwH6Wv",
+        "Copa America 2024": "https://drive.google.com/uc?export=download&id=1-mrCWGOphVYR65mQzRetL5AvcKvoPjvn"
+    }
+    url = spadl_data_sources[tournament]
+    df = pd.read_csv(url)
+    return df
+
+def draw_carries(df, team, game_info, player, data_type_option):
+    pitch = Pitch(positional=True, positional_color='#3b3b3b', spot_type='square', spot_scale=0.01, pitch_type='uefa', line_color='lightgrey', linewidth=4, line_zorder=2, pitch_color='None')
+    fig, ax = pitch.draw(figsize=(12, 12), constrained_layout=True)
+    fig.set_facecolor('black')
+    ax.patch.set_facecolor('None')
+    ax.set_zorder(1)
+    
+    # Add background image
+    image_bg("passmap_bg", fig)
+    
+    prg = 0
+    reg = 0
+    
+    for x in range(len(df['game_id']) - 1):
+        if df['player'][x] == player and df['type_id'][x] == 21:
+            xs = df['start_x'][x]
+            ys = df['start_y'][x]
+            xe = df['end_x'][x]
+            ye = df['end_y'][x]
+            dist = np.sqrt((xe - xs) ** 2)
+
+            if (xe > 50 and (xe - xs) >= 10) or (82 <= xe <= 100 and 17 <= ye <= 83 and xe > xs):
+                pitch.lines(xstart=xs, ystart=ys, xend=xe, yend=ye, color="#fca103", lw=5, zorder=3, transparent=True, alpha_start=1, alpha_end=0.01, ax=ax)
+                prg += 1            
+            else:
+                pitch.lines(xstart=xs, ystart=ys, xend=xe, yend=ye, color="grey", lw=4, zorder=2, transparent=True, alpha_start=0.75, alpha_end=0.01, ax=ax)
+                reg += 1
+    
+    # Load and add your image
+    image_path = 'blogo.png'  # Replace with the path to your image
+    img = mpimg.imread(image_path)
+    img_ax = fig.add_axes([0.85, 0.85, 0.1, 0.1])  # Example: [left, bottom, width, height]
+    img_ax.imshow(img)
+    img_ax.axis('off')  # Turn off axis
+    
+    add_team_flag(fig, team, alpha=0.75)
+    
+    plt.figtext(0.05, 0.9, f"{player if 'Player' in data_type_option else team} - Carries", fontproperties=font_prop_large, color='w', ha='left')
+    plt.figtext(0.05, 0.85, game_info, fontproperties=font_prop_medium, color='#2af5bf', ha='left')
+    plt.figtext(0.04, 0.165, f"Progressive Carries: {prg}", fontproperties=font_prop_small, color="#fca103", ha='left')
+    plt.figtext(0.04, 0.135, f"Regular Carries: {reg}", fontproperties=font_prop_small, color="#fca103", ha='left')
+    plt.figtext(.95, 0.175, "Direction of play from left to right. Coordinates from Opta.", fontproperties=font_prop_small, color='grey', ha='right')
+    
+    return fig
 
 # Load and resize the logo
 image = Image.open("zplogo2.png")
@@ -492,9 +543,24 @@ if compare:
     else:
         filtered_df_compare = match_df_compare
 
-
 if st.button("Full Analysis"):
     col1, col2 = st.columns(2)
+
+    # Load SPADL data for Carries
+    filtered_df_spadl = load_spadl_data(selected_tournament)
+    if compare:
+        filtered_df_compare_spadl = load_spadl_data(selected_tournament_compare)
+
+    # Load appropriate data for other analyses
+    if "Player" in data_type_option:
+        filtered_df = match_df[match_df['player'] == selected_player]
+    else:
+        filtered_df = match_df
+    if compare:
+        if "Player" in data_type_option_compare:
+            filtered_df_compare = match_df_compare[match_df_compare['player'] == selected_player_compare]
+        else:
+            filtered_df_compare = match_df_compare
 
     with col1:
         fig1_heatmap = draw_heatmap(filtered_df, selected_team, game_info, selected_player, data_type_option)
@@ -502,6 +568,7 @@ if st.button("Full Analysis"):
         fig1_pass_receptions = draw_pass_receptions(filtered_df, selected_team, game_info, selected_player, data_type_option)
         fig1_defensive_actions = draw_defensive_actions(filtered_df, selected_team, game_info, selected_player, data_type_option)
         fig1_takeons = draw_takeons(filtered_df, selected_team, game_info, selected_player, data_type_option)
+        fig1_carries = draw_carries(filtered_df_spadl, selected_team, game_info, selected_player, data_type_option)
         
         passes, cluster_info = find_top_pass_clusters(filtered_df)
         if passes is not None and cluster_info is not None:
@@ -515,6 +582,7 @@ if st.button("Full Analysis"):
         st.pyplot(fig1_pass_receptions)
         st.pyplot(fig1_defensive_actions)
         st.pyplot(fig1_takeons)
+        st.pyplot(fig1_carries)
 
     if compare:
         with col2:
@@ -523,6 +591,7 @@ if st.button("Full Analysis"):
             fig2_pass_receptions = draw_pass_receptions(filtered_df_compare, selected_team_compare, game_info_compare, selected_player_compare, data_type_option_compare)
             fig2_defensive_actions = draw_defensive_actions(filtered_df_compare, selected_team_compare, game_info_compare, selected_player_compare, data_type_option_compare)
             fig2_takeons = draw_takeons(filtered_df_compare, selected_team_compare, game_info_compare, selected_player_compare, data_type_option_compare)
+            fig2_carries = draw_carries(filtered_df_compare_spadl, selected_team_compare, game_info_compare, selected_player_compare, data_type_option_compare)
 
             passes_compare, cluster_info_compare = find_top_pass_clusters(filtered_df_compare)
             if passes_compare is not None and cluster_info_compare is not None:
@@ -536,6 +605,8 @@ if st.button("Full Analysis"):
             st.pyplot(fig2_pass_receptions)
             st.pyplot(fig2_defensive_actions)
             st.pyplot(fig2_takeons)
+            st.pyplot(fig2_carries)
+
 
 if st.button("Top 3 Pass Clusters"):
     col1, col2 = st.columns(2)
@@ -581,6 +652,21 @@ if st.button("TakeOns"):
             fig2 = draw_takeons(filtered_df_compare, selected_team_compare, game_info_compare, selected_player_compare, data_type_option_compare)
             st.pyplot(fig2)
 
+if st.button("Carries"):
+    col1, col2 = st.columns(2)
+
+    with col1:
+        filtered_df = load_spadl_data(selected_tournament)
+        fig1 = draw_carries(filtered_df, selected_team, game_info, selected_player, data_type_option)
+        st.pyplot(fig1)
+
+    if compare:
+        with col2:
+            filtered_df_compare = load_spadl_data(selected_tournament_compare)
+            fig2 = draw_carries(filtered_df_compare, selected_team_compare, game_info_compare, selected_player_compare, data_type_option_compare)
+            st.pyplot(fig2)
+
+            
 if st.button("Heatmap"):
     col1, col2 = st.columns(2)
 
