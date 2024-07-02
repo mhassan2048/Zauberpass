@@ -24,9 +24,9 @@ path_eff = [path_effects.Stroke(linewidth=2.5, foreground='black'),
 # Add custom font
 font_path = 'DIN-Condensed-Bold.ttf'
 font_prop = fm.FontProperties(fname=font_path)
-font_prop_large = fm.FontProperties(fname=font_path, size=48, weight='bold')
+font_prop_large = fm.FontProperties(fname=font_path, size=36, weight='bold')
 font_prop_medium = fm.FontProperties(fname=font_path, size=24, weight='bold')
-font_prop_small = fm.FontProperties(fname=font_path, size=20, weight='bold')
+font_prop_small = fm.FontProperties(fname=font_path, size=18, weight='bold')
 
 def add_team_flag(fig, team_name, alpha=.75):
     flag_image_path = f'flags/{team_name}.png'
@@ -57,8 +57,8 @@ def add_colorbar(fig, cmap, position=[0.05, 0.1, 0.25, 0.02], labels=['Low', 'Hi
     cbar_ax = fig.add_axes(position)  # Adjust the position and size
     cbar = plt.colorbar(sm, cax=cbar_ax, orientation='horizontal')
     cbar.ax.set_xticks([0, 1])  # Only show low and high
-    cbar.ax.set_xticklabels(labels, fontproperties=font_prop, color='white')
-    cbar.ax.tick_params(colors='white')  # Set tick color to white
+    cbar.ax.set_xticklabels(labels, fontproperties=font_prop_small, color=grey')
+    cbar.ax.tick_params(colors='grey')  # Set tick color to white
 
 def is_long_pass(x_start, x_end):
     dist_x = np.abs(x_end - x_start)
@@ -212,7 +212,7 @@ def draw_heatmap(df, team, game_info, player, data_type_option):
     
     plt.figtext(0.05, 0.9, f"{player if 'Player' in data_type_option else team} - Heatmap", fontproperties=font_prop_large, color='w', ha='left')
     plt.figtext(0.05, 0.85, game_info, fontproperties=font_prop_medium, color='#2af5bf', ha='left')
-    plt.figtext(.95, 0.175, "Direction of play from left to right. Coordinates from Opta.", fontproperties=font_prop_small, color='grey', ha='right')
+    plt.figtext(.95, 0.05, "Direction of play from left to right. Coordinates from Opta.", fontproperties=font_prop_small, color='grey', ha='right')
 
     
     return fig
