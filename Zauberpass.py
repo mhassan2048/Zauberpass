@@ -212,7 +212,7 @@ def draw_heatmap(df, team, game_info, player, data_type_option):
     
     plt.figtext(0.05, 0.9, f"{player if 'Player' in data_type_option else team} - Heatmap", fontproperties=font_prop_large, color='w', ha='left')
     plt.figtext(0.05, 0.85, game_info, fontproperties=font_prop_medium, color='#2af5bf', ha='left')
-    plt.figtext(.95, 0.05, "Direction of play from left to right. Coordinates from Opta.", fontproperties=font_prop_small, color='grey', ha='right')
+    plt.figtext(.95, 0.1, "Direction of play from left to right. Coordinates from Opta.", fontproperties=font_prop_small, color='grey', ha='right')
 
     
     add_colorbar(fig, cmap='rocket', position=[0.05, 0.15, 0.25, 0.02], font_prop=font_prop_small)
@@ -309,7 +309,7 @@ def draw_pass_receptions(df, team, game_info, player, data_type_option):
     
     plt.figtext(0.05, 0.9, f"{player if 'Player' in data_type_option else team} - Pass Receptions", fontproperties=font_prop_large, color='w', ha='left')
     plt.figtext(0.05, 0.85, game_info, fontproperties=font_prop_medium, color='#2af5bf', ha='left')
-    plt.figtext(.95, 0.175, "Direction of play from left to right. Coordinates from Opta.", fontproperties=font_prop_small, color='grey', ha='right')
+    plt.figtext(.95, 0.1, "Direction of play from left to right. Coordinates from Opta.", fontproperties=font_prop_small, color='grey', ha='right')
     
     add_colorbar(fig, cmap='rocket', position=[0.05, 0.15, 0.25, 0.02], font_prop=font_prop_small)
     
