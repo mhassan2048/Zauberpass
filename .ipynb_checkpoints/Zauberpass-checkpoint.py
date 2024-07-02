@@ -423,6 +423,11 @@ def load_spadl_data(tournament):
     return df
 
 def draw_carries(df, team, game_info, player, data_type_option):
+    required_columns = ['type_id', 'start_x', 'start_y', 'end_x', 'end_y', 'game_id']
+    missing_columns = [col for col in required_columns if col not in df.columns]
+    if missing_columns:
+        raise KeyError(f"Missing required columns in the DataFrame: {missing_columns}")
+
     pitch = Pitch(positional=True, positional_color='#3b3b3b', spot_type='square', spot_scale=0.01, pitch_type='uefa', line_color='lightgrey', linewidth=4, line_zorder=2, pitch_color='None')
     fig, ax = pitch.draw(figsize=(12, 12), constrained_layout=True)
     fig.set_facecolor('black')
@@ -440,12 +445,12 @@ def draw_carries(df, team, game_info, player, data_type_option):
     else:
         df = df[df['team'] == team]
     
-    for x in range(len(df['game_id']) - 1):
-        if df['type_id'][x] == 21:
-            xs = df['start_x'][x]
-            ys = df['start_y'][x]
-            xe = df['end_x'][x]
-            ye = df['end_y'][x]
+    for x in range(len(df)):
+        if df['type_id'].iloc[x] == 21:
+            xs = df['start_x'].iloc[x]
+            ys = df['start_y'].iloc[x]
+            xe = df['end_x'].iloc[x]
+            ye = df['end_y'].iloc[x]
             dist = np.sqrt((xe - xs) ** 2)
 
             if (xe > 50 and (xe - xs) >= 10) or (82 <= xe <= 100 and 17 <= ye <= 83 and xe > xs):
@@ -467,7 +472,7 @@ def draw_carries(df, team, game_info, player, data_type_option):
     plt.figtext(0.05, 0.9, f"{player if 'Player' in data_type_option else team} - Carries", fontproperties=font_prop_large, color='w', ha='left')
     plt.figtext(0.05, 0.85, game_info, fontproperties=font_prop_medium, color='#2af5bf', ha='left')
     plt.figtext(0.04, 0.165, f"Progressive Carries: {prg}", fontproperties=font_prop_small, color="#fca103", ha='left')
-    plt.figtext(0.04, 0.135, f"Regular Carries: {reg}", fontproperties=font_prop_small, color="#fca103", ha='left')
+    plt.figtext(0.04, 0.135, f"Regular Carries: {reg}", fontproperties=font_prop_small, color="grey", ha='left')
     plt.figtext(.95, 0.175, "Direction of play from left to right. Coordinates from Opta.", fontproperties=font_prop_small, color='grey', ha='right')
     
     return fig
