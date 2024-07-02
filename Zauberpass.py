@@ -24,7 +24,7 @@ path_eff = [path_effects.Stroke(linewidth=2.5, foreground='black'),
 # Add custom font
 font_path = 'DIN-Condensed-Bold.ttf'
 font_prop = fm.FontProperties(fname=font_path)
-font_prop_large = fm.FontProperties(fname=font_path, size=36, weight='bold')
+font_prop_large = fm.FontProperties(fname=font_path, size=40, weight='bold')
 font_prop_medium = fm.FontProperties(fname=font_path, size=24, weight='bold')
 font_prop_small = fm.FontProperties(fname=font_path, size=18, weight='bold')
 
