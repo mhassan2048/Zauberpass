@@ -159,10 +159,10 @@ def draw_passmap_with_special_passes(df, team, game_info, player, data_type_opti
     image_bg("passmap_bg", fig)
     
     special_pass_colors = {
-        'BigChanceCreated': 'orangered',
-        'FastBreak': 'deeppink',
+        'BigChanceCreated': '#f7895e',
+        'FastBreak': '#f75e89',
         'Throughball': 'gold',
-        'KeyPass': 'lightblue'
+        'KeyPass': '#5e9ef7'
     }
     failed_clr = 'grey'
     lw_dict = {'successful': 4, 'unsuccessful': 3}
