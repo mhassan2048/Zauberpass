@@ -159,11 +159,12 @@ def draw_passmap_with_special_passes(df, team, game_info, player, data_type_opti
     image_bg("passmap_bg", fig)
     
     special_pass_colors = {
-        'BigChanceCreated': '#ff0000',
-        'FastBreak': '#00ff00',
-        'Throughball': '#0000ff',
-        'KeyPass': '#00aaff'
+        'BigChanceCreated': 'orangered',
+        'FastBreak': 'deeppink',
+        'Throughball': 'gold',
+        'KeyPass': 'lightblue'
     }
+    failed_clr = 'grey'
     lw_dict = {'successful': 4, 'unsuccessful': 3}
 
     special_passes_count = {key: 0 for key in special_pass_colors.keys()}
@@ -177,9 +178,11 @@ def draw_passmap_with_special_passes(df, team, game_info, player, data_type_opti
                 row['pass_type'] = next(q for q in special_pass_types if q in qualifiers)
                 if row['outcome_type'] == 'Successful':
                     special_passes_count[row['pass_type']] += 1
+                    pass_color = special_pass_colors[row['pass_type']]
                 else:
                     special_passes_failed_count[row['pass_type']] += 1
-                draw_special_pass(ax, row, pitch, special_pass_colors, lw_dict)
+                    pass_color = failed_clr
+                draw_special_pass(ax, row, pitch, {row['pass_type']: pass_color}, lw_dict)
 
     # Load your image
     image_path = 'blogo.png'  # Replace with the path to your image
@@ -200,7 +203,6 @@ def draw_passmap_with_special_passes(df, team, game_info, player, data_type_opti
     plt.figtext(.95, 0.175, "Direction of play from left to right. Coordinates from Opta.", fontproperties=font_prop_small, color='grey', ha='right')
 
     return fig
-
 
 
 def draw_defensive_actions(df, team, game_info, player, data_type_option):
