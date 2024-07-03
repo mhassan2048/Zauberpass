@@ -580,12 +580,18 @@ selected_match = st.selectbox("Select Match", matches, index=0, disabled=("All G
 
 # Filter players based on the selected team and game
 filtered_df_game = filtered_df_team[filtered_df_team['game'] == selected_match]
-players = sorted(filtered_df_game['player'].dropna().unique())
+# Extract unique players
+if "All Games" in data_type_option:
+    players = sorted(filtered_df_team['player'].dropna().unique())
+else:
+    players = sorted(filtered_df_game['player'].dropna().unique())
+
 selected_player = st.selectbox("Select Player", players, index=0, disabled=("Team" in data_type_option))
 
 if "All Games" in data_type_option:
     match_df = filtered_df_team
     game_info = f"All Games in {selected_tournament}"
+    
 else:
     match_df = filtered_df_game
     game_info_full = match_df.iloc[0]['game']
