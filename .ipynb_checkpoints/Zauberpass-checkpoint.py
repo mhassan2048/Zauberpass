@@ -158,11 +158,6 @@ def draw_passmap_with_special_passes(df, team, game_info, player, data_type_opti
 
     image_bg("passmap_bg", fig)
     
-    comp_clr = '#ff9d00'
-    regular_clr = '#c791f2'
-    failed_clr = 'darkgrey'
-    key_pass_clr = '#00aaff'
-    
     special_pass_colors = {
         'BigChanceCreated': '#ff0000',
         'FastBreak': '#00ff00',
@@ -171,20 +166,20 @@ def draw_passmap_with_special_passes(df, team, game_info, player, data_type_opti
     }
     lw_dict = {'successful': 4, 'unsuccessful': 3}
 
+    special_passes_count = {key: 0 for key in special_pass_colors.keys()}
+    special_passes_failed_count = {key: 0 for key in special_pass_colors.keys()}
+
     for _, row in pass_events_sorted.iterrows():
         if row['type'] == 'Pass':
             qualifiers = row['qualifiers']
             special_pass_types = ['BigChanceCreated', 'FastBreak', 'Throughball', 'KeyPass']
             if any(q in qualifiers for q in special_pass_types):
                 row['pass_type'] = next(q for q in special_pass_types if q in qualifiers)
+                if row['outcome_type'] == 'Successful':
+                    special_passes_count[row['pass_type']] += 1
+                else:
+                    special_passes_failed_count[row['pass_type']] += 1
                 draw_special_pass(ax, row, pitch, special_pass_colors, lw_dict)
-            else:
-                draw_pass(ax, row, pitch, comp_clr, regular_clr, failed_clr, key_pass_clr)
-
-    num_regular_passes = len(pass_events_sorted[pass_events_sorted['outcome_type'] == 'Successful'])
-    num_failed_passes = len(pass_events_sorted[pass_events_sorted['outcome_type'] != 'Successful'])
-    num_key_passes = len(pass_events_sorted[pass_events_sorted['qualifiers'].str.contains('KeyPass', na=False)])
-    num_progressive_passes = sum(pass_events_sorted.apply(lambda row: is_long_pass(row['x'], row['end_x']), axis=1))
 
     # Load your image
     image_path = 'blogo.png'  # Replace with the path to your image
@@ -195,15 +190,17 @@ def draw_passmap_with_special_passes(df, team, game_info, player, data_type_opti
     
     add_team_flag(fig, team, alpha=.75)
     
-    plt.figtext(0.05, 0.9, f"{player if 'Player' in data_type_option else team} - Passes", fontproperties=font_prop_title, color='w', ha='left')
+    plt.figtext(0.05, 0.9, f"{player if 'Player' in data_type_option else team} - Special Passes", fontproperties=font_prop_title, color='w', ha='left')
     plt.figtext(0.05, 0.85, game_info, fontproperties=font_prop_medium, color='#2af5bf', ha='left')
-    plt.figtext(0.04, 0.165, f"Regular Passes: {num_regular_passes}", fontproperties=font_prop_small, color='#c791f2', ha='left')
-    plt.figtext(0.04, 0.135, f"Progressive Passes: {num_progressive_passes}", fontproperties=font_prop_small, color='#ff9d00', ha='left')
-    plt.figtext(0.04, 0.105, f"Key Passes: {num_key_passes}", fontproperties=font_prop_small, color='#00aaff', ha='left')
-    plt.figtext(0.04, 0.075, f"Failed Passes: {num_failed_passes}", fontproperties=font_prop_small, color='darkgrey', ha='left')
+    
+    for i, pass_type in enumerate(special_pass_colors.keys()):
+        plt.figtext(0.04, 0.165 - i*0.03, f"{pass_type}: {special_passes_count[pass_type]} successful, {special_passes_failed_count[pass_type]} failed", 
+                    fontproperties=font_prop_small, color=special_pass_colors[pass_type], ha='left')
+    
     plt.figtext(.95, 0.175, "Direction of play from left to right. Coordinates from Opta.", fontproperties=font_prop_small, color='grey', ha='right')
 
     return fig
+
 
 
 def draw_defensive_actions(df, team, game_info, player, data_type_option):
