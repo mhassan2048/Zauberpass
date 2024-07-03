@@ -197,12 +197,15 @@ def draw_passmap_with_special_passes(df, team, game_info, player, data_type_opti
     plt.figtext(0.05, 0.85, game_info, fontproperties=font_prop_medium, color='#2af5bf', ha='left')
     
     for i, pass_type in enumerate(special_pass_colors.keys()):
-        plt.figtext(0.04, 0.165 - i*0.03, f"{pass_type}: {special_passes_count[pass_type]} successful, {special_passes_failed_count[pass_type]} failed", 
+        plt.figtext(0.04, 0.165 - i*0.03, f"{pass_type}: {special_passes_count[pass_type]} successful", 
                     fontproperties=font_prop_small, color=special_pass_colors[pass_type], ha='left')
+        plt.figtext(0.04, 0.165 - (i+1)*0.03, f"{special_passes_failed_count[pass_type]} failed", 
+                    fontproperties=font_prop_small, color=failed_clr, ha='left')
     
     plt.figtext(.95, 0.175, "Direction of play from left to right. Coordinates from Opta.", fontproperties=font_prop_small, color='grey', ha='right')
 
     return fig
+
 
 
 def draw_defensive_actions(df, team, game_info, player, data_type_option):
