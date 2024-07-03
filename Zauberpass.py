@@ -136,6 +136,76 @@ def draw_passmap(df, team, game_info, player, data_type_option):
 
     return fig
 
+
+def draw_special_pass(ax, row, pitch, colors, lw_dict):
+    x_start, y_start, x_end, y_end = row['x'], row['y'], row['end_x'], row['end_y']
+    pass_color = colors[row['pass_type']]
+    pass_width = lw_dict['successful'] if row['outcome_type'] == 'Successful' else lw_dict['unsuccessful']
+    
+    pitch.lines(xstart=x_start, ystart=y_start, xend=x_end, yend=y_end, 
+                color=pass_color, lw=pass_width, zorder=4 if row['outcome_type'] == 'Successful' else 3, transparent=True, 
+                alpha_start=0.75, alpha_end=0.01, ax=ax)
+
+def draw_passmap_with_special_passes(df, team, game_info, player, data_type_option):
+    pass_events_sorted = df.sort_values(by=['minute', 'second'])
+    
+    pitch = Pitch(positional=True, positional_color='#3b3b3b', spot_type='square', spot_scale=0.01, pitch_type='wyscout', line_color='lightgrey', linewidth=4, line_zorder=2, pitch_color='None')
+    fig, ax = pitch.draw(figsize=(12, 12), constrained_layout=True)
+    fig.set_facecolor('black')
+    ax.patch.set_facecolor('None')
+    ax.set_zorder(1)
+    plt.gca().invert_yaxis()
+
+    image_bg("passmap_bg", fig)
+    
+    comp_clr = '#ff9d00'
+    regular_clr = '#c791f2'
+    failed_clr = 'darkgrey'
+    key_pass_clr = '#00aaff'
+    
+    special_pass_colors = {
+        'BigChanceCreated': '#ff0000',
+        'FastBreak': '#00ff00',
+        'Throughball': '#0000ff',
+        'KeyPass': '#00aaff'
+    }
+    lw_dict = {'successful': 4, 'unsuccessful': 3}
+
+    for _, row in pass_events_sorted.iterrows():
+        if row['type'] == 'Pass':
+            qualifiers = row['qualifiers']
+            special_pass_types = ['BigChanceCreated', 'FastBreak', 'Throughball', 'KeyPass']
+            if any(q in qualifiers for q in special_pass_types):
+                row['pass_type'] = next(q for q in special_pass_types if q in qualifiers)
+                draw_special_pass(ax, row, pitch, special_pass_colors, lw_dict)
+            else:
+                draw_pass(ax, row, pitch, comp_clr, regular_clr, failed_clr, key_pass_clr)
+
+    num_regular_passes = len(pass_events_sorted[pass_events_sorted['outcome_type'] == 'Successful'])
+    num_failed_passes = len(pass_events_sorted[pass_events_sorted['outcome_type'] != 'Successful'])
+    num_key_passes = len(pass_events_sorted[pass_events_sorted['qualifiers'].str.contains('KeyPass', na=False)])
+    num_progressive_passes = sum(pass_events_sorted.apply(lambda row: is_long_pass(row['x'], row['end_x']), axis=1))
+
+    # Load your image
+    image_path = 'blogo.png'  # Replace with the path to your image
+    img = mpimg.imread(image_path)
+    img_ax = fig.add_axes([0.85, 0.85, 0.1, 0.1])  # Example: [left, bottom, width, height]
+    img_ax.imshow(img)
+    img_ax.axis('off')  # Turn off axis
+    
+    add_team_flag(fig, team, alpha=.75)
+    
+    plt.figtext(0.05, 0.9, f"{player if 'Player' in data_type_option else team} - Passes", fontproperties=font_prop_title, color='w', ha='left')
+    plt.figtext(0.05, 0.85, game_info, fontproperties=font_prop_medium, color='#2af5bf', ha='left')
+    plt.figtext(0.04, 0.165, f"Regular Passes: {num_regular_passes}", fontproperties=font_prop_small, color='#c791f2', ha='left')
+    plt.figtext(0.04, 0.135, f"Progressive Passes: {num_progressive_passes}", fontproperties=font_prop_small, color='#ff9d00', ha='left')
+    plt.figtext(0.04, 0.105, f"Key Passes: {num_key_passes}", fontproperties=font_prop_small, color='#00aaff', ha='left')
+    plt.figtext(0.04, 0.075, f"Failed Passes: {num_failed_passes}", fontproperties=font_prop_small, color='darkgrey', ha='left')
+    plt.figtext(.95, 0.175, "Direction of play from left to right. Coordinates from Opta.", fontproperties=font_prop_small, color='grey', ha='right')
+
+    return fig
+
+
 def draw_defensive_actions(df, team, game_info, player, data_type_option):
     pitch = Pitch(spot_type='square', spot_scale=0.01, pitch_type='wyscout', line_color='lightgrey', linewidth=4, line_zorder=2, pitch_color='None')
     fig, ax = pitch.draw(figsize=(12, 12))
@@ -578,6 +648,7 @@ if st.button("Full Analysis"):
     with col1:
         fig1_heatmap = draw_heatmap(filtered_df, selected_team, game_info, selected_player, data_type_option)
         fig1_passmap = draw_passmap(filtered_df, selected_team, game_info, selected_player, data_type_option)
+        fig1_special_passes = draw_passmap_with_special_passes(filtered_df, selected_team, game_info, selected_player, data_type_option)
         fig1_pass_receptions = draw_pass_receptions(filtered_df, selected_team, game_info, selected_player, data_type_option)
         fig1_defensive_actions = draw_defensive_actions(filtered_df, selected_team, game_info, selected_player, data_type_option)
         fig1_takeons = draw_takeons(filtered_df, selected_team, game_info, selected_player, data_type_option)
@@ -592,6 +663,7 @@ if st.button("Full Analysis"):
         
         st.pyplot(fig1_heatmap)
         st.pyplot(fig1_passmap)
+        st.pyplot(fig1_special_passes)
         st.pyplot(fig1_pass_receptions)
         st.pyplot(fig1_defensive_actions)
         st.pyplot(fig1_takeons)
@@ -601,6 +673,7 @@ if st.button("Full Analysis"):
         with col2:
             fig2_heatmap = draw_heatmap(filtered_df_compare, selected_team_compare, game_info_compare, selected_player_compare, data_type_option_compare)
             fig2_passmap = draw_passmap(filtered_df_compare, selected_team_compare, game_info_compare, selected_player_compare, data_type_option_compare)
+            fig2_special_passes = draw_passmap_with_special_passes(filtered_df_compare, selected_team_compare, game_info_compare, selected_player_compare, data_type_option_compare)
             fig2_pass_receptions = draw_pass_receptions(filtered_df_compare, selected_team_compare, game_info_compare, selected_player_compare, data_type_option_compare)
             fig2_defensive_actions = draw_defensive_actions(filtered_df_compare, selected_team_compare, game_info_compare, selected_player_compare, data_type_option_compare)
             fig2_takeons = draw_takeons(filtered_df_compare, selected_team_compare, game_info_compare, selected_player_compare, data_type_option_compare)
@@ -615,11 +688,11 @@ if st.button("Full Analysis"):
                 
             st.pyplot(fig2_heatmap)
             st.pyplot(fig2_passmap)
+            st.pyplot(fig2_special_passes)
             st.pyplot(fig2_pass_receptions)
             st.pyplot(fig2_defensive_actions)
             st.pyplot(fig2_takeons)
             st.pyplot(fig2_carries)
-
 
 if st.button("Top 3 Pass Clusters"):
     col1, col2 = st.columns(2)
@@ -651,6 +724,18 @@ if st.button("Passmap"):
     if compare:
         with col2:
             fig2 = draw_passmap(filtered_df_compare, selected_team_compare, game_info_compare, selected_player_compare, data_type_option_compare)
+            st.pyplot(fig2)
+
+if st.button("Special Passes"):
+    col1, col2 = st.columns(2)
+
+    with col1:
+        fig1 = draw_passmap_with_special_passes(filtered_df, selected_team, game_info, selected_player, data_type_option)
+        st.pyplot(fig1)
+
+    if compare:
+        with col2:
+            fig2 = draw_passmap_with_special_passes(filtered_df_compare, selected_team_compare, game_info_compare, selected_player_compare, data_type_option_compare)
             st.pyplot(fig2)
 
 if st.button("TakeOns"):
