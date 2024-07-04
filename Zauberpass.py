@@ -173,6 +173,8 @@ def draw_passmap_with_special_passes(df, team, game_info, player, data_type_opti
     for _, row in pass_events_sorted.iterrows():
         if row['type'] == 'Pass':
             qualifiers = row['qualifiers']
+            # Debugging statement to check qualifiers
+            print(f"Qualifiers for pass at minute {row['minute']}: {qualifiers}")
             special_pass_types = ['BigChanceCreated', 'IntentionalGoalAssist', 'Throughball', 'KeyPass']
             if any(q in qualifiers for q in special_pass_types):
                 row['pass_type'] = next(q for q in special_pass_types if q in qualifiers)
@@ -198,7 +200,7 @@ def draw_passmap_with_special_passes(df, team, game_info, player, data_type_opti
     
     for i, pass_type in enumerate(special_pass_colors.keys()):
         plt.figtext(0.04, 0.165 - i*0.03, f"{pass_type}:", fontproperties=font_prop_small, color=special_pass_colors[pass_type], ha='left')
-        plt.figtext(0.2, 0.165 - i*0.03, f"{special_passes_count[pass_type]} successful", fontproperties=font_prop_small, color=special_pass_colors[pass_type], ha='left')
+        plt.figtext(0.2, 0.165 - i*0.03, f"{special_passes_count[pass_type]} successful", fontproperties=font_prop_small, color='white', ha='left')
         plt.figtext(0.275, 0.165 - i*0.03, f"{special_passes_failed_count[pass_type]} failed", 
                     fontproperties=font_prop_small, color='grey', ha='left')
     
