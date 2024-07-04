@@ -160,7 +160,7 @@ def draw_passmap_with_special_passes(df, team, game_info, player, data_type_opti
     
     special_pass_colors = {
         'BigChanceCreated': '#f7895e',
-        'FastBreak': '#f75e89',
+        'IntentionalGoalAssist': '#f75e89',
         'Throughball': 'gold',
         'KeyPass': '#5e9ef7'
     }
@@ -173,7 +173,7 @@ def draw_passmap_with_special_passes(df, team, game_info, player, data_type_opti
     for _, row in pass_events_sorted.iterrows():
         if row['type'] == 'Pass':
             qualifiers = row['qualifiers']
-            special_pass_types = ['BigChanceCreated', 'FastBreak', 'Throughball', 'KeyPass']
+            special_pass_types = ['BigChanceCreated', 'IntentionalGoalAssist', 'Throughball', 'KeyPass']
             if any(q in qualifiers for q in special_pass_types):
                 row['pass_type'] = next(q for q in special_pass_types if q in qualifiers)
                 if row['outcome_type'] == 'Successful':
