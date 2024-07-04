@@ -198,7 +198,7 @@ def draw_passmap_with_special_passes(df, team, game_info, player, data_type_opti
     
     for i, pass_type in enumerate(special_pass_colors.keys()):
         plt.figtext(0.04, 0.165 - i*0.03, f"{pass_type}:", fontproperties=font_prop_small, color=special_pass_colors[pass_type], ha='left')
-        plt.figtext(0.175, 0.165 - i*0.03, f"{special_passes_count[pass_type]} successful", fontproperties=font_prop_small, color=special_pass_colors[pass_type], ha='left')
+        plt.figtext(0.2, 0.165 - i*0.03, f"{special_passes_count[pass_type]} successful", fontproperties=font_prop_small, color=special_pass_colors[pass_type], ha='left')
         plt.figtext(0.275, 0.165 - i*0.03, f"{special_passes_failed_count[pass_type]} failed", 
                     fontproperties=font_prop_small, color='grey', ha='left')
     
