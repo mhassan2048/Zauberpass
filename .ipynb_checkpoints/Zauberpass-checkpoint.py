@@ -407,8 +407,8 @@ def draw_pass_clusters(passes, cluster_info, team, game_info, player, data_type_
 
 def load_data(tournament):
     data_sources = {
-        "La Liga 2024-25": "https://drive.google.com/uc?export=download&id=1y1dCgDu0RI49AFxQaHFCxLuOjlEtBAYj",
-        "La Liga 2024-25 Spadl": "https://drive.google.com/uc?export=download&id=1y1dCgDu0RI49AFxQaHFCxLuOjlEtBAYj"
+        "La Liga 2024-25": "https://drive.google.com/uc?export=download&id=1VrKY3N2Eh8RFSHE9PZ0so3AmfoX8yykV",
+        "La Liga 2024-25 Spadl": "https://drive.google.com/uc?export=download&id=1-70bMwZb7F9u4NhP0x7Y0yA1b2zLw7N1"
     }
     url = data_sources[tournament]
     
@@ -426,7 +426,7 @@ def load_data(tournament):
         return None
 def load_spadl_data(tournament):
     spadl_data_sources = {
-        "La Liga 2024-25": "https://drive.google.com/uc?export=download&id=1y1dCgDu0RI49AFxQaHFCxLuOjlEtBAYj"
+        "La Liga 2024-25": "https://drive.google.com/uc?export=download&id=1-70bMwZb7F9u4NhP0x7Y0yA1b2zLw7N1"
     }
     url = spadl_data_sources[tournament]
     df = pd.read_csv(url)
