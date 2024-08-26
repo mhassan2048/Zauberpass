@@ -99,7 +99,7 @@ def draw_passmap(df, team, game_info, player, data_type_option):
     plt.gca().invert_yaxis()
     
 
-    image_bg("zplaliga.png", fig)
+    image_bg("zplaliga", fig)
     
     
     comp_clr = '#ff9d00'
