@@ -474,10 +474,10 @@ image = image.resize((100, 100))  # Resize to 100x100 pixels
 
 # Display the logo and title
 st.image(image, use_column_width=False)
-st.title("Zauberpass by The Real Deal")
+st.title("Zauberpass by @mhassanfootball")
 
 # Add Tournament Dropdown
-tournaments = ["Euro 2024", "Copa America 2024"]
+tournaments = ["LaLiga 2024-25"]
 selected_tournament = st.selectbox("Select Tournament", tournaments)
 
 # Load data based on selected tournament
