@@ -29,24 +29,6 @@ font_prop_title = fm.FontProperties(fname=font_path, size=40, weight='bold')
 font_prop_medium = fm.FontProperties(fname=font_path, size=24, weight='bold')
 font_prop_small = fm.FontProperties(fname=font_path, size=18, weight='bold')
 
-def add_team_flag(fig, team_name, alpha=.75):
-    """
-    Adds a team flag to the figure if the flag image exists.
-    """
-    flag_image_path = f'flags/{team_name}.png'
-    if os.path.isfile(flag_image_path):
-        img = Image.open(flag_image_path).convert("RGBA")
-        np_img = np.array(img)
-        
-        # Apply the alpha to the image
-        np_img[:, :, 3] = (np_img[:, :, 3] * alpha).astype(np.uint8)
-        
-        img_ax = fig.add_axes([0.775, 0.8675, 0.07, 0.07])  # Adjusted coordinates for flag
-        img_ax.imshow(np_img)
-        img_ax.axis('off')  # Turn off axis
-    else:
-        st.warning(f"Flag image for {team_name} not found.")
-
 def image_bg(img, fig):
     image_path = f"{img}.png"  # Assuming the background image is in PNG format
     image = Image.open(image_path)
@@ -424,10 +406,8 @@ def draw_pass_clusters(passes, cluster_info, team, game_info, player, data_type_
 
 def load_data(tournament):
     data_sources = {
-        "Euro 2024": "https://drive.google.com/uc?export=download&id=1-IJfIqkYv39CRoSLgXdMd3QZrP0a9ViL",
-        "Euro 2024 Spadl": "https://drive.google.com/uc?export=download&id=1-jL8HwJQRC13qgHzks4Y5Kzi8wbwH6Wv",
-        "Copa America 2024": "https://drive.google.com/uc?export=download&id=1-ehpOjBEsZKRT5el17KaH7f5_QouaWum",
-        "Copa America 2024 Spadl": "https://drive.google.com/uc?export=download&id=1-mrCWGOphVYR65mQzRetL5AvcKvoPjvn"
+        "La Liga 2024-25": "https://drive.google.com/uc?export=download&id=1y1dCgDu0RI49AFxQaHFCxLuOjlEtBAYj",
+        "La Liga 2024-25 Spadl": "https://drive.google.com/uc?export=download&id=1y1dCgDu0RI49AFxQaHFCxLuOjlEtBAYj"
     }
     url = data_sources[tournament]
     df = pd.read_csv(url)
@@ -435,8 +415,7 @@ def load_data(tournament):
 
 def load_spadl_data(tournament):
     spadl_data_sources = {
-        "Euro 2024": "https://drive.google.com/uc?export=download&id=1-jL8HwJQRC13qgHzks4Y5Kzi8wbwH6Wv",
-        "Copa America 2024": "https://drive.google.com/uc?export=download&id=1-mrCWGOphVYR65mQzRetL5AvcKvoPjvn"
+        "La Liga 2024-25": "https://drive.google.com/uc?export=download&id=1y1dCgDu0RI49AFxQaHFCxLuOjlEtBAYj"
     }
     url = spadl_data_sources[tournament]
     df = pd.read_csv(url)
