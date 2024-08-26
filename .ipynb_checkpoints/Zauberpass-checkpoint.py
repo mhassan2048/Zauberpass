@@ -477,7 +477,7 @@ st.image(image, use_column_width=False)
 st.title("Zauberpass by @mhassanfootball")
 
 # Add Tournament Dropdown
-tournaments = ["LaLiga 2024-25"]
+tournaments = ["La Liga 2024-25"]
 selected_tournament = st.selectbox("Select Tournament", tournaments)
 
 # Load data based on selected tournament
