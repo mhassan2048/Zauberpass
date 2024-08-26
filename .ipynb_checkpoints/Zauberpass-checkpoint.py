@@ -281,14 +281,7 @@ def draw_takeons(df, team, game_info, player, data_type_option):
         elif row['type'] == 'TakeOn' and row['outcome_type'] == 'Unsuccessful':
             pitch.scatter(row['x'], row['y'], color='grey', marker='H', s=1200, zorder=3, ax=ax,edgecolor='grey', linewidth=0, alpha=.3)
             count_f+=1
-    # Load your image
-    image_path = 'blogo.png'  # Replace with the path to your image
-    img = mpimg.imread(image_path)
-    img_ax = fig.add_axes([0.85, 0.85, 0.1, 0.1])  # Example: [left, bottom, width, height]
-    img_ax.imshow(img)
-    img_ax.axis('off')  # Turn off axis
-    
-    add_team_flag(fig, team, alpha=.75)
+
     
     plt.figtext(0.05, 0.9, f"{player if 'Player' in data_type_option else team} - Take-ons", fontproperties=font_prop_title, color='w', ha='left')
     plt.figtext(0.05, 0.85, game_info, fontproperties=font_prop_medium, color='#2af5bf', ha='left')
