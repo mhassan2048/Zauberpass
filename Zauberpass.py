@@ -116,16 +116,7 @@ def draw_passmap(df, team, game_info, player, data_type_option):
     num_key_passes = len(pass_events_sorted[pass_events_sorted['qualifiers'].str.contains('KeyPass', na=False)])
     num_progressive_passes = sum(pass_events_sorted.apply(lambda row: is_long_pass(row['x'], row['end_x']), axis=1))
 
-    '''
-    # Load your image
-    image_path = 'blogo.png'  # Replace with the path to your image
-    img = mpimg.imread(image_path)
-    img_ax = fig.add_axes([0.85, 0.85, 0.1, 0.1])  # Example: [left, bottom, width, height]
-    img_ax.imshow(img)
-    img_ax.axis('off')  # Turn off axis
-    
-    add_team_flag(fig, team, alpha=.75)
-    '''
+ 
     plt.figtext(0.05, 0.9, f"{player if 'Player' in data_type_option else team} - Passes", fontproperties=font_prop_title, color='w', ha='left')
     plt.figtext(0.05, 0.85, game_info, fontproperties=font_prop_medium, color='#2af5bf', ha='left')
     plt.figtext(0.04, 0.165, f"Regular Passes: {num_regular_passes}", fontproperties=font_prop_small, color='#c791f2', ha='left')
@@ -185,16 +176,7 @@ def draw_passmap_with_special_passes(df, team, game_info, player, data_type_opti
                     special_passes_failed_count[row['pass_type']] += 1
                     pass_color = failed_clr
                 draw_special_pass(ax, row, pitch, {row['pass_type']: pass_color}, lw_dict)
-    '''
-    # Load your image
-    image_path = 'blogo.png'  # Replace with the path to your image
-    img = mpimg.imread(image_path)
-    img_ax = fig.add_axes([0.85, 0.85, 0.1, 0.1])  # Example: [left, bottom, width, height]
-    img_ax.imshow(img)
-    img_ax.axis('off')  # Turn off axis
-    
-    add_team_flag(fig, team, alpha=.75)
-    '''
+ 
     plt.figtext(0.05, 0.9, f"{player if 'Player' in data_type_option else team} - Special Passes", fontproperties=font_prop_title, color='w', ha='left')
     plt.figtext(0.05, 0.85, game_info, fontproperties=font_prop_medium, color='#2af5bf', ha='left')
     
