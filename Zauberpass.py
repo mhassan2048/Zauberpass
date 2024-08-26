@@ -410,9 +410,19 @@ def load_data(tournament):
         "La Liga 2024-25 Spadl": "https://drive.google.com/uc?export=download&id=1y1dCgDu0RI49AFxQaHFCxLuOjlEtBAYj"
     }
     url = data_sources[tournament]
-    df = pd.read_csv(url)
-    return df
-
+    
+    try:
+        df = pd.read_csv(url)
+        return df
+    except urllib.error.HTTPError as e:
+        st.error(f"HTTP Error: {e.code}. Unable to retrieve the data. Please check the file's accessibility or try again later.")
+        return None
+    except urllib.error.URLError as e:
+        st.error(f"URL Error: {e.reason}. Please check your internet connection and the URL.")
+        return None
+    except Exception as e:
+        st.error(f"An unexpected error occurred: {e}")
+        return None
 def load_spadl_data(tournament):
     spadl_data_sources = {
         "La Liga 2024-25": "https://drive.google.com/uc?export=download&id=1y1dCgDu0RI49AFxQaHFCxLuOjlEtBAYj"
