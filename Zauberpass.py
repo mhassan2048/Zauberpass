@@ -82,7 +82,7 @@ def draw_passmap(df, team, game_info, player, data_type_option):
     plt.gca().invert_yaxis()
     
 
-    image_bg("zplaliga2", fig)
+    image_bg("zplaliga", fig)
     
     
     comp_clr = '#ff9d00'
@@ -130,7 +130,7 @@ def draw_passmap_with_special_passes(df, team, game_info, player, data_type_opti
     ax.set_zorder(1)
     plt.gca().invert_yaxis()
 
-    image_bg("zplaliga2", fig)
+    image_bg("zplaliga", fig)
     
     special_pass_colors = {
         'BigChanceCreated': '#f7895e',
@@ -184,7 +184,7 @@ def draw_defensive_actions(df, team, game_info, player, data_type_option):
     defensive_actions = ['Tackle', 'Challenge', 'Interception', 'Foul']
     
 
-    image_bg("zplaliga2", fig)
+    image_bg("zplaliga", fig)
 
     if "Player" in data_type_option:
         team_data = df[(df['player'] == player) & (df['type'].isin(defensive_actions))]
@@ -223,7 +223,7 @@ def draw_heatmap(df, team, game_info, player, data_type_option):
     plt.gca().invert_yaxis()
     
 
-    image_bg("zplaliga2", fig)
+    image_bg("zplaliga", fig)
 
     bin_statistic = pitch.bin_statistic_positional(df.x, df.y, statistic='count',
                                                positional='full', normalize=True)
@@ -252,7 +252,7 @@ def draw_takeons(df, team, game_info, player, data_type_option):
     plt.gca().invert_yaxis()
     
 
-    image_bg("zplaliga2", fig)
+    image_bg("zplaliga", fig)
 
     comp_clr = '#ff9d00'  # Define the color for successful take-ons
     count_s = 0
@@ -286,7 +286,7 @@ def draw_pass_receptions(df, team, game_info, player, data_type_option):
     ax.set_zorder(1)
     plt.gca().invert_yaxis()
 
-    image_bg("zplaliga2", fig)
+    image_bg("zplaliga", fig)
     
     # Filter for the specific team and successful passes
     df = df[(df['team'] == team) & (df['type'] == 'Pass') & (df['outcome_type'] == 'Successful')]
@@ -376,7 +376,7 @@ def draw_pass_clusters(passes, cluster_info, team, game_info, player, data_type_
     ax.set_zorder(1)
     plt.gca().invert_yaxis()
     
-    image_bg("zplaliga2", fig)
+    image_bg("zplaliga", fig)
     
     colors = ['lightgreen', 'deeppink', 'royalblue']
     arrow_color = 'gold'
@@ -407,8 +407,8 @@ def draw_pass_clusters(passes, cluster_info, team, game_info, player, data_type_
 
 def load_data(tournament):
     data_sources = {
-        "La Liga 2024-25": "https://drive.google.com/uc?export=download&id=1VrKY3N2Eh8RFSHE9PZ0so3AmfoX8yykV",
-        "La Liga 2024-25 Spadl": "https://drive.google.com/uc?export=download&id=1-70bMwZb7F9u4NhP0x7Y0yA1b2zLw7N1"
+        "La Liga 2024-25": "https://drive.google.com/uc?export=download&id=1-9HGY-jxSUttXwBTyXklIxMSN5Z5gMBU",
+        "La Liga 2024-25 Spadl": "https://drive.google.com/uc?export=download&id=1-B5nWNO60PqUlo1wroSRYXUrjaxh2fMc"
     }
     url = data_sources[tournament]
     
@@ -426,7 +426,7 @@ def load_data(tournament):
         return None
 def load_spadl_data(tournament):
     spadl_data_sources = {
-        "La Liga 2024-25": "https://drive.google.com/uc?export=download&id=1-70bMwZb7F9u4NhP0x7Y0yA1b2zLw7N1"
+        "La Liga 2024-25": "https://drive.google.com/uc?export=download&id=1-B5nWNO60PqUlo1wroSRYXUrjaxh2fMc"
     }
     url = spadl_data_sources[tournament]
     df = pd.read_csv(url)
@@ -445,7 +445,7 @@ def draw_carries(df, team, game_info, player, data_type_option):
     ax.set_zorder(1)
     
     # Add background image
-    image_bg("zplaliga2", fig)
+    image_bg("zplaliga", fig)
     
     prg = 0
     reg = 0
