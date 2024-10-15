@@ -409,8 +409,8 @@ def load_data(tournament):
     data_sources = {
         "La Liga 2024-25": "https://drive.google.com/uc?export=download&id=1p4Bh_DaE-LKuoPKr_7Blz2uDXQSLPVx-",
         "La Liga 2024-25 Spadl": "https://drive.google.com/uc?export=download&id=1V1jYBaV-ONKnIqh1iJyjioZuiw-evF62",
-        "La Liga 2020-21": "https://drive.google.com/uc?export=download&id=1IaT9rsGFMlC_-0GDdx9qddBgDE5wq8Ey"
-        #"La Liga 2020-21 Spadl": "https://drive.google.com/uc?export=download&id=1LYUTCp7rdjSVzuDmSx7FVupFKugwIfwh"
+        "La Liga 2020-21": "https://drive.google.com/uc?export=download&id=1IaT9rsGFMlC_-0GDdx9qddBgDE5wq8Ey",
+        "La Liga 2020-21 Spadl": "https://drive.google.com/uc?export=download&id=1LYUTCp7rdjSVzuDmSx7FVupFKugwIfwh"
     }
     url = data_sources[tournament]
     
@@ -428,8 +428,8 @@ def load_data(tournament):
         return None
 def load_spadl_data(tournament):
     spadl_data_sources = {
-        "La Liga 2024-25": "https://drive.google.com/uc?export=download&id=1V1jYBaV-ONKnIqh1iJyjioZuiw-evF62"
-        #"La Liga 2020-21": "https://drive.google.com/uc?export=download&id=1LYUTCp7rdjSVzuDmSx7FVupFKugwIfwh"
+        "La Liga 2024-25": "https://drive.google.com/uc?export=download&id=1V1jYBaV-ONKnIqh1iJyjioZuiw-evF62",
+        "La Liga 2020-21": "https://drive.google.com/uc?export=download&id=1LYUTCp7rdjSVzuDmSx7FVupFKugwIfwh"
     }
     url = spadl_data_sources[tournament]
     df = pd.read_csv(url)
@@ -494,8 +494,30 @@ st.title("Zauberpass by @mhassanfootball")
 tournaments = ["La Liga 2024-25", "La Liga 2020-21"]
 selected_tournament = st.selectbox("Select Tournament", tournaments)
 
-# Load data based on selected tournament
+# Load the CSV file
 df = load_data(selected_tournament)
+
+# Check the columns to ensure 'team' exists and print them to the Streamlit app for debugging
+st.write(df.columns)  # This will output the column names
+
+# Strip any whitespace around column names to prevent issues with hidden characters
+df.columns = df.columns.str.strip()
+
+# Optionally, convert column names to lowercase to avoid case sensitivity issues
+df.columns = df.columns.str.lower()
+
+# Double-check if 'team' column exists after cleaning column names
+if 'team' not in df.columns:
+    st.error("The 'team' column is missing from the dataset.")
+else:
+    # Now that the 'team' column is confirmed to exist, proceed
+    teams = sorted(df['team'].unique())
+    
+    # Additional debugging: check for null values in the 'team' column
+    st.write(f"Number of missing values in 'team' column: {df['team'].isnull().sum()}")
+
+    # Filter out rows where the 'team' column is null (if needed)
+    df = df[df['team'].notnull()]
 
 # Add Radio Buttons for Data Type Selection
 data_type_option = st.radio("Select Data Type", ["Player - Match by Match", "Player - All Games", "Team - Match by Match", "Team - All Games"])
