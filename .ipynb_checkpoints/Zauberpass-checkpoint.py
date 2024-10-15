@@ -409,8 +409,8 @@ def load_data(tournament):
     data_sources = {
         "La Liga 2024-25": "https://drive.google.com/uc?export=download&id=1p4Bh_DaE-LKuoPKr_7Blz2uDXQSLPVx-",
         "La Liga 2024-25 Spadl": "https://drive.google.com/uc?export=download&id=1V1jYBaV-ONKnIqh1iJyjioZuiw-evF62",
-        "La Liga 2020-21": "https://drive.google.com/uc?export=download&id=1Lu9of93iIccxtf3HilfHq2ezoxSjCAzc",
-        "La Liga 2020-21 Spadl": "https://drive.google.com/uc?export=download&id=1IvrfYapmUaWePKpTFwiuCUzIQiui79--"
+        #"La Liga 2020-21": "https://drive.google.com/uc?export=download&id=1Lu9of93iIccxtf3HilfHq2ezoxSjCAzc",
+        #"La Liga 2020-21 Spadl": "https://drive.google.com/uc?export=download&id=1IvrfYapmUaWePKpTFwiuCUzIQiui79--"
     }
     url = data_sources[tournament]
     
@@ -429,7 +429,7 @@ def load_data(tournament):
 def load_spadl_data(tournament):
     spadl_data_sources = {
         "La Liga 2024-25": "https://drive.google.com/uc?export=download&id=1V1jYBaV-ONKnIqh1iJyjioZuiw-evF62",
-        "La Liga 2020-21": "https://drive.google.com/uc?export=download&id=1IvrfYapmUaWePKpTFwiuCUzIQiui79--"
+        #"La Liga 2020-21": "https://drive.google.com/uc?export=download&id=1IvrfYapmUaWePKpTFwiuCUzIQiui79--"
     }
     url = spadl_data_sources[tournament]
     df = pd.read_csv(url)
@@ -491,7 +491,7 @@ st.image(image, use_column_width=False)
 st.title("Zauberpass by @mhassanfootball")
 
 # Add Tournament Dropdown
-tournaments = ["La Liga 2024-25", "La Liga 2020-21"]
+tournaments = ["La Liga 2024-25"]
 selected_tournament = st.selectbox("Select Tournament", tournaments)
 
 # Load the CSV file
