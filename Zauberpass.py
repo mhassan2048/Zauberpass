@@ -409,8 +409,8 @@ def load_data(tournament):
     data_sources = {
         "La Liga 2024-25": "https://drive.google.com/uc?export=download&id=1p4Bh_DaE-LKuoPKr_7Blz2uDXQSLPVx-",
         "La Liga 2024-25 Spadl": "https://drive.google.com/uc?export=download&id=1V1jYBaV-ONKnIqh1iJyjioZuiw-evF62",
-        "La Liga 2020-21": "https://drive.google.com/uc?export=download&id=1IaT9rsGFMlC_-0GDdx9qddBgDE5wq8Ey",
-        "La Liga 2020-21 Spadl": "https://drive.google.com/uc?export=download&id=1LYUTCp7rdjSVzuDmSx7FVupFKugwIfwh"
+        "La Liga 2020-21": "https://drive.google.com/uc?export=download&id=1Lu9of93iIccxtf3HilfHq2ezoxSjCAzc",
+        "La Liga 2020-21 Spadl": "https://drive.google.com/uc?export=download&id=1IvrfYapmUaWePKpTFwiuCUzIQiui79--"
     }
     url = data_sources[tournament]
     
@@ -429,7 +429,7 @@ def load_data(tournament):
 def load_spadl_data(tournament):
     spadl_data_sources = {
         "La Liga 2024-25": "https://drive.google.com/uc?export=download&id=1V1jYBaV-ONKnIqh1iJyjioZuiw-evF62",
-        "La Liga 2020-21": "https://drive.google.com/uc?export=download&id=1LYUTCp7rdjSVzuDmSx7FVupFKugwIfwh"
+        "La Liga 2020-21": "https://drive.google.com/uc?export=download&id=1IvrfYapmUaWePKpTFwiuCUzIQiui79--"
     }
     url = spadl_data_sources[tournament]
     df = pd.read_csv(url)
@@ -496,38 +496,6 @@ selected_tournament = st.selectbox("Select Tournament", tournaments)
 
 # Load the CSV file
 df = load_data(selected_tournament)
-
-# Check if df is a DataFrame
-if not isinstance(df, pd.DataFrame):
-    st.error("Data could not be loaded into a DataFrame. Please check the file format.")
-else:
-    # Sanity check to ensure the file loaded correctly
-    st.write("Data loaded successfully. Columns are:")
-    st.write(df.columns)  # This will print the column names
-
-    # Try stripping whitespace from column names if needed
-    try:
-        df.columns = df.columns.str.strip()
-        st.write("Columns after stripping any leading/trailing spaces:")
-        st.write(df.columns)
-    except Exception as e:
-        st.error(f"An error occurred while stripping column names: {e}")
-    
-    # Check if the 'team' column exists after stripping
-    if 'team' not in df.columns:
-        st.error("The 'team' column is missing from the dataset.")
-    else:
-        # Now that the 'team' column is confirmed to exist, proceed
-        teams = sorted(df['team'].unique())
-        st.write(f"Number of unique teams: {len(teams)}")
-
-        # Check for null values in the 'team' column
-        st.write(f"Number of missing values in 'team' column: {df['team'].isnull().sum()}")
-
-        # Filter out rows where the 'team' column is null (if needed)
-        df = df[df['team'].notnull()]
-
-        # Continue with the rest of your app logic
 
 # Add Radio Buttons for Data Type Selection
 data_type_option = st.radio("Select Data Type", ["Player - Match by Match", "Player - All Games", "Team - Match by Match", "Team - All Games"])
