@@ -405,33 +405,35 @@ def draw_pass_clusters(passes, cluster_info, team, game_info, player, data_type_
     plt.figtext(.95, 0.175, "Direction of play from left to right. Coordinates from Opta.", fontproperties=font_prop_small, color='grey', ha='right')
     return fig
 
-# Example data_sources with combined regular and SPADL data per season
-data_sources = {
-    "La Liga 2024-25": {
-        "regular": "https://drive.google.com/uc?export=download&id=1p4Bh_DaE-LKuoPKr_7Blz2uDXQSLPVx-",
-        "spadl": "https://drive.google.com/uc?export=download&id=1V1jYBaV-ONKnIqh1iJyjioZuiw-evF62"
-    },
-    "La Liga 2020-21": {
-        "regular": "https://drive.google.com/uc?export=download&id=1IaT9rsGFMlC_-0GDdx9qddBgDE5wq8Ey",
-        "spadl": "https://drive.google.com/uc?export=download&id=1LYUTCp7rdjSVzuDmSx7FVupFKugwIfwh"
+def load_data(tournament):
+    data_sources = {
+        "La Liga 2024-25": "https://drive.google.com/uc?export=download&id=1p4Bh_DaE-LKuoPKr_7Blz2uDXQSLPVx-",
+        "La Liga 2024-25 Spadl": "https://drive.google.com/uc?export=download&id=1V1jYBaV-ONKnIqh1iJyjioZuiw-evF62",
+        "La Liga 2020-21": "https://drive.google.com/uc?export=download&id=1IaT9rsGFMlC_-0GDdx9qddBgDE5wq8Ey",
+        "La Liga 2020-21 Spadl": "https://drive.google.com/uc?export=download&id=1LYUTCp7rdjSVzuDmSx7FVupFKugwIfwh"
     }
-}
-
-# Add Tournament Dropdown (one entry per season)
-tournaments = list(data_sources.keys())  # Just the season names
-selected_tournament = st.selectbox("Select Tournament", tournaments)
-
-# Load regular and SPADL data for the selected tournament
-regular_url = data_sources[selected_tournament]["regular"]
-spadl_url = data_sources[selected_tournament]["spadl"]
-
-# Load regular data
-df_regular = pd.read_csv(regular_url)
-st.write("Regular Data:", df_regular.head())
-
-# Load SPADL data
-df_spadl = pd.read_csv(spadl_url)
-st.write("SPADL Data:", df_spadl.head())
+    url = data_sources[tournament]
+    
+    try:
+        df = pd.read_csv(url)
+        return df
+    except urllib.error.HTTPError as e:
+        st.error(f"HTTP Error: {e.code}. Unable to retrieve the data. Please check the file's accessibility or try again later.")
+        return None
+    except urllib.error.URLError as e:
+        st.error(f"URL Error: {e.reason}. Please check your internet connection and the URL.")
+        return None
+    except Exception as e:
+        st.error(f"An unexpected error occurred: {e}")
+        return None
+def load_spadl_data(tournament):
+    spadl_data_sources = {
+        "La Liga 2024-25": "https://drive.google.com/uc?export=download&id=1V1jYBaV-ONKnIqh1iJyjioZuiw-evF62",
+        "La Liga 2020-21": "https://drive.google.com/uc?export=download&id=1LYUTCp7rdjSVzuDmSx7FVupFKugwIfwh"
+    }
+    url = spadl_data_sources[tournament]
+    df = pd.read_csv(url)
+    return df
 
 def draw_carries(df, team, game_info, player, data_type_option):
     required_columns = ['type_id', 'start_x', 'start_y', 'end_x', 'end_y', 'game_id']
