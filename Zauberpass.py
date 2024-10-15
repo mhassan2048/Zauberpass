@@ -497,27 +497,37 @@ selected_tournament = st.selectbox("Select Tournament", tournaments)
 # Load the CSV file
 df = load_data(selected_tournament)
 
-# Check the columns to ensure 'team' exists and print them to the Streamlit app for debugging
-st.write(df.columns)  # This will output the column names
-
-# Strip any whitespace around column names to prevent issues with hidden characters
-df.columns = df.columns.str.strip()
-
-# Optionally, convert column names to lowercase to avoid case sensitivity issues
-df.columns = df.columns.str.lower()
-
-# Double-check if 'team' column exists after cleaning column names
-if 'team' not in df.columns:
-    st.error("The 'team' column is missing from the dataset.")
+# Check if df is a DataFrame
+if not isinstance(df, pd.DataFrame):
+    st.error("Data could not be loaded into a DataFrame. Please check the file format.")
 else:
-    # Now that the 'team' column is confirmed to exist, proceed
-    teams = sorted(df['team'].unique())
-    
-    # Additional debugging: check for null values in the 'team' column
-    st.write(f"Number of missing values in 'team' column: {df['team'].isnull().sum()}")
+    # Sanity check to ensure the file loaded correctly
+    st.write("Data loaded successfully. Columns are:")
+    st.write(df.columns)  # This will print the column names
 
-    # Filter out rows where the 'team' column is null (if needed)
-    df = df[df['team'].notnull()]
+    # Try stripping whitespace from column names if needed
+    try:
+        df.columns = df.columns.str.strip()
+        st.write("Columns after stripping any leading/trailing spaces:")
+        st.write(df.columns)
+    except Exception as e:
+        st.error(f"An error occurred while stripping column names: {e}")
+    
+    # Check if the 'team' column exists after stripping
+    if 'team' not in df.columns:
+        st.error("The 'team' column is missing from the dataset.")
+    else:
+        # Now that the 'team' column is confirmed to exist, proceed
+        teams = sorted(df['team'].unique())
+        st.write(f"Number of unique teams: {len(teams)}")
+
+        # Check for null values in the 'team' column
+        st.write(f"Number of missing values in 'team' column: {df['team'].isnull().sum()}")
+
+        # Filter out rows where the 'team' column is null (if needed)
+        df = df[df['team'].notnull()]
+
+        # Continue with the rest of your app logic
 
 # Add Radio Buttons for Data Type Selection
 data_type_option = st.radio("Select Data Type", ["Player - Match by Match", "Player - All Games", "Team - Match by Match", "Team - All Games"])
