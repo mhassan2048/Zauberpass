@@ -407,7 +407,7 @@ def draw_pass_clusters(passes, cluster_info, team, game_info, player, data_type_
 
 def load_data(tournament):
     data_sources = {
-        "UCL 2024-25": "https://drive.google.com/uc?export=download&id=1V1jYBaV-ONKnIqh1iJyjioZuiw-evF62",
+        "UCL 2024-25": "https://drive.google.com/uc?export=download&id=1wsC5Hlzt7o6zOVae-APRCVogtn1KMSFk",
         "UCL 2024-25 Spadl": "https://drive.google.com/uc?export=download&id=1xeSJUUYo8uvQ8wiAoyG7wrn3RNYIYCeH"
         #"La Liga 2024-25": "https://drive.google.com/uc?export=download&id=1p4Bh_DaE-LKuoPKr_7Blz2uDXQSLPVx-",
         #"La Liga 2024-25 Spadl": "https://drive.google.com/uc?export=download&id=1V1jYBaV-ONKnIqh1iJyjioZuiw-evF62",
@@ -430,7 +430,7 @@ def load_data(tournament):
         return None
 def load_spadl_data(tournament):
     spadl_data_sources = {
-        "UCL 2024-25 Spadl": "https://drive.google.com/uc?export=download&id=1xeSJUUYo8uvQ8wiAoyG7wrn3RNYIYCeH"
+        "UCL 2024-25 Spadl": "https://drive.google.com/uc?export=download&id=1V1jYBaV-ONKnIqh1iJyjioZuiw-evF62"
         #"La Liga 2020-21": "https://drive.google.com/uc?export=download&id=1IvrfYapmUaWePKpTFwiuCUzIQiui79--"
     }
     url = spadl_data_sources[tournament]
@@ -508,21 +508,8 @@ selected_team = st.selectbox("Select Team", teams, index=0)
 
 # Filter matches based on the selected team
 filtered_df_team = df[df['team'] == selected_team]
-
-# Check if 'game' column exists
-if 'game' not in filtered_df_team.columns:
-    st.warning("The column 'game' does not exist in the filtered dataset. Please check your data source or column names.")
-    matches = []  # Provide a fallback if needed
-else:
-    matches = sorted(filtered_df_team['game'].unique())
-
+matches = sorted(filtered_df_team['game'].unique())
 selected_match = st.selectbox("Select Match", matches, index=0, disabled=("All Games" in data_type_option))
-
-# Filter players based on the selected team and game (only if 'game' column exists)
-if 'game' in filtered_df_team.columns:
-    filtered_df_game = filtered_df_team[filtered_df_team['game'] == selected_match]
-else:
-    filtered_df_game = filtered_df_team  # fallback in case 'game' column is missing
 
 # Filter players based on the selected team and game
 filtered_df_game = filtered_df_team[filtered_df_team['game'] == selected_match]
