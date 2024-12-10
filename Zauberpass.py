@@ -508,8 +508,21 @@ selected_team = st.selectbox("Select Team", teams, index=0)
 
 # Filter matches based on the selected team
 filtered_df_team = df[df['team'] == selected_team]
-matches = sorted(filtered_df_team['game'].unique())
+
+# Check if 'game' column exists
+if 'game' not in filtered_df_team.columns:
+    st.warning("The column 'game' does not exist in the filtered dataset. Please check your data source or column names.")
+    matches = []  # Provide a fallback if needed
+else:
+    matches = sorted(filtered_df_team['game'].unique())
+
 selected_match = st.selectbox("Select Match", matches, index=0, disabled=("All Games" in data_type_option))
+
+# Filter players based on the selected team and game (only if 'game' column exists)
+if 'game' in filtered_df_team.columns:
+    filtered_df_game = filtered_df_team[filtered_df_team['game'] == selected_match]
+else:
+    filtered_df_game = filtered_df_team  # fallback in case 'game' column is missing
 
 # Filter players based on the selected team and game
 filtered_df_game = filtered_df_team[filtered_df_team['game'] == selected_match]
