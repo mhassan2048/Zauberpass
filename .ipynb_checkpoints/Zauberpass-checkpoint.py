@@ -1,5 +1,6 @@
 import urllib.error
 import os
+import gdown
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -405,37 +406,59 @@ def draw_pass_clusters(passes, cluster_info, team, game_info, player, data_type_
     plt.figtext(.95, 0.175, "Direction of play from left to right. Coordinates from Opta.", fontproperties=font_prop_small, color='grey', ha='right')
     return fig
 
+import gdown
+import os
+
 def load_data(tournament):
     data_sources = {
-        #"UCL 2024-25": "https://drive.google.com/uc?export=download&id=1wsC5Hlzt7o6zOVae-APRCVogtn1KMSFk",
-        #"UCL 2024-25 Spadl": "https://drive.google.com/uc?export=download&id=1xeSJUUYo8uvQ8wiAoyG7wrn3RNYIYCeH"
-        "La Liga 2024-25": "https://drive.google.com/uc?export=download&id=1kFG1OpvSI38oVA41wbAsZHjmBcXR8C55",
-        "La Liga 2024-25 Spadl": "https://drive.google.com/uc?export=download&id=1GoQH-eE3y-Pb367vk3sMauO3vNUb90pt"
-        #"La Liga 2020-21": "https://drive.google.com/uc?export=download&id=1Lu9of93iIccxtf3HilfHq2ezoxSjCAzc",
-        #"La Liga 2020-21 Spadl": "https://drive.google.com/uc?export=download&id=1IvrfYapmUaWePKpTFwiuCUzIQiui79--"
+        "La Liga 2024-25": "1kFG1OpvSI38oVA41wbAsZHjmBcXR8C55",  # File ID from Google Drive
     }
-    url = data_sources[tournament]
-    
+
+    file_id = data_sources[tournament]
+    destination = f"data/la_liga_2024_25.csv"
+
+    # Check if the file already exists to avoid re-downloading
+    if not os.path.exists(destination):
+        url = f"https://drive.google.com/uc?export=download&id={file_id}"
+        print(f"Downloading La Liga 2024-25 data from: {url} ...")
+        gdown.download(url, destination, quiet=False)
+    else:
+        print(f"Using cached file: {destination}")
+
+    # Load into pandas
     try:
-        df = pd.read_csv(url)
+        df = pd.read_csv(destination)
+        print("La Liga 2024-25 CSV successfully loaded!")
         return df
-    except urllib.error.HTTPError as e:
-        st.error(f"HTTP Error: {e.code}. Unable to retrieve the data. Please check the file's accessibility or try again later.")
-        return None
-    except urllib.error.URLError as e:
-        st.error(f"URL Error: {e.reason}. Please check your internet connection and the URL.")
-        return None
     except Exception as e:
-        st.error(f"An unexpected error occurred: {e}")
+        st.error(f"Error loading La Liga data: {e}")
         return None
+
+
 def load_spadl_data(tournament):
     spadl_data_sources = {
-        #"UCL 2024-25 Spadl": "https://drive.google.com/uc?export=download&id=1V1jYBaV-ONKnIqh1iJyjioZuiw-evF62"
-        "La Liga 2024-25 Spadl": "https://drive.google.com/uc?export=download&id=1GoQH-eE3y-Pb367vk3sMauO3vNUb90pt"
+        "La Liga 2024-25 Spadl": "1GoQH-eE3y-Pb367vk3sMauO3vNUb90pt",  # File ID from Google Drive
     }
-    url = spadl_data_sources[tournament]
-    df = pd.read_csv(url)
-    return df
+
+    file_id = spadl_data_sources[tournament]
+    destination = f"data/la_liga_2024_25_spadl.csv"
+
+    # Check if the file already exists to avoid re-downloading
+    if not os.path.exists(destination):
+        url = f"https://drive.google.com/uc?export=download&id={file_id}"
+        print(f"Downloading La Liga 2024-25 Spadl data from: {url} ...")
+        gdown.download(url, destination, quiet=False)
+    else:
+        print(f"Using cached file: {destination}")
+
+    # Load into pandas
+    try:
+        df = pd.read_csv(destination)
+        print("La Liga 2024-25 Spadl CSV successfully loaded!")
+        return df
+    except Exception as e:
+        st.error(f"Error loading La Liga Spadl data: {e}")
+        return None
 
 def draw_carries(df, team, game_info, player, data_type_option):
     required_columns = ['type_id', 'start_x', 'start_y', 'end_x', 'end_y', 'game_id']
@@ -498,6 +521,9 @@ selected_tournament = st.selectbox("Select Tournament", tournaments)
 
 # Load the CSV file
 df = load_data(selected_tournament)
+if df is None:
+    st.error("Failed to load the dataset. Please try again later.")
+    st.stop()
 
 # Add Radio Buttons for Data Type Selection
 data_type_option = st.radio("Select Data Type", ["Player - Match by Match", "Player - All Games", "Team - Match by Match", "Team - All Games"])
@@ -571,6 +597,9 @@ if st.button("Full Analysis"):
 
     # Load SPADL data for Carries
     filtered_df_spadl = load_spadl_data(selected_tournament)
+    if filtered_df_spadl is None:
+        st.error("Failed to load the SPADL dataset. Please try again later.")
+        st.stop()
     if compare:
         filtered_df_compare_spadl = load_spadl_data(selected_tournament_compare)
 
