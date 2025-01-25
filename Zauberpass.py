@@ -407,10 +407,10 @@ def draw_pass_clusters(passes, cluster_info, team, game_info, player, data_type_
 
 def load_data(tournament):
     data_sources = {
-        "UCL 2024-25": "https://drive.google.com/uc?export=download&id=1wsC5Hlzt7o6zOVae-APRCVogtn1KMSFk",
-        "UCL 2024-25 Spadl": "https://drive.google.com/uc?export=download&id=1xeSJUUYo8uvQ8wiAoyG7wrn3RNYIYCeH"
-        #"La Liga 2024-25": "https://drive.google.com/uc?export=download&id=1p4Bh_DaE-LKuoPKr_7Blz2uDXQSLPVx-",
-        #"La Liga 2024-25 Spadl": "https://drive.google.com/uc?export=download&id=1V1jYBaV-ONKnIqh1iJyjioZuiw-evF62",
+        #"UCL 2024-25": "https://drive.google.com/uc?export=download&id=1wsC5Hlzt7o6zOVae-APRCVogtn1KMSFk",
+        #"UCL 2024-25 Spadl": "https://drive.google.com/uc?export=download&id=1xeSJUUYo8uvQ8wiAoyG7wrn3RNYIYCeH"
+        "La Liga 2024-25": "https://drive.google.com/uc?export=download&id=1kFG1OpvSI38oVA41wbAsZHjmBcXR8C55",
+        "La Liga 2024-25 Spadl": "https://drive.google.com/uc?export=download&id=1GoQH-eE3y-Pb367vk3sMauO3vNUb90pt"
         #"La Liga 2020-21": "https://drive.google.com/uc?export=download&id=1Lu9of93iIccxtf3HilfHq2ezoxSjCAzc",
         #"La Liga 2020-21 Spadl": "https://drive.google.com/uc?export=download&id=1IvrfYapmUaWePKpTFwiuCUzIQiui79--"
     }
@@ -430,8 +430,8 @@ def load_data(tournament):
         return None
 def load_spadl_data(tournament):
     spadl_data_sources = {
-        "UCL 2024-25 Spadl": "https://drive.google.com/uc?export=download&id=1V1jYBaV-ONKnIqh1iJyjioZuiw-evF62"
-        #"La Liga 2020-21": "https://drive.google.com/uc?export=download&id=1IvrfYapmUaWePKpTFwiuCUzIQiui79--"
+        #"UCL 2024-25 Spadl": "https://drive.google.com/uc?export=download&id=1V1jYBaV-ONKnIqh1iJyjioZuiw-evF62"
+        "La Liga 2024-25 Spadl": "https://drive.google.com/uc?export=download&id=1GoQH-eE3y-Pb367vk3sMauO3vNUb90pt"
     }
     url = spadl_data_sources[tournament]
     df = pd.read_csv(url)
