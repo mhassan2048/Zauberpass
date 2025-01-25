@@ -493,7 +493,7 @@ st.image(image, use_column_width=False)
 st.title("Zauberpass by @mhassanfootball")
 
 # Add Tournament Dropdown
-tournaments = ["UCL 2024-25"]
+tournaments = ["LaLiga 2024-25"]
 selected_tournament = st.selectbox("Select Tournament", tournaments)
 
 # Load the CSV file
